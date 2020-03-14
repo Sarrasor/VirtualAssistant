@@ -10,6 +10,9 @@ are provided in the form of text, images, and animated holograms.
 - AR/MR devices
 - Server
 
+![architecture](architecture.png)
+
+
 ## Technology stack
 - Unity
 - Android
@@ -17,3 +20,6 @@ are provided in the form of text, images, and animated holograms.
 - WebGL
 - GLTF
 - gRPC
+
+## Branches
+dev - sample XR apps
