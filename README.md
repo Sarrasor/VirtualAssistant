@@ -25,3 +25,11 @@ Check if your device is supported [here](https://developers.google.com/ar/discov
 If you don't have it, you can setup the Android Virtual Device. To do that, please, follow [this](https://developers.google.com/ar/develop/java/quickstart) guide.
 
 
+## Contents
+- augmented-image: contains an app that overlays 3D model on an anchor
+- dynamic-textures: contains an app that uses plane estimation to place
+instructions and swithces textures when the button is pressed
+- tools: miscelaneous files and helper tools
+- images: images used
+- models: models used
+
