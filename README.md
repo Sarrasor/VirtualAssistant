@@ -26,10 +26,23 @@ If you don't have it, you can setup the Android Virtual Device. To do that, plea
 
 
 ## Contents
-- augmented-image: contains an app that overlays 3D model on an anchor
-- dynamic-textures: contains an app that uses plane estimation to place
-instructions and swithces textures when the button is pressed
-- tools: miscelaneous files and helper tools
-- images: images used
-- models: models used
+### augmented-image
+Contains an app that overlays 3D model on an anchor
+
+![augmented image](images/docs/augmented_image.png)
+
+### dynamic-textures
+Contains an app that uses plane estimation to place instructions and swithces textures when the button is pressed
+
+![dynamic textures](images/docs/dynamic_texture.png)
+
+### tools
+Miscelaneous files and helper tools
+
+### images
+Images used
+
+
+### models
+Models used
 
