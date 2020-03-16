@@ -36,6 +36,20 @@ Contains an app that uses plane estimation to place instructions and swithces te
 
 ![dynamic textures](images/docs/dynamic_texture.png)
 
+## grpc-server
+Contains Java gRPC server that sends requested images
+
+To run:
+'./gradlew installDist && ./build/install/examples/bin/hello-world-server'
+
+![grpc-server](images/docs/server.png)
+
+## grpc-client
+Contains an app that requests and displays images from gRPC server
+
+![grpc-client](images/docs/client.png)
+
+
 ### tools
 Miscelaneous files and helper tools
 
