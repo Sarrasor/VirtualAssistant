@@ -40,7 +40,7 @@ Contains an app that uses plane estimation to place instructions and swithces te
 Contains Java gRPC server that sends requested images
 
 To run:
-`./gradlew installDist && ./build/install/examples/bin/hello-world-server`
+'./gradlew installDist && ./build/install/examples/bin/hello-world-server'
 
 ![grpc-server](images/docs/server.png)
 
