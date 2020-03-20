@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.example.proto";
+option java_outer_classname = "InstructionProto";
+option objc_class_prefix = "INST";
+
+package instruction;
+
+message AllInstructioinsRequest
+{
+
+}
+
+message AllInstructioinsResponse
+{
+	repeated InstructionThumbnail thumbnails = 1;
+}
+
+message InstructionThumbnail
+{
+	string id = 1;
+	string name = 2;
+	string description = 3;
+	bytes image = 4; 
+	uint32 step_count = 5;
+	uint32 size = 6;
+}
+
+message InstructionRequest
+{
+	string id = 1;
+}
+
+message InstructionResponse
+{
+	int32 status = 1;
+	repeated Slide slides = 2;
+}
+
+message Slide
+{
+	string text = 1;
+	string transform = 2;
+	uint32 media_type = 3;
+	string media_url = 4;
+}
+
+message Chunk 
+{
+  bytes buffer = 1;
+}
+
+message MediaRequest 
+{
+  string id = 1;
+}
+
+service Instruction
+{
+	rpc GetAllInstructions(AllInstructioinsRequest) returns (AllInstructioinsResponse) {}
+	rpc GetInstruction(InstructionRequest) returns (InstructionResponse) {}
+	rpc DownloadMedia(MediaRequest) returns (stream Chunk) {}
+}

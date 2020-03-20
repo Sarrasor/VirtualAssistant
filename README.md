@@ -49,6 +49,15 @@ Contains an app that requests and displays images from gRPC server
 
 ![grpc-client](images/docs/client.png)
 
+## python-server
+Contains python server with instructions API
+
+![python-server](images/docs/python_server.png)
+
+## instructionsdownloader
+Contains Java client app to python-server
+
+![instructions-downloader](images/docs/instructions_downloader.png)
 
 ### tools
 Miscelaneous files and helper tools
