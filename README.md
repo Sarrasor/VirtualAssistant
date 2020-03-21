@@ -59,6 +59,11 @@ Contains Java client app to python-server
 
 ![instructions-downloader](images/docs/instructions_downloader.png)
 
+## virtual-assistant
+Contains Virtual Assistant app
+
+![virtual-assistant](images/docs/virtual-assistant.gif)
+
 ### tools
 Miscelaneous files and helper tools
 
