@@ -67,25 +67,27 @@ public class InstructionDisplay extends AppCompatActivity
             MediaRequest mediaRequest = MediaRequest.newBuilder().setId(id).build();
             Iterator<Chunk> media_chunks = stub.downloadMedia(mediaRequest);
 
-            String zip_name = String.format("media.zip", id);
+            File directory = context.getFilesDir();
+            File instruction_dir = new File(directory, id);
+            instruction_dir.mkdirs();
 
-            try (FileOutputStream fos = context.openFileOutput(zip_name, Context.MODE_PRIVATE))
+            File zip_file = new File(instruction_dir, "media.zip");
+            try (FileOutputStream zipFile = new FileOutputStream(zip_file))
             {
                 while (media_chunks.hasNext())
                 {
                     Chunk chunk = media_chunks.next();
-                    fos.write(chunk.getBuffer().toByteArray());
+                    zipFile.write(chunk.getBuffer().toByteArray());
                 }
             }
 
-            boolean unzipResult = unpackZip(context.getFilesDir().getPath(), "/media.zip", context);
+            boolean unzipResult = unpackZip(instruction_dir.getPath(), "/media.zip");
+            zip_file.delete();
 
             String[] fileList = context.fileList();
 
             int result = instructionResponse.getStatus();
             List<Slide> slides = instructionResponse.getSlidesList();
-
-            System.out.println("Unzip result: " + unzipResult);
 
 
             String res = "";
@@ -110,7 +112,7 @@ public class InstructionDisplay extends AppCompatActivity
 
     }
 
-    private boolean unpackZip(String path, String zipname, Context context)
+    private boolean unpackZip(String path, String zipname)
     {
         InputStream is;
         ZipInputStream zis;
@@ -136,7 +138,7 @@ public class InstructionDisplay extends AppCompatActivity
                 }
 
 //              FileOutputStream fout = new FileOutputStream(path + filename);
-                FileOutputStream fout = context.openFileOutput(filename, Context.MODE_PRIVATE);
+                FileOutputStream fout = new FileOutputStream(new File(path, filename));
 
                 while ((count = zis.read(buffer)) != -1)
                 {

@@ -10,7 +10,8 @@
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:hint="Host IP"
-        android:text="10.91.50.193"
+        android:text="192.168.0.164"
+
         android:layout_marginLeft="16dp"
         android:layout_marginRight="10dp"
         android:id="@+id/hostIP"/>
