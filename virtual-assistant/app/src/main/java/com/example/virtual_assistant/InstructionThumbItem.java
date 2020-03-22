@@ -2,12 +2,7 @@ package com.example.virtual_assistant;
 
 import android.graphics.Bitmap;
 
-public class InstructionThumbItem
-{
-    public String getId() {
-        return id;
-    }
-
+public class InstructionThumbItem {
     private String id;
     private String name;
     private String description;
@@ -24,6 +19,9 @@ public class InstructionThumbItem
         this.size = size;
     }
 
+    public String getId() {
+        return id;
+    }
 
     public int getStepCount() {
         return stepCount;
@@ -33,18 +31,15 @@ public class InstructionThumbItem
         return size;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
-    public String getDescription()
-    {
+    public String getDescription() {
         return description;
     }
 
-    public Bitmap getImage()
-    {
+    public Bitmap getImage() {
         return image;
     }
 }

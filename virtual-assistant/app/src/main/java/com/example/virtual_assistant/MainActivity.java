@@ -26,8 +26,7 @@ import java.util.List;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
-public class MainActivity extends AppCompatActivity
-{
+public class MainActivity extends AppCompatActivity {
 
     private Button getInstrButton;
     private EditText hostIP;
@@ -38,12 +37,11 @@ public class MainActivity extends AppCompatActivity
     private List<InstructionThumbItem> listThumbs;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        // Get UI elements variables
         hostIP = findViewById(R.id.hostIP);
         hostPort = findViewById(R.id.hostPort);
         getInstrButton = findViewById(R.id.getInstructions);
@@ -51,34 +49,40 @@ public class MainActivity extends AppCompatActivity
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        // Create variables for the recyclerView
         listThumbs = new ArrayList<>();
-
         adapter = new InstructionThumbAdapter(listThumbs, this);
         recyclerView.setAdapter(adapter);
     }
 
-    public void getInstructions(View view)
-    {
+    /**
+     * Function that executes on click on "Get" button. Requests and display instructions thumbnails
+     * @param view current view
+     */
+    public void getInstructions(View view) {
         listThumbs = new ArrayList<>();
 
         getInstrButton.setEnabled(false);
 
+        // Get host and port of the server from user
         String host = hostIP.getText().toString();
         String portStr = hostPort.getText().toString();
         int port = TextUtils.isEmpty(portStr) ? 0 : Integer.valueOf(portStr);
 
-        try
-        {
+        try {
+            // Create gRPC stub
             ManagedChannel channel = ManagedChannelBuilder.forAddress(host, port).usePlaintext().build();
             InstructionGrpc.InstructionBlockingStub stub = InstructionGrpc.newBlockingStub(channel);
 
+            // Request all instructions
             AllInstructioinsRequest allInstructionsRequest = AllInstructioinsRequest.newBuilder().build();
             AllInstructioinsResponse allInstructionsResponse = stub.getAllInstructions(allInstructionsRequest);
 
+            // Convert the result to list
             List<InstructionThumbnail> thumbs = allInstructionsResponse.getThumbnailsList();
 
-            for (InstructionThumbnail thumb: thumbs)
-            {
+            // Go through every thumbnail and add them to listThumbs for card display
+            for (InstructionThumbnail thumb : thumbs) {
                 byte[] data = thumb.getImage().toByteArray();
                 Bitmap bMap = BitmapFactory.decodeByteArray(data, 0, data.length);
                 InstructionThumbItem iti = new InstructionThumbItem(thumb.getId(), thumb.getName(), thumb.getDescription(), bMap, thumb.getStepCount(), thumb.getSize());
@@ -86,19 +90,18 @@ public class MainActivity extends AppCompatActivity
                 listThumbs.add(iti);
             }
 
+            // Create recyclerView with fetched cards
             adapter = new InstructionThumbAdapter(listThumbs, this);
             recyclerView.setAdapter(adapter);
 
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
+            // If something goes wrong...
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             e.printStackTrace(pw);
             pw.flush();
             System.out.println(String.format("%s", sw));
             Toast.makeText(this, "Failed to get instructions", Toast.LENGTH_SHORT).show();
-//            responseText.setText(String.format("Failed... : %n%s", sw));
         }
 
 

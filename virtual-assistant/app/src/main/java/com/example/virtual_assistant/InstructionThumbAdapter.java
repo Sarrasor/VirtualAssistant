@@ -16,29 +16,25 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-public class InstructionThumbAdapter extends RecyclerView.Adapter<InstructionThumbAdapter.ViewHolder>
-{
+public class InstructionThumbAdapter extends RecyclerView.Adapter<InstructionThumbAdapter.ViewHolder> {
 
+    private List<InstructionThumbItem> listItems;
+    private Context context;
     public InstructionThumbAdapter(List<InstructionThumbItem> listItems, Context context) {
         this.listItems = listItems;
         this.context = context;
     }
 
-    private List<InstructionThumbItem> listItems;
-    private Context context;
-
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
-    {
-            View v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.instruction_thumb_item, parent, false);
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.instruction_thumb_item, parent, false);
         return new ViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final ViewHolder holder, int position)
-    {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         final InstructionThumbItem thumbItem = listItems.get(position);
 
         holder.imageView.setImageBitmap(thumbItem.getImage());
@@ -49,9 +45,8 @@ public class InstructionThumbAdapter extends RecyclerView.Adapter<InstructionThu
 
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
-                View rootView = ((Activity)context).getWindow().getDecorView().findViewById(android.R.id.content);
+            public void onClick(View v) {
+                View rootView = ((Activity) context).getWindow().getDecorView().findViewById(android.R.id.content);
                 EditText prt = rootView.findViewById(R.id.hostPort);
                 EditText ip = rootView.findViewById(R.id.hostIP);
                 Intent intent = new Intent(context, InstructionDisplay.class);
@@ -68,8 +63,7 @@ public class InstructionThumbAdapter extends RecyclerView.Adapter<InstructionThu
         return listItems.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder
-    {
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         public TextView textViewName;
         public TextView textViewDescription;

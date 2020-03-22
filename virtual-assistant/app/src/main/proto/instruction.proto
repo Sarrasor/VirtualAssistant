@@ -1,3 +1,6 @@
+// Instruction transfer API description
+// Used to generate Android gRPC classes 
+
 syntax = "proto3";
 
 option java_multiple_files = true;
@@ -7,16 +10,19 @@ option objc_class_prefix = "INST";
 
 package instruction;
 
+// Empty message as rpc requires to have input
 message AllInstructioinsRequest
 {
 
 }
 
+// Array of instruction thumbnails
 message AllInstructioinsResponse
 {
 	repeated InstructionThumbnail thumbnails = 1;
 }
 
+// Instruction Thumbnail metadata and image as byte array
 message InstructionThumbnail
 {
 	string id = 1;
@@ -32,6 +38,7 @@ message InstructionRequest
 	string id = 1;
 }
 
+// Array of Slides
 message InstructionResponse
 {
 	int32 status = 1;
@@ -46,6 +53,7 @@ message Slide
 	string media_url = 4;
 }
 
+// Chunks for big files requests
 message Chunk 
 {
   bytes buffer = 1;
@@ -58,7 +66,10 @@ message MediaRequest
 
 service Instruction
 {
+	// Request thumbnails to all available instructions
 	rpc GetAllInstructions(AllInstructioinsRequest) returns (AllInstructioinsResponse) {}
+	// Request instruction by id
 	rpc GetInstruction(InstructionRequest) returns (InstructionResponse) {}
+	// Request media folder in zip format
 	rpc DownloadMedia(MediaRequest) returns (stream Chunk) {}
 }
