@@ -6,9 +6,11 @@ process and for working with high-tech and expensive equipment. Instructions
 are provided in the form of text, images, and animated holograms.
 
 ## Structure
-- Web
-- AR/MR devices
+- Web editor
 - Server
+- AR/MR devices
+
+![architecture](architecture.png)
 
 ## Technology stack
 - Android Studio (3.53! Very important to have this version)
