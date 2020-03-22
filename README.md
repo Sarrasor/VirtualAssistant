@@ -1,6 +1,11 @@
 # Dev branch
 Here is the Virtual Assistant app and Python Server for it.
 
+## How to run
+- Run python-server somewhere. Instructions are in python-server
+- Compile apk from virtual-assistant in Android Studio
+- Connect to your server via the app. Use IP of your host and port 50051
+
 ## Contents
 Here is a brief desciption of folders.
 
