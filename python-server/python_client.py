@@ -19,8 +19,8 @@ def main():
     stub = instruction_pb2_grpc.InstructionStub(channel)
 
     # Make the call
-    instructions = instruction_pb2.AllInstructioinsResponse()
-    response = stub.GetAllInstructions(instructions)
+    instructions_request = instruction_pb2.AllInstructioinsRequest()
+    response = stub.GetAllInstructions(instructions_request)
 
     # Print results
     for th in response.thumbnails:
