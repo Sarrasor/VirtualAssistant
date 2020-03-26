@@ -29,5 +29,4 @@ If you don't have it, you can setup the Android Virtual Device. To do that, plea
 ## Branches
 - **dev** - contains Virtual Assistant app and Python Server for it
 - **android-research** - contains sample Android ARCore apps and Java server 
-- **dev-unity** - contains sample Unity client and server
 
