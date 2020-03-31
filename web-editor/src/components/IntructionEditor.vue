@@ -1,18 +1,33 @@
 <template>
   <div>
-    <vs-input label="ID" placeholder="Placeholder" v-model="id" />
+    <p>{{uuid}}</p>
+    <button @click="slides.push(null)">Add slide</button>
+    <SlideEditor
+      :key="i"
+      :index="i"
+      :inSlide="s"
+      @slide="slides[i] = $event"
+      @delete="slides.splice($event, 1)"
+      v-for="(s, i) in slides"
+    />
   </div>
 </template>
 
 <script>
+import SlideEditor from "./SlideEditor";
+
 export default {
   name: "InstructionEditor",
+  components: {
+    SlideEditor
+  },
   data() {
     return {
-      id: 0,
+      uuid: this.$uuid.v4(),
       name: "",
       description: "",
-      image: null
+      image: null,
+      slides: []
     };
   }
 };

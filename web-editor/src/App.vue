@@ -1,28 +1,24 @@
 <template>
   <div id="app">
+    <InstructionEditor />
   </div>
 </template>
 
 <script>
 import Vue from "vue";
-import Vuesax from "vuesax";
+import InstructionEditor from "./components/IntructionEditor";
 
-import "vuesax/dist/vuesax.css";
-Vue.use(Vuesax);
+import UUID from "vue-uuid";
+Vue.use(UUID);
 
 export default {
   name: "App",
-  components: {}
+  components: {
+    InstructionEditor
+  }
 };
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+
 </style>
