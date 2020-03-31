@@ -1,15 +1,17 @@
 <template>
   <div id="display" v-if="display">
-    <select id="type" v-model="display.type">
-      <option value="0">Text</option>
-      <option value="1">Image</option>
-      <option value="2">Audio</option>
-      <option value="3">Video</option>
-      <option value="4">3D Model</option>
-    </select>
+    <div id="actions">
+      <select id="type" v-model="display.type">
+        <option value="0">Text</option>
+        <option value="1">Image</option>
+        <option value="2">Audio</option>
+        <option value="3">Video</option>
+        <option value="4">3D Model</option>
+      </select>
+      <button id="delete" @click="$emit('delete', index)">X</button>
+    </div>
     <textarea class="body" v-if="display.type==0" v-model="display.content" />
     <input type="text" v-else v-model="display.content" />
-    <button @click="$emit('delete', index)">Remove</button>
   </div>
 </template>
 
@@ -45,10 +47,22 @@ export default {
 
 <style scoped>
 #display {
+  margin-top: 10px;
   display: flex;
-  flex-flow: column;
+  flex-direction: column;
+}
+#actions {
+  display: flex;
+  margin: 0 -5px 10px -5px;
+}
+#actions > * {
+  margin: 0 5px;
 }
 #type {
-  width: 100%;
+  flex: 1;
+}
+#delete {
+  width: 30px;
+  color: var(--nord11);
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p>{{uuid}}</p>
+    <p>id: {{uuid}}</p>
     <button @click="slides.push(null)">Add slide</button>
     <SlideEditor
       :key="i"

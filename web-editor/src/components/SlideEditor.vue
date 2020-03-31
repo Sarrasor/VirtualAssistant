@@ -2,8 +2,11 @@
   <div id="slide" v-if="slide">
     <input id="title" type="text" v-model="slide.title" />
     <textarea id="description" v-model="slide.description" />
-    <button @click="$emit('delete', index)">Remove</button>
-    <button @click="slide.displays.push(null)">Add slide</button>
+    <div id="actions">
+      <button @click="$emit('delete', index)">Remove slide</button>
+      <button @click="slide.displays.push(null)">Add display</button>
+    </div>
+    <hr />
     <DisplayEditor
       :key="i"
       :index="i"
@@ -53,8 +56,8 @@ export default {
 <style scoped>
 #slide {
   margin: 10px;
-  box-shadow: 0px 0px 15px;
-  padding: 5px;
+  box-shadow: 0px 5px 10px var(--nord4);
+  padding: 10px;
   display: flex;
   flex-direction: column;
   width: 300px;
@@ -64,5 +67,13 @@ export default {
 }
 #description {
   height: 150px;
+}
+#actions {
+  display: flex;
+  margin: 5px -5px;
+}
+#actions > * {
+  flex: 1;
+  margin: 5px;
 }
 </style>
