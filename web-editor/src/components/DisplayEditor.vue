@@ -16,6 +16,30 @@
       <p>URL</p>
       <input type="text" v-model="display.content" />
     </div>
+    <div class="vector">
+      <p>
+        <i>position</i>
+      </p>
+      <p>X</p>
+      <input type="number" step="0.01" v-model="display.transform[0]" />
+      <p>Y</p>
+      <input type="number" step="0.01" v-model="display.transform[1]" />
+      <p>Z</p>
+      <input type="number" step="0.01" v-model="display.transform[2]" />
+    </div>
+    <div class="vector quaternion">
+      <p>
+        <i>quaternion</i>
+      </p>
+      <p>X</p>
+      <input type="number" step="0.01" v-model="display.transform[3]" />
+      <p>Y</p>
+      <input type="number" step="0.01" v-model="display.transform[4]" />
+      <p>Z</p>
+      <input type="number" step="0.01" v-model="display.transform[5]" />
+      <p>W</p>
+      <input type="number" step="0.01" v-model="display.transform[6]" />
+    </div>
   </div>
 </template>
 
@@ -75,5 +99,29 @@ export default {
 }
 #url {
   display: flex;
+}
+.vector {
+  display: flex;
+  flex-flow: row;
+  flex-wrap: wrap;
+  place-content: center;
+}
+
+.vector > p:nth-child(1) {
+  width: 100%;
+  text-align: left;
+}
+
+.vector > p {
+  margin: 0;
+  width: 30px;
+  text-align: center;
+}
+.vector > input {
+  width: calc(33% - 30px);
+}
+
+.vector.quaternion > input {
+  width: calc(25% - 30px);
 }
 </style>
