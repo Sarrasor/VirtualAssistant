@@ -66,3 +66,9 @@ dependencies {
     implementation 'com.google.ar.sceneform.ux:sceneform-ux:1.5.1'
     implementation 'com.google.ar.sceneform:assets:1.5.1'
 }
+
+
+sceneform.asset('sampledata/Mesh_Cat.gltf',
+        'default',
+        'sampledata/Mesh_Cat.sfa',
+        'src/main/assets/Mesh_Cat')
