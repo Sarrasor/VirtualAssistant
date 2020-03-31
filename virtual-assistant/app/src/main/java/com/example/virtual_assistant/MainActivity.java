@@ -4,12 +4,15 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.MotionEventCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -41,6 +44,25 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+//        View view = findViewById(android.R.id.content).getRootView();
+
+//        view.setOnTouchListener(new OnSwipeTouchListener(MainActivity.this) {
+//            public void onSwipeTop() {
+//                Toast.makeText(MainActivity.this, "top", Toast.LENGTH_SHORT).show();
+//            }
+//            public void onSwipeRight() {
+//                Toast.makeText(MainActivity.this, "right", Toast.LENGTH_SHORT).show();
+//            }
+//            public void onSwipeLeft() {
+//                Toast.makeText(MainActivity.this, "left", Toast.LENGTH_SHORT).show();
+//            }
+//            public void onSwipeBottom() {
+//                Toast.makeText(MainActivity.this, "bottom", Toast.LENGTH_SHORT).show();
+//            }
+//        });
+
+
+
         // Get UI elements variables
         hostIP = findViewById(R.id.hostIP);
         hostPort = findViewById(R.id.hostPort);
@@ -59,7 +81,8 @@ public class MainActivity extends AppCompatActivity {
      * Function that executes on click on "Get" button. Requests and display instructions thumbnails
      * @param view current view
      */
-    public void getInstructions(View view) {
+    public void getInstructions(View view)
+    {
         listThumbs = new ArrayList<>();
 
         getInstrButton.setEnabled(false);

@@ -5,17 +5,21 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.MotionEventCompat;
 
 import com.example.proto.Chunk;
 import com.example.proto.InstructionGrpc;
@@ -27,6 +31,9 @@ import com.google.ar.core.Anchor;
 import com.google.ar.core.HitResult;
 import com.google.ar.core.Plane;
 import com.google.ar.sceneform.AnchorNode;
+import com.google.ar.sceneform.assets.RenderableSource;
+import com.google.ar.sceneform.math.Vector3;
+import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.rendering.ViewRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
 import com.google.ar.sceneform.ux.TransformableNode;
@@ -34,14 +41,17 @@ import com.google.ar.sceneform.ux.TransformableNode;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -53,13 +63,21 @@ public class InstructionDisplay extends AppCompatActivity {
     private static final String TAG = InstructionDisplay.class.getSimpleName();
     private static final double MIN_OPENGL_VERSION = 3.0;
     File instruction_dir;
-    TransformableNode slideNode;
+    RotatingNode slideNode;
+    TransformableNode buttonNode;
     private TextView text;
     private Context context;
     private int slide_number;
     private List<Slide> slides;
     private ArFragment arFragment;
+    private ImageView slideImgView;
     private ViewRenderable slideRenderable;
+    private ViewRenderable buttonRenderable;
+    private ModelRenderable catRenderable;
+
+    private static final String GLTF_ASSET =
+            "file:///android_asset/Mesh_Cat.gltf";
+
 
     /**
      * Function that checks if user's device supports ARCore and stuff.
@@ -189,24 +207,46 @@ public class InstructionDisplay extends AppCompatActivity {
         } else {
             slide_number = 0;
         }
+
         // Get current slide
         Slide slide = slides.get(slide_number);
+
+        Toast.makeText(this, String.format("%s", slide.getMediaUrl()), Toast.LENGTH_SHORT).show();
+
         // Extract image from it
         Bitmap myBitmap = BitmapFactory.decodeFile(instruction_dir.getPath() + "/" + slide.getMediaUrl());
-
-        // Prepare current slide for the display
-        ViewRenderable.builder().setView(arFragment.getContext(), R.layout.slide_image)
-                .build()
-                .thenAccept(renderrable ->
-                {
-                    ImageView imgView = renderrable.getView().findViewById(R.id.slide_img);
-                    imgView.setImageBitmap(myBitmap);
-                    slideRenderable = renderrable;
-                });
+        slideImgView.setImageBitmap(myBitmap);
 
         // Display the current slide
-        slideNode.setRenderable(slideRenderable);
+//        slideNode.setRenderable(slideRenderable);
     }
+
+    /**
+     * Changes current slide to the previous one
+     * Executed on "Prev" button click
+     * @param view current view
+     */
+    public void prevSlide(View view) {
+        // Set new slide number
+        if (slide_number > 0) {
+            slide_number -= 1;
+        } else {
+            slide_number = slides.size() - 1;
+        }
+
+        // Get current slide
+        Slide slide = slides.get(slide_number);
+
+        Toast.makeText(this, String.format("%s", slide.getMediaUrl()), Toast.LENGTH_SHORT).show();
+
+        // Extract image from it
+        Bitmap myBitmap = BitmapFactory.decodeFile(instruction_dir.getPath() + "/" + slide.getMediaUrl());
+        slideImgView.setImageBitmap(myBitmap);
+
+        // Display the current slide
+//        slideNode.setRenderable(slideRenderable);
+    }
+
 
     /**
      * Displays the first slide of the instruction of plane tap
@@ -222,28 +262,76 @@ public class InstructionDisplay extends AppCompatActivity {
         arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
 
         // Prepare current slide for the display
-        ViewRenderable.builder().setView(arFragment.getContext(), R.layout.slide_image)
+//        ViewRenderable.builder().setView(arFragment.getContext(), R.layout.slide_image)
+//                .build()
+//                .thenAccept(renderrable ->
+//                {
+//                    slideImgView = renderrable.getView().findViewById(R.id.slide_img);
+//                    slideImgView.setImageBitmap(myBitmap);
+//                    slideRenderable = renderrable;
+//                });
+
+        // Prepare current slide for the display
+        ViewRenderable.builder().setView(arFragment.getContext(), R.layout.ar_slide)
                 .build()
                 .thenAccept(renderrable ->
                 {
-                    ImageView imgView = renderrable.getView().findViewById(R.id.slide_img);
-                    imgView.setImageBitmap(myBitmap);
+                    slideImgView = renderrable.getView().findViewById(R.id.slide_img);
+                    slideImgView.setImageBitmap(myBitmap);
                     slideRenderable = renderrable;
                 });
+
+        ModelRenderable.builder()
+                .setSource(this, RenderableSource.builder().setSource(
+                        this,
+                        Uri.parse(instruction_dir.getPath() + "/Mesh_Cat.gltf"),
+                        RenderableSource.SourceType.GLTF2)
+                        .setScale(0.01f)  // Scale the original model to 50%.
+                        .setRecenterMode(RenderableSource.RecenterMode.ROOT)
+                        .build())
+                .setRegistryId(GLTF_ASSET)
+                .build()
+                .thenAccept(renderable -> catRenderable = renderable)
+                .exceptionally(
+                        throwable -> {
+                            Toast toast =
+                                    Toast.makeText(this, "Unable to load renderable " +
+                                            GLTF_ASSET, Toast.LENGTH_LONG);
+                            toast.setGravity(Gravity.CENTER, 0, 0);
+                            toast.show();
+                            return null;
+                        });
+
 
         // Listen for a tap on a plane
         arFragment.setOnTapArPlaneListener(
                 (HitResult hitResult, Plane plane, MotionEvent motionEvent) -> {
-                    // Create the Anchor.
+                    // Create the Anchor
                     Anchor anchor = hitResult.createAnchor();
                     AnchorNode anchorNode = new AnchorNode(anchor);
                     anchorNode.setParent(arFragment.getArSceneView().getScene());
 
                     // Put current slide on anchor
-                    slideNode = new TransformableNode(arFragment.getTransformationSystem());
+                    slideNode = new RotatingNode(arFragment.getTransformationSystem());
                     slideNode.setParent(anchorNode);
-                    slideNode.setRenderable(slideRenderable);
+                    slideNode.setRenderable(catRenderable);
+                    slideNode.getScaleController().setMinScale(0.01f);
+                    slideNode.getScaleController().setMaxScale(2.0f);
+//                    Vector3 scale = new Vector3(0.1f, 0.1f, 0.1f);
+//                    slideNode.setLocalScale(scale);
                     slideNode.select();
+
+//                    Anchor anchorButton = hitResult.createAnchor();
+//                    AnchorNode anchorButtonNode = new AnchorNode(anchorButton);
+//                    anchorButtonNode.setParent(arFragment.getArSceneView().getScene());
+
+                    // Set button on anchor
+//                    buttonNode = new TransformableNode(arFragment.getTransformationSystem());
+//                    buttonNode.setParent(anchorButtonNode);
+//                    buttonNode.setRenderable(buttonRenderable);
+//                    Vector3 pose = new Vector3( 0.0f, -1.0f, 0.0f);
+//                    buttonNode.setLocalPosition(pose);
+//                    buttonNode.select();
                 });
 
     }
