@@ -2,11 +2,14 @@
   <div id="slide" v-if="slide">
     <input id="title" type="text" v-model="slide.title" />
     <textarea id="description" v-model="slide.description" />
+    <div id="thumbnail">
+      <p>thumbnail URL:</p>
+      <input type="text" v-model="slide.thumbnail" />
+    </div>
     <div id="actions">
       <button @click="$emit('delete', index)">Remove slide</button>
       <button @click="slide.displays.push(null)">Add display</button>
     </div>
-    <hr />
     <DisplayEditor
       :key="i"
       :index="i"
@@ -35,6 +38,7 @@ export default {
         this.slide = value || {
           title: "Slide title",
           description: "Lorem impsum dolor sit amet, dobryi vecher, ya Magomed",
+          thumbnail: undefined,
           displays: []
         };
       },
@@ -62,18 +66,27 @@ export default {
   flex-direction: column;
   width: 300px;
 }
+#slide > *,
+#thumbnail > * {
+  margin: 5px 0;
+}
 #title {
   font-size: 20px;
 }
 #description {
   height: 150px;
 }
+#thumbnail {
+  display: flex;
+  flex-flow: column;
+}
 #actions {
   display: flex;
-  margin: 5px -5px;
+  margin-right: -5px;
+  margin-left: -5px;
 }
 #actions > * {
   flex: 1;
-  margin: 5px;
+  margin: 0 5px;
 }
 </style>

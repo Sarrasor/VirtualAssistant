@@ -1,5 +1,6 @@
 <template>
   <div id="display" v-if="display">
+    <hr />
     <div id="actions">
       <select id="type" v-model="display.type">
         <option value="0">Text</option>
@@ -11,7 +12,10 @@
       <button id="delete" @click="$emit('delete', index)">X</button>
     </div>
     <textarea class="body" v-if="display.type==0" v-model="display.content" />
-    <input type="text" v-else v-model="display.content" />
+    <div v-else id="url">
+      <p>URL</p>
+      <input type="text" v-model="display.content" />
+    </div>
   </div>
 </template>
 
@@ -51,9 +55,13 @@ export default {
   display: flex;
   flex-direction: column;
 }
+#display > * {
+  margin: 5px 0;
+}
 #actions {
   display: flex;
-  margin: 0 -5px 10px -5px;
+  margin-right: -5px;
+  margin-left: -5px;
 }
 #actions > * {
   margin: 0 5px;
@@ -64,5 +72,8 @@ export default {
 #delete {
   width: 30px;
   color: var(--nord11);
+}
+#url {
+  display: flex;
 }
 </style>

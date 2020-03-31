@@ -1,15 +1,17 @@
 <template>
-  <div>
+  <div id="instruction">
     <p>id: {{uuid}}</p>
     <button @click="slides.push(null)">Add slide</button>
-    <SlideEditor
-      :key="i"
-      :index="i"
-      :inSlide="s"
-      @slide="slides[i] = $event"
-      @delete="slides.splice($event, 1)"
-      v-for="(s, i) in slides"
-    />
+    <div id="slides">
+      <SlideEditor
+        :key="i"
+        :index="i"
+        :inSlide="s"
+        @slide="slides[i] = $event"
+        @delete="slides.splice($event, 1)"
+        v-for="(s, i) in slides"
+      />
+    </div>
   </div>
 </template>
 
@@ -32,3 +34,11 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+#slides {
+  display: flex;
+  flex-flow: row;
+  width: 100%;
+}
+</style>

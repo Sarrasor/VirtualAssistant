@@ -85,16 +85,18 @@ a:active {
     color: var(--nord11);
 }
 
-textarea {
+textarea, input {
+    padding: 0 5px;
     border: 1px solid var(--nord5);
     text-align: left;
+    height: 30px;
 }
 
-textarea:read-only {
+textarea:read-only, input:read-only {
     border-color: var(--nord5);
     background-color: var(--nord5);
 }
 
-textarea:read-write:hover, textarea:read-write:focus {
+textarea:read-write:hover, textarea:read-write:focus, input:read-write:hover, input:read-write:focus {
     border-color: var(--nord0);
 }
