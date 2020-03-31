@@ -2,6 +2,7 @@
   <div id="instruction">
     <p>id: {{uuid}}</p>
     <button @click="slides.push(null)">Add slide</button>
+    <input type="file" multiple />
     <div id="slides">
       <SlideEditor
         :key="i"
