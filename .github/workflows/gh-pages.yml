@@ -2,7 +2,10 @@ name: gh-pages
 on:
   push:
     branches:
-      - 'dev/web-editor/**'
+      - dev
+    paths:
+    - "web-editor/**"
+    - ".github/**"
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
