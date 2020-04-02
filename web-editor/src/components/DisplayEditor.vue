@@ -16,37 +16,20 @@
       <p>URL</p>
       <input type="text" v-model="display.content" />
     </div>
-    <div class="vector">
-      <p>
-        <i>position</i>
-      </p>
-      <p>X</p>
-      <input type="number" step="0.01" v-model="display.transform[0]" />
-      <p>Y</p>
-      <input type="number" step="0.01" v-model="display.transform[1]" />
-      <p>Z</p>
-      <input type="number" step="0.01" v-model="display.transform[2]" />
-    </div>
-    <div class="vector quaternion">
-      <p>
-        <i>quaternion</i>
-      </p>
-      <p>X</p>
-      <input type="number" step="0.01" v-model="display.transform[3]" />
-      <p>Y</p>
-      <input type="number" step="0.01" v-model="display.transform[4]" />
-      <p>Z</p>
-      <input type="number" step="0.01" v-model="display.transform[5]" />
-      <p>W</p>
-      <input type="number" step="0.01" v-model="display.transform[6]" />
-    </div>
+    <Vector :length="3" :label="'position [X, Y, Z]'" @vector="updatePos($event)" />
+    <Vector :length="4" :label="'quaternion [X, Y, Z, W]'" @vector="updateRot($event)" />
   </div>
 </template>
 
 <script>
+import Vector from "./Vector";
+
 export default {
   name: "DisplayEditor",
   props: ["index", "inDisplay"],
+  components: {
+    Vector
+  },
   data() {
     return {
       display: undefined
@@ -68,6 +51,14 @@ export default {
         this.$emit("display", value);
       },
       deep: true
+    }
+  },
+  methods: {
+    updatePos(v3) {
+      this.display.transform = this.display.transform.splice(0, 3, ...v3);
+    },
+    updateRot(v4) {
+      this.display.transform = this.display.transform.splice(0, 3, ...v4);
     }
   }
 };

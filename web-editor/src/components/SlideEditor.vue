@@ -47,6 +47,7 @@ export default {
     slide: {
       handler: function(value) {
         this.$emit("slide", value);
+        console.log(value);
       },
       deep: true
     }

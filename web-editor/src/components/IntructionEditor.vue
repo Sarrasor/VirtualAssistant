@@ -32,11 +32,6 @@ export default {
       image: null,
       slides: []
     };
-  },
-  watch: {
-    slides(value) {
-      if (value && value.length > 0) console.log(JSON.stringify(value[0]));
-    }
   }
 };
 </script>
