@@ -1,6 +1,5 @@
 <template>
   <div id="display" v-if="display">
-    <hr />
     <div id="actions">
       <select id="type" v-model="display.type">
         <option value="0">Text</option>
@@ -11,11 +10,8 @@
       </select>
       <button id="delete" @click="$emit('delete', index)">X</button>
     </div>
-    <textarea class="body" v-if="display.type==0" v-model="display.content" />
-    <div v-else id="url">
-      <p>URL</p>
-      <input type="text" v-model="display.content" />
-    </div>
+    <textarea id="content" v-if="display.type==0" v-model="display.content" />
+    <input id="content" v-else type="text" v-model="display.content" />
     <Vector :length="3" :label="'position [X, Y, Z]'" @vector="updatePos($event)" />
     <Vector :length="4" :label="'quaternion [X, Y, Z, W]'" @vector="updateRot($event)" />
   </div>
@@ -66,7 +62,9 @@ export default {
 
 <style scoped>
 #display {
-  margin-top: 10px;
+  margin: 10px;
+  box-shadow: 0px 0px 10px var(--nord4);
+  padding: 10px;
   display: flex;
   flex-direction: column;
 }
@@ -84,12 +82,12 @@ export default {
 #type {
   flex: 1;
 }
+textarea#content {
+  height: 100px;
+}
 #delete {
   width: 30px;
   color: var(--nord11);
-}
-#url {
-  display: flex;
 }
 .vector {
   display: flex;

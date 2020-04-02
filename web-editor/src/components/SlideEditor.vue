@@ -8,22 +8,12 @@
     </div>
     <div id="actions">
       <button @click="$emit('delete', index)">Remove slide</button>
-      <button @click="slide.displays.push(null)">Add display</button>
+      <button @click="$emit('open', index)">Edit displays</button>
     </div>
-    <DisplayEditor
-      :key="i"
-      :index="i"
-      :inDisplay="dsp"
-      @display="slide.displays[i] = $event"
-      @delete="slide.displays.splice($event, 1)"
-      v-for="(dsp, i) in slide.displays"
-    />
   </div>
 </template>
 
 <script>
-import DisplayEditor from "./DisplayEditor";
-
 export default {
   name: "SlideEditor",
   props: ["index", "inSlide"],
@@ -39,7 +29,7 @@ export default {
           title: "Slide title",
           description: "Lorem impsum dolor sit amet, dobryi vecher, ya Magomed",
           thumbnail: undefined,
-          displays: []
+          displays: [null]
         };
       },
       immediate: true
@@ -47,13 +37,10 @@ export default {
     slide: {
       handler: function(value) {
         this.$emit("slide", value);
-        console.log(value);
       },
+      immediate: true,
       deep: true
     }
-  },
-  components: {
-    DisplayEditor
   }
 };
 </script>
@@ -61,11 +48,10 @@ export default {
 <style scoped>
 #slide {
   margin: 10px;
-  box-shadow: 0px 5px 10px var(--nord4);
+  box-shadow: 0px 0px 10px var(--nord4);
   padding: 10px;
   display: flex;
   flex-direction: column;
-  width: 300px;
 }
 #slide > *,
 #thumbnail > * {
