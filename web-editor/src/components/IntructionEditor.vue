@@ -5,7 +5,7 @@
     </div>
     <div id="slides">
       <div id="tools">
-        <p>id: {{uuid}}</p>
+        <p>id: {{id}}</p>
         <button @click="slides.push(null)">Add slide</button>
         <input type="file" multiple />
       </div>
@@ -50,7 +50,7 @@ export default {
   },
   data() {
     return {
-      uuid: this.$uuid.v4(),
+      id: this.$uuid.v4(),
       name: "",
       description: "",
       preview_url: null,
