@@ -19,13 +19,13 @@
       />
     </div>
     <div id="displays" v-if="slide">
-      <button @click="addDisplay()">Add display</button>
-      <DisplayEditor
+      <button @click="slide.objects.push(null)">Add object</button>
+      <ObjectEditor
         :key="i"
-        :inDisplay="dsp"
-        @display="$set(slide.displays, i, $event)"
-        @delete="slide.displays.splice(i, 1)"
-        v-for="(dsp, i) in slide.displays"
+        :inObject="dsp"
+        @object="$set(slide.objects, i, $event)"
+        @delete="slide.objects.splice(i, 1)"
+        v-for="(dsp, i) in slide.objects"
       />
     </div>
     <div id="scene">
@@ -40,20 +40,20 @@
 
 <script>
 import SlideEditor from "./SlideEditor";
-import DisplayEditor from "./DisplayEditor";
+import ObjectEditor from "./ObjectEditor";
 
 export default {
   name: "InstructionEditor",
   components: {
     SlideEditor,
-    DisplayEditor
+    ObjectEditor
   },
   data() {
     return {
       uuid: this.$uuid.v4(),
       name: "",
       description: "",
-      image: null,
+      preview_url: null,
       slides: [null],
       slideI: 0
     };
@@ -61,11 +61,6 @@ export default {
   computed: {
     slide: function() {
       return this.slideI < this.slides.length ? this.slides[this.slideI] : null;
-    }
-  },
-  methods: {
-    addDisplay() {
-      if (this.slide) this.slide.displays.push(null);
     }
   }
 };

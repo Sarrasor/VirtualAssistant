@@ -1,7 +1,7 @@
 <template>
-  <div id="display" v-if="display">
+  <div id="object" v-if="object">
     <div id="actions">
-      <select id="type" v-model="display.type">
+      <select id="type" v-model="object.type">
         <option value="0">Text</option>
         <option value="1">Image</option>
         <option value="2">Audio</option>
@@ -10,10 +10,10 @@
       </select>
       <button id="delete" @click="$emit('delete')">X</button>
     </div>
-    <textarea id="content" v-if="display.type==0" v-model="display.content" />
-    <input id="content" v-else type="text" v-model="display.content" />
-    <Vector :length="3" :label="'position [X, Y, Z]'" @vector="display.position=[...$event]" />
-    <Vector :length="4" :label="'quaternion [X, Y, Z, W]'" @vector="display.rotation=[...$event]" />
+    <textarea id="content" v-if="object.type==0" v-model="object.content" />
+    <input id="content" v-else type="text" v-model="object.content" />
+    <Vector :length="3" :label="'position [X, Y, Z]'" @vector="object.position=[...$event]" />
+    <Vector :length="4" :label="'quaternion [X, Y, Z, W]'" @vector="object.rotation=[...$event]" />
   </div>
 </template>
 
@@ -21,20 +21,20 @@
 import Vector from "./Vector";
 
 export default {
-  name: "DisplayEditor",
-  props: ["inDisplay"],
+  name: "ObjectEditor",
+  props: ["inObject"],
   components: {
     Vector
   },
   data() {
     return {
-      display: undefined
+      object: undefined
     };
   },
   watch: {
-    inDisplay: {
+    inObject: {
       handler: function(value) {
-        this.display = value || {
+        this.object = value || {
           type: 0,
           content: "Lorem ipsum aray-uray",
           position: [0, 0, 0],
@@ -43,9 +43,9 @@ export default {
       },
       immediate: true
     },
-    display: {
+    object: {
       handler: function(value) {
-        this.$emit("display", value);
+        this.$emit("object", value);
       },
       immediate: true,
       deep: true
@@ -55,14 +55,14 @@ export default {
 </script>
 
 <style scoped>
-#display {
+#object {
   margin: 10px;
   box-shadow: 0px 0px 10px var(--nord4);
   padding: 10px;
   display: flex;
   flex-direction: column;
 }
-#display > * {
+#object > * {
   margin: 5px 0;
 }
 #actions {

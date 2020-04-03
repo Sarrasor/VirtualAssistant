@@ -1,10 +1,10 @@
 <template>
   <div id="slide" v-if="slide">
-    <input id="title" type="text" v-model="slide.title" />
+    <input id="name" type="text" v-model="slide.name" />
     <textarea id="description" v-model="slide.description" />
-    <div id="thumbnail">
+    <div id="preview">
       <p>thumbnail URL:</p>
-      <input type="text" v-model="slide.thumbnail" />
+      <input type="text" v-model="slide.preview_url" />
     </div>
     <div id="actions">
       <button @click="$emit('delete')">Remove slide</button>
@@ -26,10 +26,10 @@ export default {
     inSlide: {
       handler: function(value) {
         this.slide = value || {
-          title: "Slide title",
+          name: "Slide title",
           description: "Lorem impsum dolor sit amet, dobryi vecher, ya Magomed",
-          thumbnail: undefined,
-          displays: [null]
+          preview_url: undefined,
+          objects: [null]
         };
       },
       immediate: true
@@ -57,13 +57,13 @@ export default {
 #thumbnail > * {
   margin: 5px 0;
 }
-#title {
+#name {
   font-size: 20px;
 }
 #description {
   height: 150px;
 }
-#thumbnail {
+#preview {
   display: flex;
   flex-flow: column;
 }
