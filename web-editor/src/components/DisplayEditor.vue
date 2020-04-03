@@ -8,12 +8,12 @@
         <option value="3">Video</option>
         <option value="4">3D Model</option>
       </select>
-      <button id="delete" @click="$emit('delete', index)">X</button>
+      <button id="delete" @click="$emit('delete')">X</button>
     </div>
     <textarea id="content" v-if="display.type==0" v-model="display.content" />
     <input id="content" v-else type="text" v-model="display.content" />
-    <Vector :length="3" :label="'position [X, Y, Z]'" @vector="updatePos($event)" />
-    <Vector :length="4" :label="'quaternion [X, Y, Z, W]'" @vector="updateRot($event)" />
+    <Vector :length="3" :label="'position [X, Y, Z]'" @vector="display.position=[...$event]" />
+    <Vector :length="4" :label="'quaternion [X, Y, Z, W]'" @vector="display.rotation=[...$event]" />
   </div>
 </template>
 
@@ -22,7 +22,7 @@ import Vector from "./Vector";
 
 export default {
   name: "DisplayEditor",
-  props: ["index", "inDisplay"],
+  props: ["inDisplay"],
   components: {
     Vector
   },
@@ -37,7 +37,8 @@ export default {
         this.display = value || {
           type: 0,
           content: "Lorem ipsum aray-uray",
-          transform: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+          position: [0, 0, 0],
+          rotation: [0, 0, 0, 0]
         };
       },
       immediate: true
@@ -46,15 +47,8 @@ export default {
       handler: function(value) {
         this.$emit("display", value);
       },
+      immediate: true,
       deep: true
-    }
-  },
-  methods: {
-    updatePos(v3) {
-      this.display.transform = this.display.transform.splice(0, 3, ...v3);
-    },
-    updateRot(v4) {
-      this.display.transform = this.display.transform.splice(0, 3, ...v4);
     }
   }
 };

@@ -7,8 +7,8 @@
       <input type="text" v-model="slide.thumbnail" />
     </div>
     <div id="actions">
-      <button @click="$emit('delete', index)">Remove slide</button>
-      <button @click="$emit('open', index)">Edit displays</button>
+      <button @click="$emit('delete')">Remove slide</button>
+      <button @click="$emit('open')">Edit displays</button>
     </div>
   </div>
 </template>
@@ -16,7 +16,7 @@
 <script>
 export default {
   name: "SlideEditor",
-  props: ["index", "inSlide"],
+  props: ["inSlide"],
   data() {
     return {
       slide: undefined

@@ -11,23 +11,21 @@
       </div>
       <SlideEditor
         :key="i"
-        :index="i"
-        :inSlide="s"
-        @slide="slides[i]=$event"
-        @delete="slides.splice($event, 1)"
-        @open="selectedSlide = $event"
-        v-for="(s, i) in slides"
+        :inSlide="sld"
+        @slide="$set(slides, i, $event)"
+        @delete="slides.splice(i, 1)"
+        @open="slideI=i"
+        v-for="(sld, i) in slides"
       />
     </div>
-    <div id="displays">
+    <div id="displays" v-if="slide">
       <button @click="addDisplay()">Add display</button>
       <DisplayEditor
         :key="i"
-        :index="i"
         :inDisplay="dsp"
-        @display="currentDisplays[i] = $event"
-        @delete="currentDisplays.splice($event, 1)"
-        v-for="(dsp, i) in currentDisplays"
+        @display="$set(slide.displays, i, $event)"
+        @delete="slide.displays.splice(i, 1)"
+        v-for="(dsp, i) in slide.displays"
       />
     </div>
     <div id="scene">
@@ -57,26 +55,17 @@ export default {
       description: "",
       image: null,
       slides: [null],
-      selectedSlide: 0
+      slideI: 0
     };
   },
   computed: {
-    currentSlide: function() {
-      return this.selectedSlide < this.slides.length
-        ? this.slides[this.selectedSlide]
-        : null;
-    },
-    currentDisplays: function() {
-      return this.currentSlide?.displays;
+    slide: function() {
+      return this.slideI < this.slides.length ? this.slides[this.slideI] : null;
     }
   },
   methods: {
-    updateSlide(slide, value) {
-      slide = value;
-      console.log("upgrade slide");
-    },
     addDisplay() {
-      if (this.currentSlide) this.currentDisplays.push(null);
+      if (this.slide) this.slide.displays.push(null);
     }
   }
 };
