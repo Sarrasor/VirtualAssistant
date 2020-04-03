@@ -12,13 +12,14 @@ message Chunk {
     bytes buffer = 1;
 }
 
-message EmptyRequest {
-    
-}
+//empty message to be used in rpc
+message EmptyRequest {}
 
+// will be used by a Client to request an instruction by its id
 message InstructionRequest {
     string id = 1;
 }
+
 
 message InstructionMeta {
     string id = 1;
@@ -31,24 +32,27 @@ message InstructionMeta {
 
 message InstructionData {
     repeated Slide slides = 1; // Instruction - collection of slides
-    repeated bytes assets = 2;
+    repeated bytes assets = 2; // assets - all objects for Instruction
 }
 
 message Slide {
     message Object { 
-        int32 type = 1; // =0 => content represents text, =1-4 => content represents url
+        int32 type = 1; // ==0 => content represents text, ==1-4 => content represents url
         string content = 2; // depends on media_type as described above
-        string position = 3; // 3 numbers
-        string rotation = 4; // 4 numbers
+        string position = 3;
+        string rotation = 4;
     }
-
+    
     string name = 1;
     string description = 2;
     string preview_url = 3; 
     repeated Object objects = 4; // Slide - collection of objects
 }
 
+// please create a name for the service
 service DobriyVecher {
+    // request all the instructions - response with metadata
     rpc GetAllInstructions(EmptyRequest) returns (InstructionMeta) {}
+    // request one instructions - response with downloading all the instruction's data
     rpc GetInstruction(InstructionRequest) returns (InstructionData) {}
 }
