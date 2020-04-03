@@ -30,7 +30,7 @@ Check if your device is supported [here](https://developers.google.com/ar/discov
 
 If you don't have it, you can setup the Android Virtual Device. To do that, please, follow [this](https://developers.google.com/ar/develop/java/quickstart) guide.
 
-## Dev branch
+## Project parts
 
 Here is the Virtual Assistant app and Python Server for it.
 
