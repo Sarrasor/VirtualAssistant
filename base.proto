@@ -1,0 +1,54 @@
+// Instruction transfer API description
+// Used to generate python gRPC classes
+
+syntax = "proto3";
+
+// Important line for Java compatibility
+// Will get "Not implemented" without it
+package instruction;
+
+// Chunks for big files requests
+message Chunk {
+    bytes buffer = 1;
+}
+
+message EmptyRequest {
+    
+}
+
+message InstructionRequest {
+    string id = 1;
+}
+
+message InstructionMeta {
+    string id = 1;
+    string name = 2;
+    int32 size = 3;
+    string description = 4;
+    string preview_url = 5;
+    /* more metadata */
+}
+
+message InstructionData {
+    repeated Slide slides = 1; // Instruction - collection of slides
+    repeated bytes assets = 2;
+}
+
+message Slide {
+    message Object { 
+        int32 type = 1; // =0 => content represents text, =1-4 => content represents url
+        string content = 2; // depends on media_type as described above
+        string position = 3; // 3 numbers
+        string rotation = 4; // 4 numbers
+    }
+
+    string name = 1;
+    string description = 2;
+    string preview_url = 3; 
+    repeated Object objects = 4; // Slide - collection of objects
+}
+
+service DobriyVecher {
+    rpc GetAllInstructions(EmptyRequest) returns (InstructionMeta) {}
+    rpc GetInstruction(InstructionRequest) returns (InstructionData) {}
+}
