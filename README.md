@@ -22,6 +22,8 @@ are provided in the form of text, images, and animated holograms.
 - WebGL
 - GLTF
 - gRPC
+- Vue.JS
+- Three.JS
 
 ## Hardware
 
@@ -30,7 +32,7 @@ Check if your device is supported [here](https://developers.google.com/ar/discov
 
 If you don't have it, you can setup the Android Virtual Device. To do that, please, follow [this](https://developers.google.com/ar/develop/java/quickstart) guide.
 
-## Project parts
+## Software
 
 Here is the Virtual Assistant app and Python Server for it.
 
