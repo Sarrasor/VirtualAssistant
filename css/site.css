@@ -86,7 +86,7 @@ a:active {
 }
 
 textarea, input {
-    padding: 0 5px;
+    padding: 5px;
     border: 1px solid var(--nord5);
     text-align: left;
     height: 30px;
