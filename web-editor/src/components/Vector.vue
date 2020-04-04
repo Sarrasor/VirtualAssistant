@@ -58,6 +58,9 @@ input:first-child {
 input:last-child {
   border-radius: 0 4px 4px 0;
 }
+input:only-child{
+  border-radius: 4px;
+}
 input {
   -moz-appearance: textfield;
   -webkit-appearance: none;
