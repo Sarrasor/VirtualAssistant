@@ -1,8 +1,5 @@
 <template>
   <div id="object" v-if="object">
-    <button id="delete" @click="$emit('delete')">delete object</button>
-    <!-- <button @click="$emit('duplicate')">duplicate object</button> -->
-    <hr />
     <FileDrop :label="'drop a media file here'" />
     <TextArea :label="'name'" @text="object.name=$event" />
     <TextArea :label="'description'" :multiline="true" @text="object.description=$event" />
