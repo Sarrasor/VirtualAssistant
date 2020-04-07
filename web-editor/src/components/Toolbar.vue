@@ -1,5 +1,5 @@
 <template>
-  <div id="root">
+  <div class="card">
     <button
       class="flat icon"
       :style="{width: widthPer}"
@@ -25,21 +25,10 @@ export default {
 </script>
 
 <style scoped>
-#root {
-  padding-top: 5px;
+.card {
+  padding: 5px;
   display: flex;
+  flex-flow: row;
   flex-wrap: nowrap;
-}
-button:first-of-type {
-  border-radius: 4px 0 0 4px;
-}
-button:last-of-type {
-  border-radius: 0 4px 4px 0;
-}
-button:only-of-type {
-  border-radius: 4px;
-}
-button {
-  border-radius: 0;
 }
 </style>

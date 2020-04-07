@@ -9,11 +9,7 @@
       <FileDrop :label="'media'" />
       <Transform @transform="object.transform=$event" />
     </div>
-    <div class="card">
-      <Toolbar
-        :actions="{add: 'note_add', delete: 'delete', duplicate: 'file_copy', moveUp: 'arrow_upward', moveDown: 'arrow_downward'}"
-      />
-    </div>
+    <Toolbar :actions="{add: 'note_add', delete: 'delete', duplicate: 'file_copy'}" />
   </div>
 </template>
 

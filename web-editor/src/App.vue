@@ -19,7 +19,7 @@
       @duplicate="slide.objects.push(slide.objects[i])"
       v-for="(obj, i) in slide.objects"
     />-->
-    <div class="card"></div>
+    <div class="card" style="background-color: #D8DEE9"></div>
   </div>
 </template>
 

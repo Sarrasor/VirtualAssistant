@@ -8,6 +8,9 @@
       <TextArea :label="'description'" :multiline="true" @text="slide.description=$event" />
       <FileDrop :label="'preview'" />
     </div>
+    <Toolbar
+      :actions="{add: 'note_add', delete: 'delete', duplicate: 'file_copy', moveUp: 'arrow_upward', moveDown: 'arrow_downward'}"
+    />
   </div>
 </template>
 
@@ -15,6 +18,7 @@
 import TextArea from "./TextArea";
 import FileDrop from "./FileDrop";
 import List from "./List";
+import Toolbar from "./Toolbar";
 
 export default {
   name: "SlideEditor",
@@ -22,7 +26,8 @@ export default {
   components: {
     TextArea,
     FileDrop,
-    List
+    List,
+    Toolbar
   },
   data() {
     return {
