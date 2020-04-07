@@ -18,6 +18,9 @@ div {
   display: flex;
   flex-wrap: wrap;
 }
+div > * {
+  width: 100%;
+}
 p {
   margin: 5px 0;
   font-style: italic;
