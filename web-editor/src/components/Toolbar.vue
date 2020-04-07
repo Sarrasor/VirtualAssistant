@@ -7,7 +7,7 @@
       @click="$emit(action)"
       v-for="(icon, action) of actions"
     >
-      <i class="material-icons">{{icon}}</i>
+      <i class="material-icons-outlined">{{icon}}</i>
     </button>
   </div>
 </template>
