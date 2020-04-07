@@ -5,8 +5,9 @@
     --danger: #d14;
 }
 
-body {
+html, body, #app {
     margin: 0;
+    height: 100vh;
 }
 
 .section {
@@ -28,12 +29,21 @@ body {
     font-family: 'Fira Sans', sans-serif;
 }
 
-#label {
+.label {
     margin: 5px 0;
     font-style: italic;
     font-size: 12px;
     width: 100%;
     font-weight: 300;
+}
+
+.card {
+    margin: 10px;
+    box-shadow: 0px 0px 10px var(--shadow);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
 }
 
 button, select {
