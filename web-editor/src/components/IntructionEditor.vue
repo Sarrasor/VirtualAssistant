@@ -82,13 +82,12 @@ export default {
 }
 #assets {
   margin: 0;
-  /* height: 100%; */
   display: flex;
   flex-flow: column;
   overflow-y: auto;
 }
 #assets > div {
-  background-color: var(--nord13);
+  background-color: gold;
   width: 90px;
   height: 90px;
   margin: 5px;

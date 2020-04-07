@@ -1,12 +1,12 @@
 <template>
   <div id="transform">
     <div id="labels">
-      <p
+      <a
         :key="i"
         :class="{active: active===i}"
         @click="active=i"
         v-for="(s, i) in ['move','rotate','scale']"
-      >{{s}}</p>
+      >{{s}}</a>
     </div>
     <Vector v-show="active===0" :length="3" @vector="transform.position=[...$event]" />
     <Vector v-show="active===1" :length="3" @vector="transform.rotation=[...$event]" />
@@ -55,18 +55,12 @@ export default {
   align-items: center;
   height: 30px;
 }
-#labels > * {
-  padding: 5px;
+#labels > a {
   width: 33%;
   text-align: center;
-  user-select: none;
-  cursor: pointer;
+  text-decoration: none;
 }
-#labels > *:hover {
-  font-size: 16px;
-}
-#labels > .active {
+#labels > a.active {
   font-weight: bolder;
-  font-size: 16px;
 }
 </style>

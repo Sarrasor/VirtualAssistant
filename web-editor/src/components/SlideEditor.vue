@@ -48,7 +48,7 @@ export default {
 <style scoped>
 #slide {
   margin: 10px;
-  box-shadow: 0px 0px 10px var(--nord4);
+  box-shadow: 0px 0px 10px var(--shadow);
   padding: 10px;
   display: flex;
   flex-direction: column;

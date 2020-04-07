@@ -53,7 +53,7 @@ export default {
 <style scoped>
 #object {
   margin: 10px;
-  box-shadow: 0px 0px 10px var(--nord4);
+  box-shadow: 0px 0px 10px var(--shadow);
   padding: 10px;
   display: flex;
   flex-direction: column;
@@ -62,6 +62,6 @@ export default {
   margin: 5px 0;
 }
 #delete {
-  color: var(--nord11);
+  color: red;
 }
 </style>
