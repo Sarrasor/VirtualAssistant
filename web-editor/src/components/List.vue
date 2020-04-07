@@ -29,9 +29,11 @@ export default {
 #items {
   display: flex;
   flex-wrap: wrap;
+  place-content: flex-start;
   overflow-y: auto;
   height: 100px;
   border-radius: 0;
+  box-shadow: inset 0 0 5px var(--shadow);
 }
 #items > * {
   width: 100%;
@@ -43,7 +45,6 @@ export default {
 }
 .selected {
   text-decoration: underline;
-  /* font-weight: bolder; */
   background-color: var(--select);
 }
 </style>

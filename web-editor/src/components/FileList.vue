@@ -31,6 +31,7 @@ export default {
   overflow-y: auto;
   height: 100px;
   border-radius: 0;
+  box-shadow: inset 0 0 5px var(--shadow);
 }
 #items > * {
   justify-content: left;
