@@ -28,6 +28,14 @@ body {
     font-family: 'Fira Sans', sans-serif;
 }
 
+#label {
+    margin: 5px 0;
+    font-style: italic;
+    font-size: 12px;
+    width: 100%;
+    font-weight: 300;
+}
+
 button, select {
     border: 1px solid transparent;
     background-color: var(--select);
@@ -35,7 +43,7 @@ button, select {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 30px;
+    height: 25px;
     user-select: none;
     margin: 10px 0;
     padding: 0 10px;
@@ -92,11 +100,19 @@ a:active {
     transform: scale(1.15);
 }
 
+input {
+    height: 25px;
+}
+
+textarea {
+    height: 65px;
+}
+
 textarea, input {
     padding: 5px;
     border: 1px solid var(--select);
     text-align: left;
-    height: 30px;
+    /* height: 30px; */
 }
 
 textarea:read-only, input:read-only {
