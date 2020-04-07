@@ -1,6 +1,6 @@
 <template>
   <div id="root">
-    <p id="label" v-if="label">{{label}}</p>
+    <p class="label" v-if="label">{{label}}</p>
     <div id="area">
       <p id="empty" v-if="label">drop a file here</p>
     </div>

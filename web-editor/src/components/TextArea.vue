@@ -1,6 +1,6 @@
 <template>
   <div id="root">
-    <p id="label" v-if="label">{{label}}</p>
+    <p class="label" v-if="label">{{label}}</p>
     <textarea v-if="multiline" @input="$emit('text', $event.target.value)" />
     <input v-else type="text" @input="$emit('text', $event.target.value)" />
   </div>

@@ -1,6 +1,6 @@
 <template>
   <div id="root">
-    <p id="label" v-if="label">{{label}}</p>
+    <p class="label" v-if="label">{{label}}</p>
     <div id="items">
       <button
         :class="{selected: i===selected}"
@@ -30,26 +30,17 @@ export default {
   flex-wrap: wrap;
   overflow-y: auto;
   height: 100px;
+  border-radius: 0;
 }
 #items > * {
   justify-content: left;
   width: 100%;
   border-radius: 0;
+  border: none;
   margin: 0;
-  border: none;
 }
-#items > *:hover {
-  background-color: var(--select);
-  border: none;
-}
-#items > *:first-of-type {
-  border-radius: 4px 4px 0 0;
-}
-#items > *:last-of-type {
-  border-radius: 0 0 4px 4px;
-}
-#items > *:only-of-type {
-  border-radius: 4px;
+#items >*:hover {
+    background-color: var(--select);
 }
 :not(.selected) {
   background-color: transparent;
@@ -65,12 +56,9 @@ export default {
 ::-webkit-scrollbar-track {
   background: transparent;
 }
-
 ::-webkit-scrollbar-thumb {
   background: var(--select);
-  border-radius: 4px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text);
 }

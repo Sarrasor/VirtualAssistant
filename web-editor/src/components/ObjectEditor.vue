@@ -1,9 +1,14 @@
 <template>
-  <div id="object" v-if="object">
-    <TextArea :label="'name'" @text="object.name=$event" />
-    <TextArea :label="'description'" :multiline="true" @text="object.description=$event" />
-    <FileDrop :label="'media'" />
-    <Transform @transform="object.transform=$event" />
+  <div id="root" v-if="object">
+    <div class="card" id="list">
+      <List :label="'objects'" :items="['one', 'two', 'three', 'four']" />
+    </div>
+    <div class="card" id="main">
+      <TextArea :label="'name'" @text="object.name=$event" />
+      <TextArea :label="'description'" :multiline="true" @text="object.description=$event" />
+      <FileDrop :label="'media'" />
+      <Transform @transform="object.transform=$event" />
+    </div>
   </div>
 </template>
 
@@ -11,6 +16,7 @@
 import Transform from "./Transform";
 import TextArea from "./TextArea";
 import FileDrop from "./FileDrop";
+import List from "./List";
 
 export default {
   name: "ObjectEditor",
@@ -18,7 +24,8 @@ export default {
   components: {
     Transform,
     FileDrop,
-    TextArea
+    TextArea,
+    List
   },
   data() {
     return {
@@ -56,15 +63,4 @@ export default {
 </script>
 
 <style scoped>
-#object {
-  margin: 10px;
-  box-shadow: 0px 0px 10px var(--shadow);
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  background-color: white;
-}
-#delete {
-  color: var(--danger);
-}
 </style>

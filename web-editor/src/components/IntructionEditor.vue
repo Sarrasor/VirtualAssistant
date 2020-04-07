@@ -1,89 +1,56 @@
 <template>
-  <div id="editor">
-    <div id="assets">
-      <div :key="i" v-for="i in 10"></div>
+  <div id="root" v-if="instruction">
+    <div class="card" id="list">
+      <List :label="'instructions'" :items="['one', 'two', 'three', 'four']" />
     </div>
-    <div id="slides">
-      <div id="tools">
-        <p>id: {{id}}</p>
-        <button @click="slides.push(null)">Add slide</button>
-        <input type="file" multiple />
-      </div>
-      <SlideEditor
-        :key="i"
-        :inSlide="sld"
-        @slide="$set(slides, i, $event)"
-        @delete="slides.splice(i, 1)"
-        @open="slideI=i"
-        v-for="(sld, i) in slides"
-      />
-    </div>
-    <div id="scene"></div>
-    <div id="displays" v-if="slide">
-      <button @click="slide.objects.push(null)">Add object</button>
-      <ObjectEditor
-        :key="i"
-        :inObject="obj"
-        @object="$set(slide.objects, i, $event)"
-        @delete="slide.objects.splice(i, 1)"
-        @duplicate="slide.objects.push(slide.objects[i])"
-        v-for="(obj, i) in slide.objects"
-      />
+    <div class="card" id="slide">
+      <TextArea :label="'name'" @text="instruction.name=$event" />
+      <TextArea :label="'description'" :multiline="true" @text="instruction.description=$event" />
+      <FileDrop :label="'preview'" />
     </div>
   </div>
 </template>
 
 <script>
-import SlideEditor from "./SlideEditor";
-import ObjectEditor from "./ObjectEditor";
+import TextArea from "./TextArea";
+import FileDrop from "./FileDrop";
+import List from "./List";
 
 export default {
   name: "InstructionEditor",
+  props: ["inInstruction"],
   components: {
-    SlideEditor,
-    ObjectEditor
+    TextArea,
+    FileDrop,
+    List
   },
   data() {
     return {
-      id: this.$uuid.v4(),
-      name: "",
-      description: "",
-      preview_url: null,
-      slides: [null],
-      slideI: 0
+      instruction: undefined
     };
   },
-  computed: {
-    slide: function() {
-      return this.slideI < this.slides.length ? this.slides[this.slideI] : null;
+  watch: {
+    inInstruction: {
+      handler: function(value) {
+        this.instruction = value || {
+          name: "Slide title",
+          description: "Lorem impsum dolor sit amet",
+          preview_url: undefined,
+          slides: [null]
+        };
+      },
+      immediate: true
+    },
+    instruction: {
+      handler: function(value) {
+        this.$emit("instruction", value);
+      },
+      immediate: true,
+      deep: true
     }
   }
 };
 </script>
 
 <style scoped>
-#editor {
-  width: 100%;
-  margin: 0;
-  display: grid;
-  grid-template-columns: 100px 200px 50% 200px;
-  background-color: #eceff4;
-}
-#slides,
-#displays {
-  margin: 0;
-  display: flex;
-  flex-flow: column;
-}
-#assets {
-  margin: 0;
-  display: flex;
-  flex-flow: column;
-}
-#assets > div {
-  background-color: gold;
-  width: 90px;
-  height: 90px;
-  margin: 5px;
-}
 </style>

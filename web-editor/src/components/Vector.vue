@@ -1,6 +1,6 @@
 <template>
   <div id="root">
-    <p id="label" v-if="label">{{label}}</p>
+    <p class="label" v-if="label">{{label}}</p>
     <input
       type="number"
       step="0.01"

@@ -1,21 +1,28 @@
 <template>
-  <div id="slide" v-if="slide">
-    <TextArea :label="'name'" @text="slide.name=$event" />
-    <TextArea :label="'description'" :multiline="true" @text="slide.description=$event" />
-    <FileDrop :label="'preview'" />
+  <div id="root" v-if="slide">
+    <div class="card" id="list">
+      <List :label="'slides'" :items="['one', 'two', 'three', 'four']" />
+    </div>
+    <div class="card" id="slide" v-if="slide">
+      <TextArea :label="'name'" @text="slide.name=$event" />
+      <TextArea :label="'description'" :multiline="true" @text="slide.description=$event" />
+      <FileDrop :label="'preview'" />
+    </div>
   </div>
 </template>
 
 <script>
 import TextArea from "./TextArea";
 import FileDrop from "./FileDrop";
+import List from "./List";
 
 export default {
   name: "SlideEditor",
   props: ["inSlide"],
   components: {
     TextArea,
-    FileDrop
+    FileDrop,
+    List
   },
   data() {
     return {
@@ -46,31 +53,4 @@ export default {
 </script>
 
 <style scoped>
-#slide {
-  margin: 10px;
-  box-shadow: 0px 0px 10px var(--shadow);
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  background-color: white;
-}
-#name {
-  font-size: 20px;
-}
-#description {
-  height: 150px;
-}
-#preview {
-  display: flex;
-  flex-flow: column;
-}
-#actions {
-  display: flex;
-  margin-right: -5px;
-  margin-left: -5px;
-}
-#actions > * {
-  flex: 1;
-  margin: 0 5px;
-}
 </style>
