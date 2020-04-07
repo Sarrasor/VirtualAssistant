@@ -1,5 +1,5 @@
 <template>
-  <div id="vector">
+  <div id="root">
     <p id="label" v-if="label">{{label}}</p>
     <input
       type="number"
@@ -47,10 +47,9 @@ export default {
   font-size: 12px;
   width: 100%;
 }
-#vector {
+#root {
   display: flex;
   flex-wrap: wrap;
-  width: 100%;
 }
 input:first-of-type {
   border-radius: 4px 0 0 4px;

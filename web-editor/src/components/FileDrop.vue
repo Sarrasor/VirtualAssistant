@@ -1,6 +1,9 @@
 <template>
-  <div id="area">
-    <p id="empty" v-if="label">{{label}}</p>
+  <div id="root">
+    <p id="label" v-if="label">{{label}}</p>
+    <div id="area">
+      <p id="empty" v-if="label">drop a file here</p>
+    </div>
   </div>
 </template>
 
@@ -12,6 +15,19 @@ export default {
 </script>
 
 <style scoped>
+#root {
+  display: flex;
+  flex-wrap: wrap;
+}
+#root > * {
+  width: 100%;
+}
+#label {
+  margin: 5px 0;
+  font-style: italic;
+  font-size: 12px;
+  width: 100%;
+}
 #area {
   border: 2px dashed var(--select);
   height: 30px;

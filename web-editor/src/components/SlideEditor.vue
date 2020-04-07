@@ -1,22 +1,22 @@
 <template>
   <div id="slide" v-if="slide">
-    <input id="name" type="text" v-model="slide.name" />
-    <textarea id="description" v-model="slide.description" />
-    <div id="preview">
-      <p>thumbnail URL:</p>
-      <input type="text" v-model="slide.preview_url" />
-    </div>
-    <div id="actions">
-      <button @click="$emit('delete')">Remove slide</button>
-      <button @click="$emit('open')">Edit displays</button>
-    </div>
+    <TextArea :label="'name'" @text="slide.name=$event" />
+    <TextArea :label="'description'" :multiline="true" @text="slide.description=$event" />
+    <FileDrop :label="'preview'" />
   </div>
 </template>
 
 <script>
+import TextArea from "./TextArea";
+import FileDrop from "./FileDrop";
+
 export default {
   name: "SlideEditor",
   props: ["inSlide"],
+  components: {
+    TextArea,
+    FileDrop
+  },
   data() {
     return {
       slide: undefined

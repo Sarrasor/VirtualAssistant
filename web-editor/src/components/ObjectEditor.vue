@@ -1,8 +1,8 @@
 <template>
   <div id="object" v-if="object">
-    <FileDrop :label="'drop a media file here'" />
     <TextArea :label="'name'" @text="object.name=$event" />
     <TextArea :label="'description'" :multiline="true" @text="object.description=$event" />
+    <FileDrop :label="'media'" />
     <Transform @transform="object.transform=$event" />
   </div>
 </template>

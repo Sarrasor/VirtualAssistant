@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <p v-if="label">{{label}}</p>
+  <div id="root">
+    <p id="label" v-if="label">{{label}}</p>
     <textarea v-if="multiline" @input="$emit('text', $event.target.value)" />
     <input v-else type="text" @input="$emit('text', $event.target.value)" />
   </div>
@@ -14,14 +14,14 @@ export default {
 </script>
 
 <style scoped>
-div {
+#root {
   display: flex;
   flex-wrap: wrap;
 }
-div > * {
+#root > * {
   width: 100%;
 }
-p {
+#label {
   margin: 5px 0;
   font-style: italic;
   font-size: 12px;
