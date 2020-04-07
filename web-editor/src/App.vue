@@ -19,6 +19,7 @@
       @duplicate="slide.objects.push(slide.objects[i])"
       v-for="(obj, i) in slide.objects"
     />-->
+    <div id="render"></div>
   </div>
 </template>
 
@@ -54,5 +55,9 @@ export default {
   grid-template-columns: repeat(3, 200px) 1fr;
   gap: 10px;
   background-color: #eceff4;
+}
+#render {
+  background-color: var(--shadow);
+  margin: 10px;
 }
 </style>

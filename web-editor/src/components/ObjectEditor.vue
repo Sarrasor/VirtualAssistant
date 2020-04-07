@@ -1,7 +1,7 @@
 <template>
   <div id="root" v-if="object">
     <div class="card" id="list">
-      <List :label="'objects'" :items="['one', 'two', 'three', 'four']" />
+      <List :label="'objects'" :items="['object 1', 'object 2', 'object 3', 'object 4']" />
     </div>
     <div class="card" id="main">
       <TextArea :label="'name'" @text="object.name=$event" />

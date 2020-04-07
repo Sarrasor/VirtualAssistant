@@ -1,12 +1,21 @@
 <template>
   <div id="root" v-if="instruction">
-    <div class="card" id="list">
-      <List :label="'instructions'" :items="['one', 'two', 'three', 'four']" />
+    <div class="card">
+      <List
+        :label="'instructions'"
+        :items="['instruction 1', 'instruction 1', 'instruction 1', 'instruction 1']"
+      />
     </div>
-    <div class="card" id="slide">
+    <div class="card">
       <TextArea :label="'name'" @text="instruction.name=$event" />
       <TextArea :label="'description'" :multiline="true" @text="instruction.description=$event" />
       <FileDrop :label="'preview'" />
+    </div>
+    <div class="card">
+      <FileList
+        :label="'assets'"
+        :items="['preview.png', 'narration.m4a', 'duck.obj', 'tutorial.mp4']"
+      />
     </div>
   </div>
 </template>
@@ -15,6 +24,7 @@
 import TextArea from "./TextArea";
 import FileDrop from "./FileDrop";
 import List from "./List";
+import FileList from "./FileList";
 
 export default {
   name: "InstructionEditor",
@@ -22,7 +32,8 @@ export default {
   components: {
     TextArea,
     FileDrop,
-    List
+    List,
+    FileList
   },
   data() {
     return {

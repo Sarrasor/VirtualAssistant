@@ -1,7 +1,7 @@
 <template>
   <div id="root" v-if="slide">
     <div class="card" id="list">
-      <List :label="'slides'" :items="['one', 'two', 'three', 'four']" />
+      <List :label="'slides'" :items="['slide 1', 'slide 2', 'slide 3', 'slide 4']" />
     </div>
     <div class="card" id="slide" v-if="slide">
       <TextArea :label="'name'" @text="slide.name=$event" />
