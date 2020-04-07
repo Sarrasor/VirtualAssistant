@@ -2,6 +2,7 @@
     --text: #2E3440;
     --select: #E5E9F0;
     --shadow: #D8DEE9;
+    --danger: #d14;
 }
 
 body {
@@ -41,16 +42,16 @@ button, select {
 }
 
 button:hover, select:hover {
-    border-color: var(--text);
+    border-color: var(--text) !important;
 }
 
 button:active, select:active {
-    color: #FFF;
-    background-color: var(--text);
+    color: white !important;
+    background-color: var(--text) !important;
 }
 
 button:active>* {
-    color: #FFF;
+    color: white !important;
 }
 
 h1 {
