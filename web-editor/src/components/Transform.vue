@@ -56,6 +56,7 @@ export default {
   height: 30px;
 }
 #labels > * {
+  padding: 5px;
   width: 33%;
   text-align: center;
   user-select: none;
