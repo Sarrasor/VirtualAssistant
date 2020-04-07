@@ -64,9 +64,6 @@ export default {
   flex-direction: column;
   background-color: white;
 }
-#object > * {
-  margin: 5px 0;
-}
 #delete {
   color: var(--danger);
 }

@@ -54,10 +54,6 @@ export default {
   flex-direction: column;
   background-color: white;
 }
-#slide > *,
-#thumbnail > * {
-  margin: 5px 0;
-}
 #name {
   font-size: 20px;
 }
