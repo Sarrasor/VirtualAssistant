@@ -18,6 +18,10 @@
 import Vector from "./Vector";
 
 export default {
+  name: "Transform",
+  components: {
+    Vector
+  },
   data() {
     return {
       transform: {
@@ -35,9 +39,6 @@ export default {
       },
       deep: true
     }
-  },
-  components: {
-    Vector
   }
 };
 </script>

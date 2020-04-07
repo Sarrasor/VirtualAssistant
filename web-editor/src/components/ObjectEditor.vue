@@ -1,22 +1,23 @@
 <template>
   <div id="object" v-if="object">
-    <button id="delete" @click="$emit('delete')">X</button>
-    <TextArea :label="'media'" @text="object.media=$event" />
-    <TextArea :label="'text'" :multiline="true" @text="object.text=$event" />
+    <button id="delete" @click="$emit('delete')">delete object</button>
+    <hr />
+    <FileDrop :label="'drop here a media file'" />
+    <textarea placeholder="description" @input="object.description=$event.target.value" />
     <Transform @transform="object.transform=$event" />
   </div>
 </template>
 
 <script>
 import Transform from "./Transform";
-import TextArea from "./TextArea";
+import FileDrop from "./FileDrop";
 
 export default {
   name: "ObjectEditor",
   props: ["inObject"],
   components: {
     Transform,
-    TextArea
+    FileDrop
   },
   data() {
     return {
@@ -27,9 +28,11 @@ export default {
     inObject: {
       handler: function(value) {
         this.object = value || {
-          type: 0,
-          media: "",
-          text: "",
+          media: {
+            url: "",
+            type: 0
+          },
+          description: "",
           transform: {
             position: [0, 0, 0],
             rotation: [0, 0, 0],
@@ -62,6 +65,9 @@ export default {
   margin: 5px 0;
 }
 #delete {
-  color: red;
+  color: var(--danger);
+}
+textarea {
+  height: 100px;
 }
 </style>
