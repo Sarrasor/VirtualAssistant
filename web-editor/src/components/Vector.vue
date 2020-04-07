@@ -41,12 +41,6 @@ export default {
 </script>
 
 <style scoped>
-#label {
-  margin: 5px 0;
-  font-style: italic;
-  font-size: 12px;
-  width: 100%;
-}
 #root {
   display: flex;
   flex-wrap: wrap;

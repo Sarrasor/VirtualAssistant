@@ -22,15 +22,9 @@ export default {
 #root > * {
   width: 100%;
 }
-#label {
-  margin: 5px 0;
-  font-style: italic;
-  font-size: 12px;
-  width: 100%;
-}
 #area {
   border: 2px dashed var(--select);
-  height: 30px;
+  height: 25px;
   display: flex;
   align-items: center;
 }

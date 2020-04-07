@@ -21,13 +21,4 @@ export default {
 #root > * {
   width: 100%;
 }
-#label {
-  margin: 5px 0;
-  font-style: italic;
-  font-size: 12px;
-  width: 100%;
-}
-textarea {
-  height: 90px;
-}
 </style>
