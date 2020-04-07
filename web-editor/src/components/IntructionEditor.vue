@@ -74,13 +74,11 @@ export default {
   margin: 0;
   display: flex;
   flex-flow: column;
-  overflow-y: auto;
 }
 #assets {
   margin: 0;
   display: flex;
   flex-flow: column;
-  overflow-y: auto;
 }
 #assets > div {
   background-color: gold;
