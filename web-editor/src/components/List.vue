@@ -43,19 +43,7 @@ export default {
 }
 .selected {
   text-decoration: underline;
-  font-weight: bolder;
+  /* font-weight: bolder; */
   background-color: var(--select);
-}
-::-webkit-scrollbar {
-  width: 10px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: var(--select);
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--text);
 }
 </style>

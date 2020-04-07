@@ -79,4 +79,16 @@ button.flat.icon {
   font-size: 24px;
   pointer-events: none;
 }
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--select);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text);
+}
 </style>

@@ -3,7 +3,7 @@
     <div class="card">
       <List
         :label="'instructions'"
-        :items="['instruction 1', 'instruction 1', 'instruction 1', 'instruction 1']"
+        :items="['instruction 1', 'instruction 2', 'instruction 3', 'instruction 4', 'instruction 5']"
       />
     </div>
     <div class="card">
@@ -17,7 +17,7 @@
     <div class="card">
       <FileList
         :label="'assets'"
-        :items="['preview.png', 'narration.m4a', 'duck.obj', 'tutorial.mp4']"
+        :items="['preview.png', 'schema.png', 'narration.m4a', 'duck.obj', 'tutorial.mp4']"
       />
     </div>
   </div>
@@ -37,7 +37,8 @@ export default {
     TextArea,
     FileDrop,
     List,
-    FileList,Toolbar
+    FileList,
+    Toolbar
   },
   data() {
     return {
