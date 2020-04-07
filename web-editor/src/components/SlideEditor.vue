@@ -52,6 +52,7 @@ export default {
   padding: 10px;
   display: flex;
   flex-direction: column;
+  background-color: white;
 }
 #slide > *,
 #thumbnail > * {

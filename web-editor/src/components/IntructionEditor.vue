@@ -18,6 +18,7 @@
         v-for="(sld, i) in slides"
       />
     </div>
+    <div id="scene"></div>
     <div id="displays" v-if="slide">
       <button @click="slide.objects.push(null)">Add object</button>
       <ObjectEditor
@@ -29,7 +30,6 @@
         v-for="(obj, i) in slide.objects"
       />
     </div>
-    <div id="scene"></div>
   </div>
 </template>
 
@@ -66,7 +66,8 @@ export default {
   width: 100%;
   margin: 0;
   display: grid;
-  grid-template-columns: 100px 300px 200px 1fr;
+  grid-template-columns: 100px 200px 50% 200px;
+  background-color: #eceff4;
 }
 #slides,
 #displays {
@@ -74,9 +75,6 @@ export default {
   display: flex;
   flex-flow: column;
   overflow-y: auto;
-}
-#scene {
-  background-color: var(--shadow);
 }
 #assets {
   margin: 0;

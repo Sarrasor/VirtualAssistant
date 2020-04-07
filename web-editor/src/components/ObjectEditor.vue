@@ -62,6 +62,7 @@ export default {
   padding: 10px;
   display: flex;
   flex-direction: column;
+  background-color: white;
 }
 #object > * {
   margin: 5px 0;
