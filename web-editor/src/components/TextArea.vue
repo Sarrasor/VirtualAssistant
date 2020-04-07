@@ -25,6 +25,6 @@ p {
   width: 100%;
 }
 textarea {
-  height: 100px;
+  height: 90px;
 }
 </style>

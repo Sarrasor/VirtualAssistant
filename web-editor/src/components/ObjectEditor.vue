@@ -4,6 +4,7 @@
     <!-- <button @click="$emit('duplicate')">duplicate object</button> -->
     <hr />
     <FileDrop :label="'drop a media file here'" />
+    <TextArea :label="'name'" @text="object.name=$event" />
     <TextArea :label="'description'" :multiline="true" @text="object.description=$event" />
     <Transform @transform="object.transform=$event" />
   </div>
@@ -31,6 +32,7 @@ export default {
     inObject: {
       handler: function(value) {
         this.object = value || {
+          name: "object",
           media: {
             url: "",
             type: 0
