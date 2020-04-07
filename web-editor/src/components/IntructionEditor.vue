@@ -22,19 +22,14 @@
       <button @click="slide.objects.push(null)">Add object</button>
       <ObjectEditor
         :key="i"
-        :inObject="dsp"
+        :inObject="obj"
         @object="$set(slide.objects, i, $event)"
         @delete="slide.objects.splice(i, 1)"
-        v-for="(dsp, i) in slide.objects"
+        @duplicate="slide.objects.push(slide.objects[i])"
+        v-for="(obj, i) in slide.objects"
       />
     </div>
-    <div id="scene">
-      <img
-        src="https://i.ytimg.com/vi/9M5XM7WfVKA/maxresdefault.jpg"
-        style="width:100%; height:100%"
-        alt
-      />
-    </div>
+    <div id="scene"></div>
   </div>
 </template>
 
@@ -79,6 +74,9 @@ export default {
   display: flex;
   flex-flow: column;
   overflow-y: auto;
+}
+#scene {
+  background-color: var(--shadow);
 }
 #assets {
   margin: 0;
