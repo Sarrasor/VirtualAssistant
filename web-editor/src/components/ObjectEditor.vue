@@ -1,13 +1,18 @@
 <template>
   <div id="root" v-if="object">
-    <div class="card" id="list">
+    <div class="card">
       <List :label="'objects'" :items="['object 1', 'object 2', 'object 3', 'object 4']" />
     </div>
-    <div class="card" id="main">
+    <div class="card">
       <TextArea :label="'name'" @text="object.name=$event" />
       <TextArea :label="'description'" :multiline="true" @text="object.description=$event" />
       <FileDrop :label="'media'" />
       <Transform @transform="object.transform=$event" />
+    </div>
+    <div class="card">
+      <Toolbar
+        :actions="{add: 'note_add', delete: 'delete', duplicate: 'file_copy', moveUp: 'arrow_upward', moveDown: 'arrow_downward'}"
+      />
     </div>
   </div>
 </template>
@@ -17,6 +22,7 @@ import Transform from "./Transform";
 import TextArea from "./TextArea";
 import FileDrop from "./FileDrop";
 import List from "./List";
+import Toolbar from "./Toolbar";
 
 export default {
   name: "ObjectEditor",
@@ -25,7 +31,8 @@ export default {
     Transform,
     FileDrop,
     TextArea,
-    List
+    List,
+    Toolbar
   },
   data() {
     return {

@@ -3,6 +3,7 @@
     <p class="label" v-if="label">{{label}}</p>
     <div id="items">
       <button
+        class="flat"
         :class="{selected: i===selected}"
         :key="i"
         @click="$emit('select', selected=i)"
@@ -33,14 +34,9 @@ export default {
   border-radius: 0;
 }
 #items > * {
-  justify-content: left;
   width: 100%;
   border-radius: 0;
-  border: none;
   margin: 0;
-}
-#items >*:hover {
-    background-color: var(--select);
 }
 :not(.selected) {
   background-color: transparent;

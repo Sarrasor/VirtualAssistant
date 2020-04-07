@@ -19,7 +19,7 @@
       @duplicate="slide.objects.push(slide.objects[i])"
       v-for="(obj, i) in slide.objects"
     />-->
-    <div id="render"></div>
+    <div class="card"></div>
   </div>
 </template>
 
@@ -54,10 +54,29 @@ export default {
   display: grid;
   grid-template-columns: repeat(3, 200px) 1fr;
   gap: 10px;
-  background-color: #eceff4;
+  background-color: var(--back);
 }
-#render {
-  background-color: var(--shadow);
-  margin: 10px;
+</style>
+
+<style>
+button.flat {
+  justify-content: left;
+}
+button.flat {
+  background: transparent;
+  border: none;
+}
+button.flat:hover {
+  background-color: var(--select);
+}
+button.flat.icon {
+  width: 40px;
+  height: 30px;
+  margin: 0;
+  place-content: center;
+}
+.material-icons {
+  font-size: 24px;
+  pointer-events: none;
 }
 </style>
