@@ -1,13 +1,13 @@
 <template>
   <div id="area">
-    <p id="empty" v-if="label">{{label}}</p>
+    <p id="empty">{{label}}</p>
   </div>
 </template>
 
 <script>
 export default {
-  name: "FileDrop",
-  props: ["label"]
+  name: "FileItem",
+  props: ["file"],
 };
 </script>
 

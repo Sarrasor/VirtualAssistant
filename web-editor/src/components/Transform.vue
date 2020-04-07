@@ -1,16 +1,16 @@
 <template>
   <div id="transform">
-    <div id="labels">
-      <a
-        :key="i"
-        :class="{active: active===i}"
-        @click="active=i"
-        v-for="(s, i) in ['move','rotate','scale']"
-      >{{s}}</a>
-    </div>
-    <Vector v-show="active===0" :length="3" @vector="transform.position=[...$event]" />
-    <Vector v-show="active===1" :length="3" @vector="transform.rotation=[...$event]" />
-    <Vector v-show="active===2" :length="1" @vector="transform.scale=$event[0]" />
+    <Vector
+      :length="3"
+      :label="'position'"
+      @vector="transform.position=[...$event]"
+    />
+    <Vector
+      :length="3"
+      :label="'rotation'"
+      @vector="transform.rotation=[...$event]"
+    />
+    <Vector :length="1" :label="'scale'" @vector="transform.scale=$event[0]" />
   </div>
 </template>
 
@@ -28,8 +28,7 @@ export default {
         position: [0, 0, 0],
         rotation: [0, 0, 0],
         scale: 1
-      },
-      active: 0
+      }
     };
   },
   watch: {
@@ -50,18 +49,5 @@ export default {
 }
 #transform > * {
   width: 100%;
-}
-#labels {
-  display: flex;
-  align-items: center;
-  height: 30px;
-}
-#labels > a {
-  width: 33%;
-  text-align: center;
-  text-decoration: none;
-}
-#labels > a.active {
-  font-weight: bolder;
 }
 </style>

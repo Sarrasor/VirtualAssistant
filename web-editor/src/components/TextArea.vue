@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p>{{label}}</p>
+    <p v-if="label">{{label}}</p>
     <textarea v-if="multiline" @input="$emit('text', $event.target.value)" />
     <input v-else type="text" @input="$emit('text', $event.target.value)" />
   </div>
@@ -16,12 +16,13 @@ export default {
 <style scoped>
 div {
   display: flex;
-  flex-flow: column;
+  flex-wrap: wrap;
 }
 p {
   margin: 5px 0;
   font-style: italic;
   font-size: 12px;
+  width: 100%;
 }
 textarea {
   height: 100px;

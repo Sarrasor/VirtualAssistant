@@ -4,13 +4,14 @@
     <!-- <button @click="$emit('duplicate')">duplicate object</button> -->
     <hr />
     <FileDrop :label="'drop a media file here'" />
-    <textarea placeholder="description" @input="object.description=$event.target.value" />
+    <TextArea :label="'description'" :multiline="true" @text="object.description=$event" />
     <Transform @transform="object.transform=$event" />
   </div>
 </template>
 
 <script>
 import Transform from "./Transform";
+import TextArea from "./TextArea";
 import FileDrop from "./FileDrop";
 
 export default {
@@ -18,7 +19,8 @@ export default {
   props: ["inObject"],
   components: {
     Transform,
-    FileDrop
+    FileDrop,
+    TextArea
   },
   data() {
     return {
@@ -67,8 +69,5 @@ export default {
 }
 #delete {
   color: var(--danger);
-}
-textarea {
-  height: 100px;
 }
 </style>
