@@ -27,7 +27,7 @@ export default {
       handler: function(value) {
         this.slide = value || {
           name: "Slide title",
-          description: "Lorem impsum dolor sit amet, dobryi vecher, ya Magomed",
+          description: "Lorem impsum dolor sit amet",
           preview_url: undefined,
           objects: [null]
         };
