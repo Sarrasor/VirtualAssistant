@@ -1,24 +1,21 @@
 <template>
-  <div>
-    <p id="label">{{label}}</p>
-    <div id="vector">
-      <input
-        type="number"
-        step="0.01"
-        :style="{width: 100/length + '%'}"
-        :key="i"
-        :value="vector[i-1]"
-        @input="update(i-1, $event.target.value)"
-        v-for="i in length"
-      />
-    </div>
+  <div id="vector">
+    <input
+      type="number"
+      step="0.01"
+      :style="{width: 100/length + '%'}"
+      :key="i"
+      :value="vector[i-1]"
+      @input="update(i-1, $event.target.value)"
+      v-for="i in length"
+    />
   </div>
 </template>
 
 <script>
 export default {
   name: "Vector",
-  props: ["length", "label"],
+  props: ["length"],
   data() {
     return {
       vector: undefined
@@ -43,11 +40,6 @@ export default {
 </script>
 
 <style scoped>
-#label {
-  margin: 5px 0;
-  font-style: italic;
-  font-size: 12px;
-}
 #vector {
   display: flex;
   width: 100%;
@@ -58,26 +50,20 @@ input:first-child {
 input:last-child {
   border-radius: 0 4px 4px 0;
 }
-input:only-child{
+input:only-child {
   border-radius: 4px;
 }
 input {
   -moz-appearance: textfield;
   -webkit-appearance: none;
-
   border-radius: 0;
 }
-/*input:not(:first-child) {
-  margin-left: -2px;
-} */
-
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-  /* display: none; <- Crashes Chrome on hover */
   -webkit-appearance: none;
-  margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+  margin: 0;
 }
 input[type="number"] {
-  -moz-appearance: textfield; /* Firefox */
+  -moz-appearance: textfield;
 }
 </style>

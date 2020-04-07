@@ -3,21 +3,19 @@
     <button id="delete" @click="$emit('delete')">X</button>
     <TextArea :label="'media'" @text="object.media=$event" />
     <TextArea :label="'text'" :multiline="true" @text="object.text=$event" />
-    <Vector :length="3" :label="'position'" @vector="object.position=[...$event]" />
-    <Vector :length="3" :label="'rotation'" @vector="object.rotation=[...$event]" />
-    <Vector :length="1" :label="'scale'" @vector="object.scale=$event[0]" />
+    <Transform @transform="object.transform=$event" />
   </div>
 </template>
 
 <script>
-import Vector from "./Vector";
+import Transform from "./Transform";
 import TextArea from "./TextArea";
 
 export default {
   name: "ObjectEditor",
   props: ["inObject"],
   components: {
-    Vector,
+    Transform,
     TextArea
   },
   data() {
@@ -32,9 +30,11 @@ export default {
           type: 0,
           media: "",
           text: "",
-          position: [0, 0, 0],
-          rotation: [0, 0, 0],
-          scale: 1
+          transform: {
+            position: [0, 0, 0],
+            rotation: [0, 0, 0],
+            scale: 1
+          }
         };
       },
       immediate: true
