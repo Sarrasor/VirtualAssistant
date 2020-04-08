@@ -19,7 +19,7 @@
       @duplicate="slide.objects.push(slide.objects[i])"
       v-for="(obj, i) in slide.objects"
     />-->
-    <div class="card" style="background-color: var(--select)"></div>
+    <Render />
   </div>
 </template>
 
@@ -27,6 +27,7 @@
 import InstructionEditor from "./components/IntructionEditor";
 import SlideEditor from "./components/SlideEditor";
 import ObjectEditor from "./components/ObjectEditor";
+import Render from "./components/Render"
 
 import Vue from "vue";
 import UUID from "vue-uuid";
@@ -37,7 +38,8 @@ export default {
   components: {
     InstructionEditor,
     SlideEditor,
-    ObjectEditor
+    ObjectEditor,
+    Render
   },
   computed: {
     // slide: function() {
