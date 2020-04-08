@@ -6,7 +6,11 @@
       />
     </div>
     <div class="card">
-      <List :label="'slides'" :items="['slide 1', 'slide 2', 'slide 3', 'slide 4', 'slide 5']" />
+      <List
+        :label="'slides'"
+        :items="['slide 1', 'slide 2', 'slide 3', 'slide 4', 'slide 5', 'slide 6']"
+        :shown="5"
+      />
     </div>
     <div class="card" v-if="slide">
       <TextArea :label="'name'" @text="slide.name=$event" />

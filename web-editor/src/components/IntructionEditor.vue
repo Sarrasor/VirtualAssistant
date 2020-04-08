@@ -8,7 +8,8 @@
     <div class="card">
       <List
         :label="'instructions'"
-        :items="['instruction 1', 'instruction 2', 'instruction 3', 'instruction 4', 'instruction 5']"
+        :items="['instruction 1', 'instruction 2', 'instruction 3', 'instruction 4', 'instruction 5', 'instruction 6']"
+        :shown="5"
       />
     </div>
     <div class="card">
@@ -19,7 +20,8 @@
     <div class="card">
       <FileList
         :label="'assets'"
-        :items="['preview.png', 'schema.png', 'narration.m4a', 'duck.obj', 'tutorial.mp4']"
+        :items="['preview.png', 'schema.png', 'narration.m4a', 'duck.obj', 'tutorial.mp4', 'arrow.obj']"
+        :shown="5"
       />
     </div>
   </div>
