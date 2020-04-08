@@ -15,9 +15,9 @@
         >{{item}}</button>
       </div>
       <p class="label">name</p>
-      <TextArea @text="instruction.name=$event" />
+      <input type="text" v-model="instruction.name" />
       <p class="label">description</p>
-      <TextArea :label="'description'" :multiline="true" @text="instruction.description=$event" />
+      <textarea v-model="instruction.description" />
       <p class="label">preview</p>
       <FileDrop :label="'preview'" />
     </div>
@@ -42,7 +42,6 @@
 <script>
 import { v4 as uuidv4 } from "uuid";
 
-import TextArea from "./TextArea";
 import FileDrop from "./FileDrop";
 import FileUpload from "./FileUpload";
 import Toolbar from "./Toolbar";
@@ -51,7 +50,6 @@ export default {
   name: "InstructionEditor",
   props: ["inInstruction"],
   components: {
-    TextArea,
     FileDrop,
     FileUpload,
     Toolbar

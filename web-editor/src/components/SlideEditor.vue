@@ -13,9 +13,9 @@
         >{{item}}</button>
       </div>
       <p class="label">name</p>
-      <TextArea @text="slide.name=$event" />
+      <input type="text" v-model="slide.name" />
       <p class="label">description</p>
-      <TextArea :multiline="true" @text="slide.description=$event" />
+      <textarea v-model="slide.description" />
       <p class="label">preview</p>
       <FileDrop />
     </div>
@@ -23,7 +23,6 @@
 </template>
 
 <script>
-import TextArea from "./TextArea";
 import FileDrop from "./FileDrop";
 import Toolbar from "./Toolbar";
 
@@ -31,7 +30,6 @@ export default {
   name: "SlideEditor",
   props: ["inSlide"],
   components: {
-    TextArea,
     FileDrop,
     Toolbar
   },

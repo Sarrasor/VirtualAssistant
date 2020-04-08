@@ -13,9 +13,9 @@
         >{{item}}</button>
       </div>
       <p class="label">name</p>
-      <TextArea @text="object.name=$event" />
+      <input type="text" v-model="object.name" />
       <p class="label">description</p>
-      <TextArea :multiline="true" @text="object.description=$event" />
+      <textarea v-model="object.description" />
       <p class="label">media</p>
       <FileDrop />
       <Transform @transform="object.transform=$event" />
@@ -25,7 +25,6 @@
 
 <script>
 import Transform from "./Transform";
-import TextArea from "./TextArea";
 import FileDrop from "./FileDrop";
 import Toolbar from "./Toolbar";
 
@@ -35,7 +34,6 @@ export default {
   components: {
     Transform,
     FileDrop,
-    TextArea,
     Toolbar
   },
   data() {

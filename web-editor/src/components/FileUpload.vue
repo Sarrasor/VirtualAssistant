@@ -14,17 +14,11 @@ export default {
 #root {
   display: flex;
   flex-wrap: wrap;
-  overflow-y: auto;
-  box-shadow: inset 0 0 5px var(--shadow);
+  border: 2px dashed var(--select);
   place-content: center;
 }
 #root > * {
-  justify-content: left;
   width: 100%;
-  border-radius: 0;
-  border: none;
-  margin: 0;
-  background-color: transparent;
 }
 #empty {
   font-size: 12px;
