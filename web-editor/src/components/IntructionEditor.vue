@@ -1,5 +1,8 @@
 <template>
   <div id="root" v-if="instruction">
+    <Toolbar
+      :actions="{add: 'note_add', delete: 'delete', duplicate: 'file_copy', upload: 'backup'}"
+    />
     <div class="card">
       <List
         :label="'instructions'"
@@ -11,9 +14,6 @@
       <TextArea :label="'description'" :multiline="true" @text="instruction.description=$event" />
       <FileDrop :label="'preview'" />
     </div>
-    <Toolbar
-      :actions="{add: 'note_add', delete: 'delete', duplicate: 'file_copy', upload: 'backup'}"
-    />
     <div class="card">
       <FileList
         :label="'assets'"

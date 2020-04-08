@@ -75,8 +75,8 @@ button.flat.icon {
   margin: 0;
   place-content: center;
 }
-.material-icons {
-  font-size: 24px;
+.material-icons-outlined {
+  font-size: 18px;
   pointer-events: none;
 }
 ::-webkit-scrollbar {

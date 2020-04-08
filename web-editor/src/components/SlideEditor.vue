@@ -1,5 +1,8 @@
 <template>
   <div id="root" v-if="slide">
+    <Toolbar
+      :actions="{add: 'note_add', delete: 'delete', duplicate: 'file_copy', moveUp: 'arrow_upward', moveDown: 'arrow_downward'}"
+    />
     <div class="card">
       <List :label="'slides'" :items="['slide 1', 'slide 2', 'slide 3', 'slide 4', 'slide 5']" />
     </div>
@@ -8,9 +11,6 @@
       <TextArea :label="'description'" :multiline="true" @text="slide.description=$event" />
       <FileDrop :label="'preview'" />
     </div>
-    <Toolbar
-      :actions="{add: 'note_add', delete: 'delete', duplicate: 'file_copy', moveUp: 'arrow_upward', moveDown: 'arrow_downward'}"
-    />
   </div>
 </template>
 

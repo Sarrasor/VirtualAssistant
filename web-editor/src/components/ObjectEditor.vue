@@ -1,5 +1,6 @@
 <template>
   <div id="root" v-if="object">
+    <Toolbar :actions="{add: 'note_add', delete: 'delete', duplicate: 'file_copy'}" />
     <div class="card">
       <List
         :label="'objects'"
@@ -12,7 +13,6 @@
       <FileDrop :label="'media'" />
       <Transform @transform="object.transform=$event" />
     </div>
-    <Toolbar :actions="{add: 'note_add', delete: 'delete', duplicate: 'file_copy'}" />
   </div>
 </template>
 
