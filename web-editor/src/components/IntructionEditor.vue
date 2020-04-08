@@ -28,6 +28,8 @@
 </template>
 
 <script>
+import { v4 as uuidv4 } from "uuid";
+
 import TextArea from "./TextArea";
 import FileDrop from "./FileDrop";
 import List from "./List";
@@ -53,6 +55,7 @@ export default {
     inInstruction: {
       handler: function(value) {
         this.instruction = value || {
+          id: uuidv4(),
           name: "Slide title",
           description: "Lorem impsum dolor sit amet",
           preview_url: undefined,

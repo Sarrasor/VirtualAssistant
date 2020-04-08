@@ -29,10 +29,6 @@ import SlideEditor from "./components/SlideEditor";
 import ObjectEditor from "./components/ObjectEditor";
 import Render from "./components/Render"
 
-import Vue from "vue";
-import UUID from "vue-uuid";
-Vue.use(UUID);
-
 export default {
   name: "App",
   components: {
