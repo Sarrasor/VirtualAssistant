@@ -16,6 +16,13 @@ export default {
   flex-wrap: wrap;
   border: 2px dashed var(--select);
   place-content: center;
+  cursor: pointer;
+}
+#root:hover {
+  border-color: var(--text);
+}
+#root:active {
+  box-shadow: inset 0px 0px 20px var(--shadow);
 }
 #root > * {
   width: 100%;

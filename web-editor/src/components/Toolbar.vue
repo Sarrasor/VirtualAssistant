@@ -5,6 +5,7 @@
       :style="{width: widthPer}"
       :key="action"
       @click="$emit(action)"
+      :tooltip="action"
       v-for="(icon, action) of actions"
     >
       <i class="material-icons-outlined">{{icon}}</i>
