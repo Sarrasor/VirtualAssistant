@@ -28,21 +28,26 @@
       <textarea v-model="object.description" />
       <p class="label">media</p>
       <FileDrop />
-      <Transform @transform="object.transform=$event" />
+      <p class="label">position</p>
+      <Vector :length="3" @vector="object.transform.position=[...$event]" />
+      <p class="label">rotation</p>
+      <Vector :length="3" @vector="object.transform.rotation=[...$event]" />
+      <p class="label">scale</p>
+      <Vector :length="1" @vector="object.transform.scale=$event[0]" />
     </div>
   </div>
 </template>
 
 <script>
-import Transform from "./Transform";
 import FileDrop from "./FileDrop";
+import Vector from "./Vector";
 
 export default {
   name: "ObjectEditor",
   props: ["inObject"],
   components: {
-    Transform,
-    FileDrop
+    FileDrop,
+    Vector
   },
   data() {
     return {
@@ -71,6 +76,7 @@ export default {
     },
     object: {
       handler: function(value) {
+        console.log("object updated: " + JSON.stringify(value));
         this.$emit("object", value);
       },
       immediate: true,
