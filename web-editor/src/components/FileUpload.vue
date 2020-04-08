@@ -1,6 +1,6 @@
 <template>
   <div id="root">
-    <p id="empty">click or drag files here to upload</p>
+    <p id="empty">click or drag your local files here to upload</p>
   </div>
 </template>
 
