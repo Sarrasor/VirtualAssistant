@@ -1,6 +1,8 @@
 <template>
   <div id="root" v-if="object">
-    <Toolbar :actions="{add: 'note_add', delete: 'delete', duplicate: 'file_copy'}" />
+    <div class="card">
+      <Toolbar :actions="{add: 'note_add', delete: 'delete', duplicate: 'file_copy'}" />
+    </div>
     <div class="card">
       <List
         :label="'objects'"

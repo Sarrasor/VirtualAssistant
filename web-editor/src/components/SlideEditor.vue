@@ -1,8 +1,10 @@
 <template>
   <div id="root" v-if="slide">
-    <Toolbar
-      :actions="{add: 'note_add', delete: 'delete', duplicate: 'file_copy', moveUp: 'arrow_upward', moveDown: 'arrow_downward'}"
-    />
+    <div class="card">
+      <Toolbar
+        :actions="{add: 'note_add', delete: 'delete', duplicate: 'file_copy', moveUp: 'arrow_upward', moveDown: 'arrow_downward'}"
+      />
+    </div>
     <div class="card">
       <List :label="'slides'" :items="['slide 1', 'slide 2', 'slide 3', 'slide 4', 'slide 5']" />
     </div>
