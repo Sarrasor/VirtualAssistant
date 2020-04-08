@@ -76,7 +76,6 @@ export default {
     },
     object: {
       handler: function(value) {
-        console.log("object updated: " + JSON.stringify(value));
         this.$emit("object", value);
       },
       immediate: true,
