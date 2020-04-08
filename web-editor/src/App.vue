@@ -54,7 +54,6 @@ export default {
   display: grid;
   grid-template-columns: repeat(3, 200px) 1fr;
   gap: 10px;
-  background-color: var(--back);
 }
 </style>
 
