@@ -1,17 +1,17 @@
 <template>
-  <div id="root" v-if="slide">
+  <div v-if="slide">
     <div class="card">
       <p class="label bold">slides</p>
-      <Toolbar
-        :actions="{add: 'note_add', delete: 'delete', duplicate: 'file_copy', moveUp: 'arrow_upward', moveDown: 'arrow_downward'}"
-      />
-      <List
-        :label="'slides'"
-        :items="['slide 1', 'slide 2', 'slide 3', 'slide 4', 'slide 5', 'slide 6']"
-        :shown="5"
-      />
-    </div>
-    <div class="card" v-if="slide">
+      <Toolbar :actions="{add: 'add', delete: 'delete', duplicate: 'library_add'}" />
+      <div class="list" style="height: 125px">
+        <button
+          class="flat"
+          :class="{selected: i===selected}"
+          :key="i"
+          @click="selected=i"
+          v-for="(item, i) in ['slide 1', 'slide 2', 'slide 3', 'slide 4', 'slide 5', 'slide 6']"
+        >{{item}}</button>
+      </div>
       <p class="label">name</p>
       <TextArea @text="slide.name=$event" />
       <p class="label">description</p>
@@ -25,7 +25,6 @@
 <script>
 import TextArea from "./TextArea";
 import FileDrop from "./FileDrop";
-import List from "./List";
 import Toolbar from "./Toolbar";
 
 export default {
@@ -34,12 +33,12 @@ export default {
   components: {
     TextArea,
     FileDrop,
-    List,
     Toolbar
   },
   data() {
     return {
-      slide: undefined
+      slide: undefined,
+      selected: 0
     };
   },
   watch: {

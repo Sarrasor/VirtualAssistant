@@ -1,14 +1,17 @@
 <template>
-  <div id="root" v-if="object">
+  <div v-if="object">
     <div class="card">
       <p class="label bold">objects</p>
-      <Toolbar :actions="{add: 'note_add', delete: 'delete', duplicate: 'file_copy'}" />
-      <List
-        :items="['object 1', 'object 2', 'object 3', 'object 4', 'object 5', 'object 6']"
-        :shown="5"
-      />
-    </div>
-    <div class="card">
+      <Toolbar :actions="{add: 'add', delete: 'delete', duplicate: 'library_add'}" />
+      <div class="list" style="height: 125px">
+        <button
+          class="flat"
+          :class="{selected: i===selected}"
+          :key="i"
+          @click="selected=i"
+          v-for="(item, i) in ['object 1', 'object 2', 'object 3', 'object 4', 'object 5', 'object 6']"
+        >{{item}}</button>
+      </div>
       <p class="label">name</p>
       <TextArea @text="object.name=$event" />
       <p class="label">description</p>
@@ -24,7 +27,6 @@
 import Transform from "./Transform";
 import TextArea from "./TextArea";
 import FileDrop from "./FileDrop";
-import List from "./List";
 import Toolbar from "./Toolbar";
 
 export default {
@@ -34,12 +36,12 @@ export default {
     Transform,
     FileDrop,
     TextArea,
-    List,
     Toolbar
   },
   data() {
     return {
-      object: undefined
+      object: undefined,
+      selected: 0
     };
   },
   watch: {

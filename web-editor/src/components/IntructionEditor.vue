@@ -3,14 +3,17 @@
     <div class="card">
       <p class="label bold">instructions</p>
       <Toolbar
-        :actions="{add: 'note_add', delete: 'delete', duplicate: 'file_copy', upload: 'backup'}"
+        :actions="{add: 'add', delete: 'delete', duplicate: 'library_add', upload: 'publish'}"
       />
-      <List
-        :items="['instruction 1', 'instruction 2', 'instruction 3', 'instruction 4', 'instruction 5', 'instruction 6']"
-        :shown="5"
-      />
-    </div>
-    <div class="card">
+      <div class="list" style="height: 125px">
+        <button
+          class="flat"
+          :class="{selected: i===selected}"
+          :key="i"
+          @click="selected=i"
+          v-for="(item, i) in ['instruction 1', 'instruction 2', 'instruction 3', 'instruction 4', 'instruction 5', 'instruction 6']"
+        >{{item}}</button>
+      </div>
       <p class="label">name</p>
       <TextArea @text="instruction.name=$event" />
       <p class="label">description</p>
@@ -18,12 +21,20 @@
       <p class="label">preview</p>
       <FileDrop :label="'preview'" />
     </div>
-    <div class="card" style="width: 390px">
+    <div class="card" style="margin-top: 20px; width: 380px">
       <p class="label bold">assets</p>
-      <FileList
-        :items="['preview.png', 'schema.png', 'narration.m4a', 'duck.obj', 'tutorial.mp4', 'arrow.obj']"
-        :shown="5"
-      />
+      <div id="files">
+        <div class="list" style="height: 125px">
+          <button
+            class="flat"
+            :class="{selectedFile: i===selectedFile}"
+            :key="i"
+            @click="selectedFile=i"
+            v-for="(item, i) in ['preview.png', 'schema.png', 'narration.m4a', 'duck.obj', 'tutorial.mp4', 'arrow.obj']"
+          >{{item}}</button>
+        </div>
+        <FileUpload />
+      </div>
     </div>
   </div>
 </template>
@@ -33,8 +44,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import TextArea from "./TextArea";
 import FileDrop from "./FileDrop";
-import List from "./List";
-import FileList from "./FileList";
+import FileUpload from "./FileUpload";
 import Toolbar from "./Toolbar";
 
 export default {
@@ -43,13 +53,14 @@ export default {
   components: {
     TextArea,
     FileDrop,
-    List,
-    FileList,
+    FileUpload,
     Toolbar
   },
   data() {
     return {
-      instruction: undefined
+      instruction: undefined,
+      selected: 0,
+      selectedFile: 0
     };
   },
   watch: {
@@ -77,4 +88,9 @@ export default {
 </script>
 
 <style scoped>
+#files {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  gap: 5px;
+}
 </style>

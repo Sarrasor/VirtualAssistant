@@ -1,12 +1,12 @@
 <template>
   <div id="root">
-    <p id="empty">drag an asset here</p>
+    <p id="empty">click or drag files here to upload</p>
   </div>
 </template>
 
 <script>
 export default {
-  name: "FileDrop"
+  name: "FileUpload"
 };
 </script>
 
@@ -14,12 +14,17 @@ export default {
 #root {
   display: flex;
   flex-wrap: wrap;
-  border: 2px dashed var(--select);
-  height: 25px;
+  overflow-y: auto;
+  box-shadow: inset 0 0 5px var(--shadow);
   place-content: center;
 }
 #root > * {
+  justify-content: left;
   width: 100%;
+  border-radius: 0;
+  border: none;
+  margin: 0;
+  background-color: transparent;
 }
 #empty {
   font-size: 12px;

@@ -51,7 +51,6 @@ export default {
   margin: 0;
   display: grid;
   grid-template-columns: repeat(3, 200px) 1fr;
-  gap: 10px;
 }
 </style>
 
@@ -75,6 +74,25 @@ button.flat.icon {
 .material-icons-outlined {
   font-size: 18px;
   pointer-events: none;
+}
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  place-content: flex-start;
+  overflow-y: auto;
+  box-shadow: inset 0 0 5px var(--shadow);
+}
+.list > * {
+  width: 100%;
+  border-radius: 0;
+  margin: 0;
+}
+.list > :not(.selected) {
+  background-color: transparent;
+}
+.list > .selected {
+  text-decoration: underline;
+  background-color: var(--select);
 }
 ::-webkit-scrollbar {
   width: 10px;
