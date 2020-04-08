@@ -2,9 +2,20 @@
   <div id="root" v-if="instruction">
     <div class="card">
       <p class="label bold">instructions</p>
-      <Toolbar
-        :actions="{add: 'add', delete: 'delete', duplicate: 'library_add', upload: 'publish'}"
-      />
+      <div class="toolbar">
+        <button class="flat icon" @click="$emit('add')" :tooltip="'create new'">
+          <i class="material-icons-outlined">add</i>
+        </button>
+        <button class="flat icon" @click="$emit('duplicate')" :tooltip="'duplicate'">
+          <i class="material-icons-outlined">library_add</i>
+        </button>
+        <button class="flat icon" @click="$emit('delete')" :tooltip="'delete'">
+          <i class="material-icons-outlined">delete</i>
+        </button>
+        <button class="flat icon" @click="$emit('upload')" :tooltip="'upload to server'">
+          <i class="material-icons-outlined">publish</i>
+        </button>
+      </div>
       <div class="list" style="height: 125px">
         <button
           class="flat"
@@ -44,15 +55,13 @@ import { v4 as uuidv4 } from "uuid";
 
 import FileDrop from "./FileDrop";
 import FileUpload from "./FileUpload";
-import Toolbar from "./Toolbar";
 
 export default {
   name: "InstructionEditor",
   props: ["inInstruction"],
   components: {
     FileDrop,
-    FileUpload,
-    Toolbar
+    FileUpload
   },
   data() {
     return {

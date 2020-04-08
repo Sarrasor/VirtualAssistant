@@ -30,6 +30,17 @@ html, body, #app {
     font-family: 'Fira Sans', sans-serif;
 }
 
+.toolbar {
+    margin-bottom: 5px;
+    display: flex;
+    flex-flow: row;
+    flex-wrap: nowrap;
+}
+
+.toolbar>* {
+    flex: 1;
+}
+
 .label {
     margin: 5px 0;
     font-style: italic;

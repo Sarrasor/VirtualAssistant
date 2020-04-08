@@ -2,7 +2,17 @@
   <div v-if="slide">
     <div class="card">
       <p class="label bold">slides</p>
-      <Toolbar :actions="{add: 'add', delete: 'delete', duplicate: 'library_add'}" />
+      <div class="toolbar">
+        <button class="flat icon" @click="$emit('add')" :tooltip="'create new'">
+          <i class="material-icons-outlined">add</i>
+        </button>
+        <button class="flat icon" @click="$emit('duplicate')" :tooltip="'duplicate'">
+          <i class="material-icons-outlined">library_add</i>
+        </button>
+        <button class="flat icon" @click="$emit('delete')" :tooltip="'delete'">
+          <i class="material-icons-outlined">delete</i>
+        </button>
+      </div>
       <div class="list" style="height: 125px">
         <button
           class="flat"
@@ -24,14 +34,12 @@
 
 <script>
 import FileDrop from "./FileDrop";
-import Toolbar from "./Toolbar";
 
 export default {
   name: "SlideEditor",
   props: ["inSlide"],
   components: {
-    FileDrop,
-    Toolbar
+    FileDrop
   },
   data() {
     return {

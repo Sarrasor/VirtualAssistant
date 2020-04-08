@@ -2,7 +2,17 @@
   <div v-if="object">
     <div class="card">
       <p class="label bold">objects</p>
-      <Toolbar :actions="{add: 'add', delete: 'delete', duplicate: 'library_add'}" />
+      <div class="toolbar">
+        <button class="flat icon" @click="$emit('add')" :tooltip="'create new'">
+          <i class="material-icons-outlined">add</i>
+        </button>
+        <button class="flat icon" @click="$emit('duplicate')" :tooltip="'duplicate'">
+          <i class="material-icons-outlined">library_add</i>
+        </button>
+        <button class="flat icon" @click="$emit('delete')" :tooltip="'delete'">
+          <i class="material-icons-outlined">delete</i>
+        </button>
+      </div>
       <div class="list" style="height: 125px">
         <button
           class="flat"
@@ -26,15 +36,13 @@
 <script>
 import Transform from "./Transform";
 import FileDrop from "./FileDrop";
-import Toolbar from "./Toolbar";
 
 export default {
   name: "ObjectEditor",
   props: ["inObject"],
   components: {
     Transform,
-    FileDrop,
-    Toolbar
+    FileDrop
   },
   data() {
     return {
