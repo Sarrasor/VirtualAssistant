@@ -1,21 +1,18 @@
 <template>
   <div id="root">
-    <p class="label" v-if="label">{{label}}</p>
-    <div id="items" :style="{height: height}">
-      <button
-        :class="{selected: i===selected}"
-        :key="i"
-        @click="$emit('select', selected=i)"
-        v-for="(item, i) in items"
-      >{{item}}</button>
-    </div>
+    <button
+      :class="{selected: i===selected}"
+      :key="i"
+      @click="$emit('select', selected=i)"
+      v-for="(item, i) in items"
+    >{{item}}</button>
   </div>
 </template>
 
 <script>
 export default {
   name: "List",
-  props: ["items", "shown", "label"],
+  props: ["items", "shown"],
   data() {
     return {
       selected: 0
@@ -32,14 +29,13 @@ export default {
 </script>
 
 <style scoped>
-#items {
+#root {
   display: flex;
   flex-wrap: wrap;
   overflow-y: auto;
-  border-radius: 0;
   box-shadow: inset 0 0 5px var(--shadow);
 }
-#items > * {
+#root > * {
   justify-content: left;
   width: 100%;
   border-radius: 0;
@@ -47,19 +43,7 @@ export default {
   margin: 0;
   background-color: transparent;
 }
-#items > *:hover {
+#root > *:hover {
   background-color: var(--select);
-}
-::-webkit-scrollbar {
-  width: 10px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: var(--select);
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--text);
 }
 </style>

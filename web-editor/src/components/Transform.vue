@@ -1,16 +1,11 @@
 <template>
   <div id="transform">
-    <Vector
-      :length="3"
-      :label="'position'"
-      @vector="transform.position=[...$event]"
-    />
-    <Vector
-      :length="3"
-      :label="'rotation'"
-      @vector="transform.rotation=[...$event]"
-    />
-    <Vector :length="1" :label="'scale'" @vector="transform.scale=$event[0]" />
+    <p class="label">position</p>
+    <Vector :length="3" @vector="transform.position=[...$event]" />
+    <p class="label">rotation</p>
+    <Vector :length="3" @vector="transform.rotation=[...$event]" />
+    <p class="label">scale</p>
+    <Vector :length="1" @vector="transform.scale=$event[0]" />
   </div>
 </template>
 

@@ -1,6 +1,5 @@
 <template>
   <div id="root">
-    <p class="label" v-if="label">{{label}}</p>
     <input
       type="number"
       step="0.01"
@@ -16,7 +15,7 @@
 <script>
 export default {
   name: "Vector",
-  props: ["length", "label"],
+  props: ["length"],
   data() {
     return {
       vector: undefined

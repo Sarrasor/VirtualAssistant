@@ -1,11 +1,10 @@
 <template>
   <div id="root" v-if="slide">
     <div class="card">
+      <p class="label bold">slides</p>
       <Toolbar
         :actions="{add: 'note_add', delete: 'delete', duplicate: 'file_copy', moveUp: 'arrow_upward', moveDown: 'arrow_downward'}"
       />
-    </div>
-    <div class="card">
       <List
         :label="'slides'"
         :items="['slide 1', 'slide 2', 'slide 3', 'slide 4', 'slide 5', 'slide 6']"
@@ -13,9 +12,12 @@
       />
     </div>
     <div class="card" v-if="slide">
-      <TextArea :label="'name'" @text="slide.name=$event" />
-      <TextArea :label="'description'" :multiline="true" @text="slide.description=$event" />
-      <FileDrop :label="'preview'" />
+      <p class="label">name</p>
+      <TextArea @text="slide.name=$event" />
+      <p class="label">description</p>
+      <TextArea :multiline="true" @text="slide.description=$event" />
+      <p class="label">preview</p>
+      <FileDrop />
     </div>
   </div>
 </template>

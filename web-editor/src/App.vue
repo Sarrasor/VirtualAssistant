@@ -27,7 +27,7 @@
 import InstructionEditor from "./components/IntructionEditor";
 import SlideEditor from "./components/SlideEditor";
 import ObjectEditor from "./components/ObjectEditor";
-import Render from "./components/Render"
+import Render from "./components/Render";
 
 export default {
   name: "App",
@@ -84,6 +84,7 @@ button.flat.icon {
 }
 ::-webkit-scrollbar-thumb {
   background: var(--select);
+  border-radius: 0 4px 4px 0;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text);

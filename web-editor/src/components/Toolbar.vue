@@ -26,7 +26,7 @@ export default {
 
 <style scoped>
 #root {
-  padding-top: 5px;
+  margin-bottom: 5px;
   display: flex;
   flex-flow: row;
   flex-wrap: nowrap;

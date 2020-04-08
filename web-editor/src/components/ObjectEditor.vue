@@ -1,19 +1,20 @@
 <template>
   <div id="root" v-if="object">
     <div class="card">
+      <p class="label bold">objects</p>
       <Toolbar :actions="{add: 'note_add', delete: 'delete', duplicate: 'file_copy'}" />
-    </div>
-    <div class="card">
       <List
-        :label="'objects'"
         :items="['object 1', 'object 2', 'object 3', 'object 4', 'object 5', 'object 6']"
         :shown="5"
       />
     </div>
     <div class="card">
-      <TextArea :label="'name'" @text="object.name=$event" />
-      <TextArea :label="'description'" :multiline="true" @text="object.description=$event" />
-      <FileDrop :label="'media'" />
+      <p class="label">name</p>
+      <TextArea @text="object.name=$event" />
+      <p class="label">description</p>
+      <TextArea :multiline="true" @text="object.description=$event" />
+      <p class="label">media</p>
+      <FileDrop />
       <Transform @transform="object.transform=$event" />
     </div>
   </div>

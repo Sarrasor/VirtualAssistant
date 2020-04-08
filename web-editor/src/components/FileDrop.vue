@@ -1,16 +1,12 @@
 <template>
   <div id="root">
-    <p class="label" v-if="label">{{label}}</p>
-    <div id="area">
-      <p id="empty" v-if="label">drop a file here</p>
-    </div>
+    <p id="empty" v-if="label">drop an asset here</p>
   </div>
 </template>
 
 <script>
 export default {
-  name: "FileDrop",
-  props: ["label"]
+  name: "FileDrop"
 };
 </script>
 
@@ -18,15 +14,12 @@ export default {
 #root {
   display: flex;
   flex-wrap: wrap;
+  border: 2px dashed var(--select);
+  height: 25px;
+  align-items: center;
 }
 #root > * {
   width: 100%;
-}
-#area {
-  border: 2px dashed var(--select);
-  height: 25px;
-  display: flex;
-  align-items: center;
 }
 #empty {
   font-size: 12px;

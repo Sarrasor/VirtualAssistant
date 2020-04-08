@@ -1,6 +1,5 @@
 <template>
   <div id="root">
-    <p class="label" v-if="label">{{label}}</p>
     <textarea v-if="multiline" @input="$emit('text', $event.target.value)" />
     <input v-else type="text" @input="$emit('text', $event.target.value)" />
   </div>
@@ -9,7 +8,7 @@
 <script>
 export default {
   name: "TextArea",
-  props: ["label", "multiline"]
+  props: ["multiline"]
 };
 </script>
 

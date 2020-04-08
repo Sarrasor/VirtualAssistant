@@ -1,25 +1,26 @@
 <template>
   <div id="root" v-if="instruction">
     <div class="card">
+      <p class="label bold">instructions</p>
       <Toolbar
         :actions="{add: 'note_add', delete: 'delete', duplicate: 'file_copy', upload: 'backup'}"
       />
-    </div>
-    <div class="card">
       <List
-        :label="'instructions'"
         :items="['instruction 1', 'instruction 2', 'instruction 3', 'instruction 4', 'instruction 5', 'instruction 6']"
         :shown="5"
       />
     </div>
     <div class="card">
-      <TextArea :label="'name'" @text="instruction.name=$event" />
+      <p class="label">name</p>
+      <TextArea @text="instruction.name=$event" />
+      <p class="label">description</p>
       <TextArea :label="'description'" :multiline="true" @text="instruction.description=$event" />
+      <p class="label">preview</p>
       <FileDrop :label="'preview'" />
     </div>
-    <div class="card">
+    <div class="card" style="width: 390px">
+      <p class="label bold">assets</p>
       <FileList
-        :label="'assets'"
         :items="['preview.png', 'schema.png', 'narration.m4a', 'duck.obj', 'tutorial.mp4', 'arrow.obj']"
         :shown="5"
       />
