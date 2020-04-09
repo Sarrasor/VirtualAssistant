@@ -29,11 +29,11 @@
       <p class="label">media</p>
       <FileDrop />
       <p class="label">position</p>
-      <Vector :length="3" @vector="object.transform.position=[...$event]" />
+      <Vector :fields="['x','y','z']" @vector="object.transform.position=$event" />
       <p class="label">rotation</p>
-      <Vector :length="3" @vector="object.transform.rotation=[...$event]" />
+      <Vector :fields="['x','y','z']" @vector="object.transform.rotation=$event" />
       <p class="label">scale</p>
-      <Vector :length="1" @vector="object.transform.scale=$event[0]" />
+      <Vector :fields="['x']" @vector="object.transform.scale=$event.x" />
     </div>
   </div>
 </template>
@@ -66,8 +66,8 @@ export default {
           },
           description: "",
           transform: {
-            position: [0, 0, 0],
-            rotation: [0, 0, 0],
+            position: { x: 0, y: 0, z: 0 },
+            rotation: { x: 0, y: 0, z: 0 },
             scale: 1
           }
         };
