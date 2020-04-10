@@ -1,0 +1,177 @@
+:root {
+    --text: #2E3440;
+    --select: #E5E9F0;
+    --shadow: #D8DEE9;
+    --back: #F8F9FB;
+}
+
+html, body, #app {
+    margin: 0;
+    height: 100vh;
+    background-color: var(--back);
+}
+
+.section {
+    margin: auto auto 50px auto;
+    width: 100%;
+    max-width: 960px;
+}
+
+* {
+    -webkit-tap-highlight-color: transparent;
+    box-sizing: border-box;
+    outline: none;
+    resize: none;
+    font-size: 14px;
+    color: var(--text);
+    border-radius: 4px;
+    transition: 0.15s;
+    border: 0;
+    font-family: 'Fira Sans', sans-serif;
+}
+
+.toolbar {
+    margin-bottom: 5px;
+    display: flex;
+    flex-flow: row;
+    flex-wrap: nowrap;
+}
+
+.toolbar>* {
+    flex: 1;
+}
+
+.label {
+    margin: 5px 0;
+    font-style: italic;
+    font-size: 12px;
+    width: 100%;
+    font-weight: 300;
+    user-select: none;
+}
+
+.label.bold {
+    margin: 5px 0;
+    font-style: normal;
+    font-size: 14px;
+    width: 100%;
+    font-weight: bold;
+    text-align: center;
+}
+
+.card {
+    margin: 10px;
+    box-shadow: 0px 0px 10px var(--shadow);
+    padding: 0 5px 5px 5px;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+}
+
+[tooltip]:before {
+    font-style: italic;
+    font-size: 12px;
+    border-radius: 4px;
+    background-color: white;
+    box-shadow: 0px 0px 10px var(--shadow);
+    padding: 2px 4px;
+    margin-top: -15px;
+    position: absolute;
+    content: attr(tooltip);
+    opacity: 0;
+    transition: 0.15s;
+    pointer-events: none;
+}
+
+[tooltip]:hover:before {
+    opacity: 1;
+    margin-top: -30px;
+}
+
+button, select {
+    border: 1px solid transparent;
+    background-color: var(--select);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 25px;
+    user-select: none;
+    margin: 10px 0;
+    padding: 0 10px;
+}
+
+button:hover, select:hover {
+    border-color: var(--text) !important;
+}
+
+button:active, select:active {
+    color: white !important;
+    background-color: var(--text) !important;
+}
+
+button:active>* {
+    color: white !important;
+}
+
+h1 {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+h2 {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+h3 {
+    font-size: 14px;
+    font-weight: bold;
+    font-style: italic;
+}
+
+hr {
+    width: 100%;
+    height: 2px;
+    background-color: var(--select);
+}
+
+a {
+    border: 1px dashed transparent;
+    cursor: pointer;
+    user-select: none;
+    padding: 3px 6px;
+    text-decoration: underline;
+}
+
+a:hover {
+    border-color: var(--text);
+}
+
+a:active {
+    transform: scale(1.15);
+}
+
+input {
+    height: 25px;
+}
+
+textarea {
+    height: 65px;
+}
+
+textarea, input {
+    padding: 5px;
+    border: 1px solid var(--select);
+    text-align: left;
+    /* height: 30px; */
+}
+
+textarea:read-only, input:read-only {
+    border-color: var(--select);
+    background-color: var(--select);
+}
+
+textarea:read-write:hover, textarea:read-write:focus, input:read-write:hover, input:read-write:focus {
+    border-color: var(--text);
+}
