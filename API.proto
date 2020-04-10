@@ -82,9 +82,10 @@ message Media
 // Kind of object is determined by enum MediaType
 message Asset
 {
-    Media media = 1;
-    Transform transform = 2;
-    bool hidden = 3;
+    string name = 1;
+    Media media = 2;
+    Transform transform = 3;
+    bool hidden = 4;
 }
 
 // One step might containt multiple Assets
