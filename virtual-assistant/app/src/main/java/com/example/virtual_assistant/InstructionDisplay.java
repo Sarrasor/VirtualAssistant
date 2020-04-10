@@ -309,8 +309,17 @@ public class InstructionDisplay extends AppCompatActivity {
         VirtualAssistantOuterClass.Transform.Vector3 pos = main_asset.getTransform().getPosition();
         VirtualAssistantOuterClass.Transform.Vector3 orient = main_asset.getTransform().getOrientation();
 
-        stepNode.getScaleController().setMinScale(scale - 0.01f);
-        stepNode.getScaleController().setMaxScale(scale);
+        if (scale == 0.0f)
+        {
+            stepNode.getScaleController().setMinScale(0.01f);
+            stepNode.getScaleController().setMaxScale(3.0f);
+        }
+        else
+        {
+            stepNode.getScaleController().setMinScale(scale - 0.01f);
+            stepNode.getScaleController().setMaxScale(scale);
+        }
+
         stepNode.setLocalPosition(new Vector3(pos.getX(), pos.getY(), pos.getZ()));
         stepNode.setLocalRotation(new Quaternion(new Vector3(orient.getX(), orient.getY(), orient.getZ())));
     }
@@ -378,14 +387,22 @@ public class InstructionDisplay extends AppCompatActivity {
 
                     float scale = main_asset.getTransform().getScale();
 
+                    if (scale == 0.0f)
+                    {
+                        stepNode.getScaleController().setMinScale(0.01f);
+                        stepNode.getScaleController().setMaxScale(3.0f);
+                    }
+                    else
+                    {
+                        stepNode.getScaleController().setMinScale(scale - 0.01f);
+                        stepNode.getScaleController().setMaxScale(scale);
+                    }
+
                     VirtualAssistantOuterClass.Transform.Vector3 pos = main_asset.getTransform().getPosition();
                     VirtualAssistantOuterClass.Transform.Vector3 orient = main_asset.getTransform().getOrientation();
 
-                    stepNode.setLocalScale(new Vector3(scale, scale, scale));
                     stepNode.setLocalPosition(new Vector3(pos.getX(), pos.getY(), pos.getZ()));
                     stepNode.setLocalRotation(new Quaternion(new Vector3(orient.getX(), orient.getY(), orient.getZ())));
-                    stepNode.getScaleController().setMinScale(scale - 0.01f);
-                    stepNode.getScaleController().setMaxScale(scale);
                     stepNode.select();
                 });
     }
