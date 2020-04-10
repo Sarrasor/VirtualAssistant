@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
-    <fragment android:name="com.google.ar.sceneform.ux.ArFragment"
+    <fragment android:name="com.example.virtual_assistant.WritingArFragment"
         android:id="@+id/ux_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -32,6 +32,15 @@
         android:layout_height="wrap_content"
         android:onClick="prevStep"
         android:text="Prev" />
+
+    <Button
+        android:id="@+id/photoButton"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:onClick="takePhoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Photo" />
 
 
 </RelativeLayout>

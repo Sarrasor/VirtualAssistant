@@ -65,6 +65,8 @@ dependencies {
 
     implementation 'com.google.ar.sceneform.ux:sceneform-ux:1.15.0'
     implementation 'com.google.ar.sceneform:assets:1.15.0'
+
+    implementation 'com.android.support:design:28.0.0'
 }
 
 
