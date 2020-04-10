@@ -33,7 +33,7 @@
       <FileDrop :label="'preview'" />
     </div>
     <div class="card" style="margin-top: 20px; width: 380px">
-      <p class="label bold">assets</p>
+      <p class="label bold">files</p>
       <div id="files">
         <div class="list" style="height: 125px">
           <button
@@ -75,10 +75,10 @@ export default {
       handler: function(value) {
         this.instruction = value || {
           id: uuidv4(),
-          name: "Slide title",
+          name: "Instruction title",
           description: "Lorem impsum dolor sit amet",
           preview_url: undefined,
-          slides: [null]
+          steps: [null]
         };
       },
       immediate: true

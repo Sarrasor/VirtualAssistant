@@ -1,7 +1,7 @@
 <template>
-  <div v-if="slide">
+  <div v-if="step">
     <div class="card">
-      <p class="label bold">slides</p>
+      <p class="label bold">steps</p>
       <div class="toolbar">
         <button class="flat icon" @click="$emit('add')" :tooltip="'create new'">
           <i class="material-icons-outlined">add</i>
@@ -19,13 +19,13 @@
           :class="{selected: i===selected}"
           :key="i"
           @click="selected=i"
-          v-for="(item, i) in ['slide 1', 'slide 2', 'slide 3', 'slide 4', 'slide 5', 'slide 6']"
+          v-for="(item, i) in ['step 1', 'step 2', 'step 3', 'step 4', 'step 5', 'step 6']"
         >{{item}}</button>
       </div>
       <p class="label">name</p>
-      <input type="text" v-model="slide.name" />
+      <input type="text" v-model="step.name" />
       <p class="label">description</p>
-      <textarea v-model="slide.description" />
+      <textarea v-model="step.description" />
       <p class="label">preview</p>
       <FileDrop />
     </div>
@@ -36,32 +36,32 @@
 import FileDrop from "./FileDrop";
 
 export default {
-  name: "SlideEditor",
-  props: ["inSlide"],
+  name: "StepEditor",
+  props: ["inStep"],
   components: {
     FileDrop
   },
   data() {
     return {
-      slide: undefined,
+      step: undefined,
       selected: 0
     };
   },
   watch: {
-    inSlide: {
+    inStep: {
       handler: function(value) {
-        this.slide = value || {
-          name: "Slide title",
+        this.step = value || {
+          name: "Step title",
           description: "Lorem impsum dolor sit amet",
           preview_url: undefined,
-          objects: [null]
+          assets: [null]
         };
       },
       immediate: true
     },
-    slide: {
+    step: {
       handler: function(value) {
-        this.$emit("slide", value);
+        this.$emit("step", value);
       },
       immediate: true,
       deep: true
@@ -69,6 +69,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-</style>

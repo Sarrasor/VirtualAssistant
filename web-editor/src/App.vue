@@ -1,23 +1,23 @@
 <template>
   <div id="app">
     <InstructionEditor />
-    <SlideEditor />
-    <ObjectEditor />
-    <!-- <SlideEditor
+    <StepEditor />
+    <AssetEditor />
+    <!-- <StepEditor
       :key="i"
-      :inSlide="sld"
-      @slide="$set(slides, i, $event)"
-      @delete="slides.splice(i, 1)"
-      @open="slideI=i"
-      v-for="(sld, i) in slides"
+      :inStep="sld"
+      @step="$set(steps, i, $event)"
+      @delete="steps.splice(i, 1)"
+      @open="stepI=i"
+      v-for="(sld, i) in steps"
     />-->
-    <!-- <ObjectEditor
+    <!-- <AssetEditor
       :key="i"
-      :inObject="obj"
-      @object="$set(slide.objects, i, $event)"
-      @delete="slide.objects.splice(i, 1)"
-      @duplicate="slide.objects.push(slide.objects[i])"
-      v-for="(obj, i) in slide.objects"
+      :inAsset="obj"
+      @asset="$set(step.assets, i, $event)"
+      @delete="step.assets.splice(i, 1)"
+      @duplicate="step.assets.push(step.assets[i])"
+      v-for="(obj, i) in step.assets"
     />-->
     <Render />
   </div>
@@ -25,21 +25,21 @@
 
 <script>
 import InstructionEditor from "./components/IntructionEditor";
-import SlideEditor from "./components/SlideEditor";
-import ObjectEditor from "./components/ObjectEditor";
+import StepEditor from "./components/StepEditor";
+import AssetEditor from "./components/AssetEditor";
 import Render from "./components/Render";
 
 export default {
   name: "App",
   components: {
     InstructionEditor,
-    SlideEditor,
-    ObjectEditor,
+    StepEditor,
+    AssetEditor,
     Render
   },
   computed: {
-    // slide: function() {
-    //   return this.slideI < this.slides.length ? this.slides[this.slideI] : null;
+    // step: function() {
+    //   return this.stepI < this.steps.length ? this.steps[this.stepI] : null;
     // }
   }
 };
