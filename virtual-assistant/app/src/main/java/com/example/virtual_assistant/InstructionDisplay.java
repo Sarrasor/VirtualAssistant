@@ -13,71 +13,65 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.MotionEventCompat;
 
-import com.example.proto.Chunk;
-import com.example.proto.InstructionGrpc;
-import com.example.proto.InstructionRequest;
-import com.example.proto.InstructionResponse;
-import com.example.proto.MediaRequest;
-import com.example.proto.Slide;
+
 import com.google.ar.core.Anchor;
 import com.google.ar.core.HitResult;
 import com.google.ar.core.Plane;
 import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.assets.RenderableSource;
+import com.google.ar.sceneform.math.Quaternion;
 import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.rendering.ViewRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
-import com.google.ar.sceneform.ux.TransformableNode;
 
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.net.URI;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import virtual_assistant.VirtualAssistantGrpc;
+import virtual_assistant.VirtualAssistantOuterClass;
+import virtual_assistant.VirtualAssistantOuterClass.Asset;
+import virtual_assistant.VirtualAssistantOuterClass.Chunk;
+import virtual_assistant.VirtualAssistantOuterClass.InstructionRequest;
+import virtual_assistant.VirtualAssistantOuterClass.InstructionResponse;
+import virtual_assistant.VirtualAssistantOuterClass.Media;
+import virtual_assistant.VirtualAssistantOuterClass.MediaRequest;
+import virtual_assistant.VirtualAssistantOuterClass.Step;
 
 public class InstructionDisplay extends AppCompatActivity {
 
     private static final String TAG = InstructionDisplay.class.getSimpleName();
     private static final double MIN_OPENGL_VERSION = 3.0;
     File instruction_dir;
-    RotatingNode slideNode;
-    TransformableNode buttonNode;
+    RotatingNode stepNode;
     private TextView text;
     private Context context;
-    private int slide_number;
-    private List<Slide> slides;
+    private int step_number;
+    private List<Step> steps;
     private ArFragment arFragment;
-    private ImageView slideImgView;
-    private ViewRenderable slideRenderable;
-    private ViewRenderable buttonRenderable;
-    private ModelRenderable catRenderable;
-
-    private static final String GLTF_ASSET =
-            "file:///android_asset/Mesh_Cat.gltf";
-
+    private ImageView stepImgView;
+    private TextView stepTxtView;
+    private ViewRenderable imgRenderable;
+    private ViewRenderable textRenderable;
+    private ModelRenderable modelRenderable;
 
     /**
      * Function that checks if user's device supports ARCore and stuff.
@@ -85,7 +79,8 @@ public class InstructionDisplay extends AppCompatActivity {
      * @param activity
      * @return
      */
-    public static boolean checkIsSupportedDeviceOrFinish(final Activity activity) {
+    public static boolean checkIsSupportedDeviceOrFinish(final Activity activity)
+    {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             Log.e(TAG, "Sceneform requires Android N or later");
             Toast.makeText(activity, "Sceneform requires Android N or later", Toast.LENGTH_LONG).show();
@@ -107,7 +102,8 @@ public class InstructionDisplay extends AppCompatActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
 
         if (!checkIsSupportedDeviceOrFinish(this)) {
@@ -129,19 +125,23 @@ public class InstructionDisplay extends AppCompatActivity {
         }
         int port = TextUtils.isEmpty(portStr) ? 0 : Integer.valueOf(portStr);
 
-        // Prepare slide variables
-        slide_number = 0;
-        slides = null;
+//         Prepare step variables
+        step_number = 0;
+        steps = null;
         instruction_dir = null;
 
         try {
             // Create gRPC stub
             ManagedChannel channel = ManagedChannelBuilder.forAddress(host, port).usePlaintext().build();
-            InstructionGrpc.InstructionBlockingStub stub = InstructionGrpc.newBlockingStub(channel);
+            VirtualAssistantGrpc.VirtualAssistantBlockingStub stub = VirtualAssistantGrpc.newBlockingStub(channel);
 
             // Request the instruction
             InstructionRequest instructionRequest = InstructionRequest.newBuilder().setId(id).build();
             InstructionResponse instructionResponse = stub.getInstruction(instructionRequest);
+
+            // Extract info from instructionResponse
+            int result = instructionResponse.getStatus();
+            steps = instructionResponse.getStepsList();
 
             // Request media folder for the instruction
             MediaRequest mediaRequest = MediaRequest.newBuilder().setId(id).build();
@@ -166,19 +166,18 @@ public class InstructionDisplay extends AppCompatActivity {
             zip_file.delete();
 
             // Prepare debug info
-            String[] fileList = context.fileList();
-            int result = instructionResponse.getStatus();
-            slides = instructionResponse.getSlidesList();
-
-            String res = "";
-            for (Slide slide : slides) {
-                res = res + slide.getMediaUrl() + " ";
-            }
+//            String[] fileList = context.fileList();
+//            String res = "";
+//            for (Step step : steps) {
+//                res = res + step.getMediaUrl() + " ";
+//            }
 
             // Display debug info
             text = findViewById(R.id.instrText);
-            text.setText(String.format("Request status: %d %n %s %n %s", result, res, Arrays.toString(fileList)));
-        } catch (Exception e) {
+            text.setText(String.format("Request status: %d %d", result, steps.size()));
+        }
+        catch (Exception e)
+        {
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             e.printStackTrace(pw);
@@ -196,112 +195,147 @@ public class InstructionDisplay extends AppCompatActivity {
     }
 
     /**
-     * Changes current slide to the next one
+     * Changes current step to the next one
      * Executed on "Next" button click
      * @param view current view
      */
-    public void nextSlide(View view) {
-        // Set new slide number
-        if (slide_number < slides.size() - 1) {
-            slide_number += 1;
+    public void nextStep(View view)
+    {
+        // Set new step number
+        if (step_number < steps.size() - 1) {
+            step_number += 1;
         } else {
-            slide_number = 0;
+            step_number = 0;
         }
 
-        // Get current slide
-        Slide slide = slides.get(slide_number);
-
-        Toast.makeText(this, String.format("%s", slide.getMediaUrl()), Toast.LENGTH_SHORT).show();
-
-        // Extract image from it
-        Bitmap myBitmap = BitmapFactory.decodeFile(instruction_dir.getPath() + "/" + slide.getMediaUrl());
-        slideImgView.setImageBitmap(myBitmap);
-
-        // Display the current slide
-//        slideNode.setRenderable(slideRenderable);
+       setStep(step_number);
     }
 
     /**
-     * Changes current slide to the previous one
+     * Changes current step to the previous one
      * Executed on "Prev" button click
      * @param view current view
      */
-    public void prevSlide(View view) {
-        // Set new slide number
-        if (slide_number > 0) {
-            slide_number -= 1;
+    public void prevStep(View view)
+    {
+        // Set new step number
+        if (step_number > 0) {
+            step_number -= 1;
         } else {
-            slide_number = slides.size() - 1;
+            step_number = steps.size() - 1;
         }
 
-        // Get current slide
-        Slide slide = slides.get(slide_number);
-
-        Toast.makeText(this, String.format("%s", slide.getMediaUrl()), Toast.LENGTH_SHORT).show();
-
-        // Extract image from it
-        Bitmap myBitmap = BitmapFactory.decodeFile(instruction_dir.getPath() + "/" + slide.getMediaUrl());
-        slideImgView.setImageBitmap(myBitmap);
-
-        // Display the current slide
-//        slideNode.setRenderable(slideRenderable);
+       setStep(step_number);
     }
 
+    private void setStep(int number)
+    {
+        // Get current step
+        Step step = steps.get(number);
 
-    /**
-     * Displays the first slide of the instruction of plane tap
-     * @param instruction_dir path to the instruction
-     */
-    private void displayInstruction(File instruction_dir) {
-        // Get current slide
-        Slide slide = slides.get(slide_number);
-        // Extract image from it
-        Bitmap myBitmap = BitmapFactory.decodeFile(instruction_dir.getPath() + "/" + slide.getMediaUrl());
+        // Get the first asset
+        List<Asset> assets = step.getAssetsList();
+        Asset main_asset = assets.get(0);
 
-        // Create AR fragment
-        arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
+        Toast.makeText(this, step.getName(), Toast.LENGTH_SHORT).show();
 
-        // Prepare current slide for the display
-//        ViewRenderable.builder().setView(arFragment.getContext(), R.layout.slide_image)
-//                .build()
-//                .thenAccept(renderrable ->
-//                {
-//                    slideImgView = renderrable.getView().findViewById(R.id.slide_img);
-//                    slideImgView.setImageBitmap(myBitmap);
-//                    slideRenderable = renderrable;
-//                });
+        if (main_asset.getMedia().getType() == Media.MediaType.IMAGE)
+        {
+            // Set image
+            Bitmap myBitmap = BitmapFactory.decodeFile(instruction_dir.getPath() + "/" + main_asset.getMedia().getUrl());
+            stepImgView.setImageBitmap(myBitmap);
+            stepNode.setRotate(true);
+            stepNode.setRenderable(imgRenderable);
 
-        // Prepare current slide for the display
-        ViewRenderable.builder().setView(arFragment.getContext(), R.layout.ar_slide)
-                .build()
-                .thenAccept(renderrable ->
-                {
-                    slideImgView = renderrable.getView().findViewById(R.id.slide_img);
-                    slideImgView.setImageBitmap(myBitmap);
-                    slideRenderable = renderrable;
-                });
+        }
+        else if (main_asset.getMedia().getType() == Media.MediaType.MODEL)
+        {
+            Toast.makeText(this, String.format("Model: %s", main_asset.getMedia().getUrl()), Toast.LENGTH_SHORT).show();
 
-        ModelRenderable.builder()
+            ModelRenderable.builder()
                 .setSource(this, RenderableSource.builder().setSource(
                         this,
-                        Uri.parse(instruction_dir.getPath() + "/Mesh_Cat.gltf"),
+                        Uri.parse(instruction_dir.getPath() + "/" + main_asset.getMedia().getUrl()),
                         RenderableSource.SourceType.GLTF2)
-                        .setScale(0.01f)  // Scale the original model to 50%.
+                        .setScale(1.0f)  // Scale the original model to 1%.
                         .setRecenterMode(RenderableSource.RecenterMode.ROOT)
                         .build())
-                .setRegistryId(GLTF_ASSET)
+                .setRegistryId(instruction_dir.getPath() + "/" + main_asset.getMedia().getUrl())
                 .build()
-                .thenAccept(renderable -> catRenderable = renderable)
+                .thenAccept(renderable -> {
+                    Toast.makeText(this, "Created model", Toast.LENGTH_SHORT).show();
+                    modelRenderable = renderable;})
                 .exceptionally(
                         throwable -> {
                             Toast toast =
                                     Toast.makeText(this, "Unable to load renderable " +
-                                            GLTF_ASSET, Toast.LENGTH_LONG);
+                                            instruction_dir.getPath() + "/" + main_asset.getMedia().getUrl(), Toast.LENGTH_LONG);
                             toast.setGravity(Gravity.CENTER, 0, 0);
                             toast.show();
                             return null;
                         });
 
+            stepNode.setRotate(false);
+
+            stepNode.setRenderable(modelRenderable);
+        }
+
+        else if (main_asset.getMedia().getType() == Media.MediaType.TEXT)
+        {
+            // Set text
+            stepTxtView.setText(main_asset.getMedia().getDescription());
+            stepNode.setRotate(true);
+            stepNode.setRenderable(textRenderable);
+        }
+
+        // Update Transform
+        float scale = main_asset.getTransform().getScale();
+
+        VirtualAssistantOuterClass.Transform.Vector3 pos = main_asset.getTransform().getPosition();
+        VirtualAssistantOuterClass.Transform.Vector3 orient = main_asset.getTransform().getOrientation();
+
+        stepNode.getScaleController().setMinScale(scale - 0.01f);
+        stepNode.getScaleController().setMaxScale(scale);
+        stepNode.setLocalPosition(new Vector3(pos.getX(), pos.getY(), pos.getZ()));
+        stepNode.setLocalRotation(new Quaternion(new Vector3(orient.getX(), orient.getY(), orient.getZ())));
+    }
+
+
+
+    /**
+     * Displays the first step of the instruction of plane tap
+     * @param instruction_dir path to the instruction
+     */
+    private void displayInstruction(File instruction_dir)
+    {
+        // Create AR fragment
+        arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
+
+        // Get current step
+        Step step = steps.get(step_number);
+        List<Asset> assets = step.getAssetsList();
+        Asset main_asset = assets.get(0);
+        // Extract image from it
+        Bitmap myBitmap = BitmapFactory.decodeFile(instruction_dir.getPath() + "/" + main_asset.getMedia().getUrl());
+
+        // Prepare current step for the display
+        ViewRenderable.builder().setView(arFragment.getContext(), R.layout.ar_step)
+                .build()
+                .thenAccept(renderrable ->
+                {
+                    stepImgView = renderrable.getView().findViewById(R.id.step_img);
+                    stepImgView.setImageBitmap(myBitmap);
+                    imgRenderable = renderrable;
+                });
+
+        // Prepare current step for the display
+        ViewRenderable.builder().setView(arFragment.getContext(), R.layout.step_text)
+                .build()
+                .thenAccept(renderrable ->
+                {
+                    stepTxtView = renderrable.getView().findViewById(R.id.step_text);
+                    textRenderable = renderrable;
+                });
 
         // Listen for a tap on a plane
         arFragment.setOnTapArPlaneListener(
@@ -311,29 +345,35 @@ public class InstructionDisplay extends AppCompatActivity {
                     AnchorNode anchorNode = new AnchorNode(anchor);
                     anchorNode.setParent(arFragment.getArSceneView().getScene());
 
-                    // Put current slide on anchor
-                    slideNode = new RotatingNode(arFragment.getTransformationSystem());
-                    slideNode.setParent(anchorNode);
-                    slideNode.setRenderable(catRenderable);
-                    slideNode.getScaleController().setMinScale(0.01f);
-                    slideNode.getScaleController().setMaxScale(2.0f);
-//                    Vector3 scale = new Vector3(0.1f, 0.1f, 0.1f);
-//                    slideNode.setLocalScale(scale);
-                    slideNode.select();
+//                    Toast.makeText(this, "Creating initial node", Toast.LENGTH_SHORT).show();
 
-//                    Anchor anchorButton = hitResult.createAnchor();
-//                    AnchorNode anchorButtonNode = new AnchorNode(anchorButton);
-//                    anchorButtonNode.setParent(arFragment.getArSceneView().getScene());
+                    // Put current step on anchor
+                    stepNode = new RotatingNode(arFragment.getTransformationSystem());
+                    stepNode.setParent(anchorNode);
 
-                    // Set button on anchor
-//                    buttonNode = new TransformableNode(arFragment.getTransformationSystem());
-//                    buttonNode.setParent(anchorButtonNode);
-//                    buttonNode.setRenderable(buttonRenderable);
-//                    Vector3 pose = new Vector3( 0.0f, -1.0f, 0.0f);
-//                    buttonNode.setLocalPosition(pose);
-//                    buttonNode.select();
+                    if(main_asset.getMedia().getType() == Media.MediaType.IMAGE || main_asset.getMedia().getType() == Media.MediaType.TEXT)
+                    {
+                        stepNode.setRotate(true);
+                    }
+                    else
+                    {
+                        stepNode.setRotate(false);
+                    }
+
+                    stepNode.setRenderable(imgRenderable);
+
+                    float scale = main_asset.getTransform().getScale();
+
+                    VirtualAssistantOuterClass.Transform.Vector3 pos = main_asset.getTransform().getPosition();
+                    VirtualAssistantOuterClass.Transform.Vector3 orient = main_asset.getTransform().getOrientation();
+
+                    stepNode.setLocalScale(new Vector3(scale, scale, scale));
+                    stepNode.setLocalPosition(new Vector3(pos.getX(), pos.getY(), pos.getZ()));
+                    stepNode.setLocalRotation(new Quaternion(new Vector3(orient.getX(), orient.getY(), orient.getZ())));
+                    stepNode.getScaleController().setMinScale(scale - 0.01f);
+                    stepNode.getScaleController().setMaxScale(scale);
+                    stepNode.select();
                 });
-
     }
 
     /**

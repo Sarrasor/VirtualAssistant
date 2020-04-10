@@ -1,7 +1,7 @@
 {
     "id": "cats",
     "name": "Catotherapy",
-    "description": "Some cats for Anna.",
+    "description": "",
     "image": "thumb.jpeg",
     "step_count": 1,
     "size": 888

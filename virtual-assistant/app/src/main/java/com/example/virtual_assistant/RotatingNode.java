@@ -13,17 +13,26 @@ public class RotatingNode extends TransformableNode
         super(transformationSystem);
     }
 
+    private boolean rotate;
+
+    public void setRotate(boolean rotate) {
+        this.rotate = rotate;
+    }
+
     @Override
-    public void onUpdate(FrameTime frameTime) {
-        Vector3 cameraPosition = getScene().getCamera().getWorldPosition();
-        Vector3 slidePosition = this.getWorldPosition();
-        Vector3 direction = Vector3.subtract(cameraPosition, slidePosition);
+    public void onUpdate(FrameTime frameTime)
+    {
+        if(rotate) {
+            Vector3 cameraPosition = getScene().getCamera().getWorldPosition();
+            Vector3 slidePosition = this.getWorldPosition();
+            Vector3 direction = Vector3.subtract(cameraPosition, slidePosition);
 
-        // If you want only z rotation
-        direction.y = 0.0f;
+            // If you want only z rotation
+            direction.y = 0.0f;
 
-        Quaternion lookRotation = Quaternion.lookRotation(direction, Vector3.up());
-        this.setWorldRotation(lookRotation);
+            Quaternion lookRotation = Quaternion.lookRotation(direction, Vector3.up());
+            this.setWorldRotation(lookRotation);
+        }
     }
 
 

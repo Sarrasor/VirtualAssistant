@@ -6,6 +6,7 @@
 
     <TextView
         android:id="@+id/instrText"
+        android:text="Some text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
@@ -20,8 +21,17 @@
         android:layout_alignParentBottom="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="nextSlide"
+        android:onClick="nextStep"
+        android:layout_marginLeft="100dp"
         android:text="Next" />
+
+    <Button
+        android:id="@+id/prevButton"
+        android:layout_alignParentBottom="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="prevStep"
+        android:text="Prev" />
 
 
 </RelativeLayout>

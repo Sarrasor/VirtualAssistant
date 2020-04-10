@@ -14,9 +14,8 @@ import json
 import shutil
 
 # Import the generated gRPC classes
-import instruction_pb2
-import instruction_pb2_grpc
-
+import virtual_assistant_pb2
+import virtual_assistant_pb2_grpc
 
 INSTRUCTIONS_FOLDER = "./instructions"
 DEFAULT_THUMB = "./aux_data/default_thumb.jpg"
@@ -32,20 +31,20 @@ def get_file_chunks(filename):
         filename (str): Path to file to slice
 
     Yields:
-        instruction_pb2.Chunk: byte chunk for gRPC stream
+        virtual_assistant_pb2.Chunk: byte chunk for gRPC stream
     """
     with open(filename, 'rb') as f:
         while True:
             piece = f.read(CHUNK_SIZE)
             if len(piece) == 0:
                 return
-            yield instruction_pb2.Chunk(buffer=piece)
+            yield virtual_assistant_pb2.Chunk(buffer=piece)
 
 
-class InstructionServicer(instruction_pb2_grpc.InstructionServicer):
+class VirtualAssistantServicer(virtual_assistant_pb2_grpc.VirtualAssistantServicer):
 
     """
-    Class that implements rpcs from instruction.proto
+    Class that implements rpcs from virtual_assistant.proto
     """
 
     def GetAllInstructions(self, request, context):
@@ -55,20 +54,21 @@ class InstructionServicer(instruction_pb2_grpc.InstructionServicer):
         Thumbnails
 
         Args:
-            request (instruction_pb2.InstructionRequest): Request msg
+            request (virtual_assistant_pb2.InstructionRequest): Request msg
             context (gRPC context): gRPC context
 
         Returns:
-            instruction_pb2.InstructionResponse: Description
+            virtual_assistant_pb2.InstructionResponse: Description
         """
+        print("All instructions request")
 
-        response = instruction_pb2.AllInstructioinsResponse()
+        response = virtual_assistant_pb2.AllInstructioinsResponse()
         instructions = os.listdir(INSTRUCTIONS_FOLDER)
 
         # Go through each instruction one-by-one and create a thumb out of it
         for instruction in instructions:
             path = "{}/{}".format(INSTRUCTIONS_FOLDER, instruction)
-            thumbnail = instruction_pb2.InstructionThumbnail()
+            thumbnail = virtual_assistant_pb2.InstructionThumbnail()
 
             # Parse index.json
             try:
@@ -76,16 +76,20 @@ class InstructionServicer(instruction_pb2_grpc.InstructionServicer):
                     data = json.load(descr)
                     thumbnail.id = data['id']
                     thumbnail.name = data['name']
-                    thumbnail.description = data['description']
-                    th_path = data['image']
-                    thumbnail.step_count = data['step_count']
                     thumbnail.size = data['size']
-            except Exception:
+                    thumbnail.description = data['description']
+                    img_path = data['preview_url']
+                    thumbnail.last_modified.timestamp.FromSeconds(
+                        data['last_modified'])
+                    thumbnail.step_count = data['step_count']
+            except Exception as e:
+                print("Something is wrong with {}".format(path))
+                print(str(e))
                 continue
 
             # Get thumbnail image
             try:
-                with open("{}/media/{}".format(path, th_path), "rb") as thumb:
+                with open("{}/media/{}".format(path, img_path), "rb") as thumb:
                     f = thumb.read()
                     thumbnail.image = bytes(f)
             except Exception:
@@ -101,36 +105,56 @@ class InstructionServicer(instruction_pb2_grpc.InstructionServicer):
     def GetInstruction(self, request, context):
         """
         Defines the body of GetInstruction rpc.
-        Parses and returns slides.json for a particular instruction
+        Parses and returns steps.json for a particular instruction
 
         Args:
-            request (instruction_pb2.InstructionRequest): Request msg
+            request (virtual_assistant_pb2.InstructionRequest): Request msg
             context (gRPC context): gRPC context
 
         Returns:
-            instruction_pb2.InstructionResponse: Instruction Response message
+            virtual_assistant_pb2.InstructionResponse: Instruction Response message
         """
 
         print("Instruction {} request".format(request.id))
         # Path to the instruction
         path = "{}/{}".format(INSTRUCTIONS_FOLDER, request.id)
 
-        response = instruction_pb2.InstructionResponse()
+        response = virtual_assistant_pb2.InstructionResponse()
         try:
             response.status = 1
-            # Parse slides.json and put it in the response message
-            with open('{}/slides.json'.format(path), 'r') as file:
-                slides = json.load(file)
-                for slide in slides:
-                    slide_msg = instruction_pb2.Slide()
+            # Parse steps.json and put it in the response message
+            with open('{}/steps.json'.format(path), 'r') as file:
+                steps = json.load(file)
+                for step in steps:
+                    step_msg = virtual_assistant_pb2.Step()
 
-                    slide_msg.text = slide['text']
-                    slide_msg.transform = str(slide['transform'])
-                    slide_msg.media_type = slide['media_type']
-                    slide_msg.media_url = slide['media_url']
+                    step_msg.name = step['name']
+                    step_msg.description = step['description']
+                    step_msg.preview_url = step['preview_url']
 
-                    response.slides.extend([slide_msg])
-        except Exception:
+                    for asset in step['assets']:
+                        asset_msg = virtual_assistant_pb2.Asset()
+
+                        asset_msg.name = asset['name']
+                        asset_msg.media.type = asset['media']['type']
+                        asset_msg.media.url = asset['media']['url']
+                        asset_msg.media.description = asset['media']['description']
+
+                        asset_msg.transform.position.x = asset['transform']['position']['x']
+                        asset_msg.transform.position.y = asset['transform']['position']['y']
+                        asset_msg.transform.position.z = asset['transform']['position']['z']
+                        asset_msg.transform.orientation.x = asset['transform']['orientation']['x']
+                        asset_msg.transform.orientation.y = asset['transform']['orientation']['y']
+                        asset_msg.transform.orientation.z = asset['transform']['orientation']['z']
+                        asset_msg.transform.scale = asset['transform']['scale']
+
+                        asset_msg.hidden = asset['hidden']
+
+                        step_msg.assets.extend([asset_msg])
+
+                    response.steps.extend([step_msg])
+        except Exception as e:
+            print("Error on {} request: ".format(request.id), e)
             response.status = 0
 
         return response
@@ -141,11 +165,11 @@ class InstructionServicer(instruction_pb2_grpc.InstructionServicer):
         The procedure returns chunked media.zip
 
         Args:
-            request (instruction_pb2.MediaRequest): Request msg
+            request (virtual_assistant_pb2.MediaRequest): Request msg
             context (gRPC context): gRPC context
 
         Returns:
-            instruction_pb2.Chunk: gRPC Chunk stream
+            virtual_assistant_pb2.Chunk: gRPC Chunk stream
         """
 
         # Define path to media folder
@@ -159,6 +183,9 @@ class InstructionServicer(instruction_pb2_grpc.InstructionServicer):
         # Split and send media.zip archive
         return get_file_chunks(zip_path + ".zip")
 
+    def UploadInstructions(self, request, context):
+        pass
+
 
 def server():
     """
@@ -166,8 +193,8 @@ def server():
     """
     print("Creating Server")
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    instruction_pb2_grpc.add_InstructionServicer_to_server(
-        InstructionServicer(), server)
+    virtual_assistant_pb2_grpc.add_VirtualAssistantServicer_to_server(
+        VirtualAssistantServicer(), server)
 
     print('Listening on port 50051')
     server.add_insecure_port('[::]:50051')

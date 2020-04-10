@@ -8,5 +8,5 @@
         android:layout_height="wrap_content"
         android:text="Next"
         android:id="@+id/ar_btn"
-        android:onClick="nextSlide"/>
+        android:onClick="nextStep"/>
 </LinearLayout>

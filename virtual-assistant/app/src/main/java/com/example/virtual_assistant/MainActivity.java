@@ -4,22 +4,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.MotionEventCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.proto.AllInstructioinsRequest;
-import com.example.proto.AllInstructioinsResponse;
-import com.example.proto.InstructionGrpc;
-import com.example.proto.InstructionThumbnail;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -28,6 +20,12 @@ import java.util.List;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import virtual_assistant.VirtualAssistantGrpc;
+import virtual_assistant.VirtualAssistantGrpc.VirtualAssistantBlockingStub;
+import virtual_assistant.VirtualAssistantOuterClass;
+import virtual_assistant.VirtualAssistantOuterClass.AllInstructioinsRequest;
+import virtual_assistant.VirtualAssistantOuterClass.AllInstructioinsResponse;
+import virtual_assistant.VirtualAssistantOuterClass.InstructionThumbnail;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -95,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             // Create gRPC stub
             ManagedChannel channel = ManagedChannelBuilder.forAddress(host, port).usePlaintext().build();
-            InstructionGrpc.InstructionBlockingStub stub = InstructionGrpc.newBlockingStub(channel);
+            VirtualAssistantBlockingStub stub = VirtualAssistantGrpc.newBlockingStub(channel);
 
             // Request all instructions
             AllInstructioinsRequest allInstructionsRequest = AllInstructioinsRequest.newBuilder().build();
@@ -106,6 +104,9 @@ public class MainActivity extends AppCompatActivity {
 
             // Go through every thumbnail and add them to listThumbs for card display
             for (InstructionThumbnail thumb : thumbs) {
+
+//                long ts = thumb.getLastModified().getTimestamp().getSeconds();
+
                 byte[] data = thumb.getImage().toByteArray();
                 Bitmap bMap = BitmapFactory.decodeByteArray(data, 0, data.length);
                 InstructionThumbItem iti = new InstructionThumbItem(thumb.getId(), thumb.getName(), thumb.getDescription(), bMap, thumb.getStepCount(), thumb.getSize());
@@ -124,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace(pw);
             pw.flush();
             System.out.println(String.format("%s", sw));
-            Toast.makeText(this, "Failed to get instructions", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Failed to get instructions" + e, Toast.LENGTH_SHORT).show();
         }
 
 

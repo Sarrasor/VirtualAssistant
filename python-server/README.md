@@ -7,7 +7,7 @@ After this, the server should send the selected instruction and all media files 
 
 ## To generate python from .proto
 
-`python3 -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. instruction.proto`
+`python3 -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. virtual_assistant.proto`
 
 ## Cool gRPC python tutorial
 
