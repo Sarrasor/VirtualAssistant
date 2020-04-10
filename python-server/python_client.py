@@ -4,8 +4,8 @@ Sample python client to dowload instruction thumbnails
 import grpc
 
 # Import the generated gRPC classes
-import instruction_pb2
-import instruction_pb2_grpc
+import virtual_assistant_pb2
+import virtual_assistant_pb2_grpc
 
 
 def main():
@@ -16,10 +16,10 @@ def main():
 
     # Stub creation
     channel = grpc.insecure_channel('localhost:50051')
-    stub = instruction_pb2_grpc.InstructionStub(channel)
+    stub = virtual_assistant_pb2_grpc.VirtualAssistantStub(channel)
 
     # Make the call
-    instructions_request = instruction_pb2.AllInstructioinsRequest()
+    instructions_request = virtual_assistant_pb2.AllInstructioinsRequest()
     response = stub.GetAllInstructions(instructions_request)
 
     # Print results

@@ -41,6 +41,19 @@ def get_file_chunks(filename):
             yield virtual_assistant_pb2.Chunk(buffer=piece)
 
 
+def save_chunks_to_file(chunks, filename):
+    """
+    Concatenates received chunks to file
+
+    Args:
+        chunks (virtual_assistant_pb2.Chunk): byte chunk from gRPC stream
+        filename (string): File to write to
+    """
+    with open(filename, 'wb') as f:
+        for chunk in chunks:
+            f.write(chunk.buffer)
+
+
 class VirtualAssistantServicer(virtual_assistant_pb2_grpc.VirtualAssistantServicer):
 
     """
@@ -183,8 +196,35 @@ class VirtualAssistantServicer(virtual_assistant_pb2_grpc.VirtualAssistantServic
         # Split and send media.zip archive
         return get_file_chunks(zip_path + ".zip")
 
-    def UploadInstructions(self, request, context):
-        pass
+    def UploadInstructions(self, request_iterator, context):
+        """
+        Defines the body of UploadInstructions rpc.
+        The procedure returns upload status 1 - sucess, 0 - failure
+
+        It will concatenate incoming chunks into zip file and unpack it
+        Received zip file will be deleted after
+
+        Args:
+            request_iterator (virtual_assistant_pb2.Chunk): List of chunks
+            context (gRPC context): gRPC context
+
+        Returns:
+            virtual_assistant_pb2.Status: Upload status code
+        """
+        print("Upload attempt")
+        try:
+            save_chunks_to_file(
+                request_iterator, INSTRUCTIONS_FOLDER + "/upload.zip")
+
+            shutil.unpack_archive(INSTRUCTIONS_FOLDER +
+                                  "/upload.zip", INSTRUCTIONS_FOLDER, 'zip')
+
+            os.remove(INSTRUCTIONS_FOLDER + "/upload.zip")
+
+            return virtual_assistant_pb2.Status(status=1)
+        except Exception as e:
+            print("Upload failed:\n", e)
+            return virtual_assistant_pb2.Status(status=0)
 
 
 def server():

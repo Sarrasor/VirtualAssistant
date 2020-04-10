@@ -259,6 +259,7 @@ public class InstructionDisplay extends AppCompatActivity {
             // Set image
             Bitmap myBitmap = BitmapFactory.decodeFile(instruction_dir.getPath() + "/" + main_asset.getMedia().getUrl());
             stepImgView.setImageBitmap(myBitmap);
+            stepImgView.invalidate();
             stepNode.setRotate(true);
             stepNode.setRenderable(imgRenderable);
 
@@ -299,6 +300,7 @@ public class InstructionDisplay extends AppCompatActivity {
         {
             // Set text
             stepTxtView.setText(main_asset.getMedia().getDescription());
+            stepTxtView.invalidate();
             stepNode.setRotate(true);
             stepNode.setRenderable(textRenderable);
         }
@@ -457,6 +459,8 @@ public class InstructionDisplay extends AppCompatActivity {
 
     public void takePhoto(View view)
     {
+        Toast.makeText(InstructionDisplay.this,
+                "Saving photo...", Toast.LENGTH_LONG).show();
         final String filename = generateFilename();
 
         ArSceneView ar_view = arFragment.getArSceneView();
@@ -510,7 +514,8 @@ public class InstructionDisplay extends AppCompatActivity {
         }, new Handler(handlerThread.getLooper()));
     }
 
-    private String generateFilename() {
+    private String generateFilename()
+    {
         String date =
                 new SimpleDateFormat("yyyyMMddHHmmss", java.util.Locale.getDefault()).format(new Date());
         return Environment.getExternalStoragePublicDirectory(
