@@ -5,8 +5,9 @@
     <div class="file is-boxed is-primary">
       <label class="field-label" id="root">
         <input
+         multiple
          type="file"
-         ref="file"
+         ref="files"
          @change="selectFile"
          class ="file-input"
          id = "empty"
@@ -15,7 +16,6 @@
             Choose a file...
           </span>
           <!-- TODO : handle the size of the box and check 2 cases : file selected or not (for now selected case only has a good size) -->
-          <span v-if="file" class="file-name">{{file.name}}</span>
       </label>
       </div>
       </div>
@@ -25,44 +25,47 @@
     <input type = "file" ref = "file" @change="selectFile">
     </label>
   </div>
+  -->
+  <div class="field">
+    <div v-for="(file, index) in files" :key="index" class="level">
+      <div class="level-left">
+       <div class="level-item">{{file.name}}</div>
+      </div>
+      <div class="level-right">
+        <div class="level-item">
+          <a class="delete"></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class = "field">
     <button class="button is-info">Send</button>
   </div>
-  -->
+  
   </form>
 </template>
 
 <script>
-import axios from 'axios';
-
 export default {
   name: "FileUpload",
   data(){
     return {
-      file: ""
+      files: [],
+      message: "",
+      error: false
     }
   },
 
   methods: {
-    selectFile(){
-      this.file = this.$refs.file.files[0];
-    },
-    async sendFile(){
-      const formData = new FormData();
-      formData.append('file',this.file);
-
-    try{
-      //TODO: make this function upload to server
-      await axios.post('/upload', formData);
-    }
-    catch(err){
-      //TODO: handle errors in another way (printing a message to user for example)
-      console.log(err);
-    }
-
-    }
+   selectFile(){
+     const files = this.$refs.files.files;
+     this.files = [ ...this.files, ...files];
+   },
+   async sendFile(){
+   }
   }
-};
+}
 </script>
 
 <style scoped>
