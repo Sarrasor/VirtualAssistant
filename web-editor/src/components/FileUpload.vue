@@ -3,21 +3,17 @@
   <form @submit.prevent="sendFile" enctype = "multipart/form-data">
 <div class = "field">
     <div class="file is-boxed is-primary">
-      <label class="field-label">
+      <label class="field-label" id="upload">
         <input
          type="file"
          ref="file"
          @change="selectFile"
          class ="file-input"
-        />
-        <span class="file-cta">
-          <span class="file-icon">
-            <i class="fas fa-upload"></i>
-          </span>
-          <span class="file-label">
+         id = "empty"
+         />
+          <span class="file-label" id="root">
             Choose a file...
           </span>
-        </span>
       </label>
       </div>
       </div>
@@ -69,11 +65,17 @@ export default {
 
 <style scoped>
 #root {
-  display: flex;
   flex-wrap: wrap;
   border: 2px dashed var(--select);
   place-content: center;
   cursor: pointer;
+  width: 100%;
+  height: 100%;
+  display: inline-block;     
+  position: relative;    
+  z-index: 1;     
+  padding: 2em;     
+  margin: 0em; 
 }
 #root:hover {
   border-color: var(--text);
@@ -83,6 +85,7 @@ export default {
 }
 #root > * {
   width: 100%;
+  height: 100%;
 }
 #empty {
   font-size: 12px;
@@ -90,5 +93,10 @@ export default {
   text-align: center;
   width: 100%;
   user-select: none;
+  visibility: hidden;
+}
+#upload {
+  width: 200%;
+  height: 200%;
 }
 </style>
