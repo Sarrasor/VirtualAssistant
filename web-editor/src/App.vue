@@ -2,7 +2,7 @@
   <div id="app">
     <Instruction :instructions="instructions" @select="index_in=$event" />
     <Step :steps="steps" @select="index_st=$event" />
-    <!-- <Asset /> -->
+    <Asset :assets="assets" @select="idnex_as=$event" />
     <Render />
   </div>
 </template>
@@ -10,7 +10,7 @@
 <script>
 import Instruction from "./components/Instruction";
 import Step from "./components/Step";
-// import Assetfrom "./components/Asset";
+import Asset from "./components/Asset";
 import Render from "./components/Render";
 
 export default {
@@ -18,7 +18,7 @@ export default {
   components: {
     Instruction,
     Step,
-    // Asset,
+    Asset,
     Render
   },
   data() {
@@ -38,7 +38,13 @@ export default {
           this.instructions?.length > 0 ? this.instructions[value].steps : null;
       },
       immediate: true
-    }
+    },
+    index_st: {
+      handler: function(value) {
+        this.assets = this.steps?.length > 0 ? this.steps[value].assets : null;
+      },
+      immediate: true
+    },
   },
   methods: {}
 };
@@ -49,6 +55,6 @@ export default {
   width: 100%;
   margin: 0;
   display: grid;
-  grid-template-columns: repeat(3, 200px) 1fr;
+  grid-template-columns: repeat(3, 225px) 1fr;
 }
 </style>

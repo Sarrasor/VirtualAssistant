@@ -44,7 +44,7 @@ export default {
   },
   data() {
     return {
-      selected: 0
+      selected: undefined
     };
   },
   computed: {
@@ -53,8 +53,11 @@ export default {
     }
   },
   watch: {
-    selected(value) {
-      this.$emit("select", value);
+    selected: {
+      handler: function(value) {
+        this.$emit("select", value);
+      },
+      immediate: true
     }
   },
   methods: {

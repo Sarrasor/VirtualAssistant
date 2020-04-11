@@ -21,8 +21,8 @@
           :class="{selected: i===selected}"
           :key="i"
           @click="selected=i"
-          v-for="(inst, i) in instructions"
-        >{{inst.name}}</button>
+          v-for="(ins, i) in instructions"
+        >{{ins.name}}</button>
       </div>
       <template v-if="instruction">
         <p class="label">name</p>
@@ -33,7 +33,7 @@
         <FileDrop :label="'preview'" />
       </template>
     </div>
-    <div class="card" style="margin-top: 20px; width: 380px">
+    <div class="card" style="margin-top: 20px; width: 430px">
       <p class="label bold">files</p>
       <div id="files" v-if="instruction">
         <div class="list" style="height: 125px">
@@ -75,8 +75,11 @@ export default {
     }
   },
   watch: {
-    selected(value) {
-      this.$emit("select", value);
+    selected: {
+      handler: function(value) {
+        this.$emit("select", value);
+      },
+      immediate: true
     }
   },
   methods: {
