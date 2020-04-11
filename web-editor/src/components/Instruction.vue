@@ -1,18 +1,18 @@
 <template>
-  <div id="root">
+  <div>
     <div class="card">
       <p class="label bold">instructions</p>
       <div class="toolbar">
-        <button class="flat icon" @click="$emit('add')" :tooltip="'create new'">
+        <button class="flat icon" @click="createInstruction" :tooltip="'create new'">
           <i class="material-icons-outlined">add</i>
         </button>
-        <button class="flat icon" @click="$emit('duplicate', selected)" :tooltip="'duplicate'">
+        <button class="flat icon" @click="duplicateInstruction" :tooltip="'duplicate'">
           <i class="material-icons-outlined">library_add</i>
         </button>
-        <button class="flat icon" @click="$emit('upload', selected)" :tooltip="'upload to server'">
+        <button class="flat icon" @click="uploadInstruction" :tooltip="'upload to server'">
           <i class="material-icons-outlined">publish</i>
         </button>
-        <button class="flat icon" @click="$emit('delete', selected)" :tooltip="'delete'">
+        <button class="flat icon" @click="deleteInstruction" :tooltip="'delete'">
           <i class="material-icons-outlined">delete</i>
         </button>
       </div>
@@ -40,7 +40,6 @@
         <div class="list" style="height: 125px">
           <button
             class="flat"
-            :class="{selectedFile: i===selectedFile}"
             :key="i"
             @click="selectedFile=i"
             v-for="(item, i) in ['preview.png', 'schema.png', 'narration.m4a', 'duck.obj', 'tutorial.mp4', 'arrow.obj']"
@@ -53,6 +52,8 @@
 </template>
 
 <script>
+import { v4 as uuidv4 } from "uuid";
+
 import FileDrop from "./FileDrop";
 import FileUpload from "./FileUpload";
 
@@ -65,37 +66,51 @@ export default {
   },
   data() {
     return {
-      selected: 0,
-      selectedFile: 0
+      selected: undefined
     };
   },
   computed: {
     instruction: function() {
-      return this.instructions.length > 0
+      return this.instructions?.length > 0
         ? this.instructions[this.selected]
         : null;
     }
   },
   watch: {
-    instructions: {
-      handler: function(value) {
-        console.log("instructions arrived", value);
-        if (this.selected >= value.length)
-          this.selected = Math.max(0, value.length - 1);
-      },
-      immediate: true
-    },
-    instruction: {
-      handler: function(value) {
-        console.log("instruction changed", value);
-        this.$emit("instruction", value);
-      },
-      immediate: true,
-      deep: true
+    selected(value) {
+      this.$emit("select", value);
     }
   },
   methods: {
-    delete() {}
+    createInstruction() {
+      this.instructions.push({
+        id: uuidv4(),
+        name: "Instruction " + (this.instructions.length + 1),
+        description: "Lorem impsum dolor sit amet",
+        preview_url: undefined,
+        steps: []
+      });
+      this.selected = this.instructions.length - 1;
+    },
+    duplicateInstruction() {
+      let duplicate = JSON.parse(
+        JSON.stringify(this.instructions[this.selected])
+      );
+      duplicate.name += "(copy)";
+      this.instructions.push(duplicate);
+      this.selected = this.instructions.length - 1;
+    },
+    deleteInstruction() {
+      this.instructions.splice(this.selected, 1);
+      if (this.selected >= this.instructions.length)
+        this.selected = this.instructions.length - 1;
+    },
+    uploadInstruction() {
+      console.log(
+        "uploading (not yet)",
+        JSON.stringify(this.instructions[this.selected])
+      );
+    }
   }
 };
 </script>

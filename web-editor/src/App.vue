@@ -1,80 +1,46 @@
 <template>
   <div id="app">
-    <Instruction
-      :instructions="instructions"
-      @add="addInstruction"
-      @duplicate="duplicateInstruction"
-      @delete="deleteInstruction"
-      @upload="uploadInstruction"
-    />
-    <!-- <StepEditor />
-    <AssetEditor />-->
-    <!-- <StepEditor
-      :key="i"
-      :inStep="sld"
-      @step="$set(steps, i, $event)"
-      @delete="steps.splice(i, 1)"
-      @open="stepI=i"
-      v-for="(sld, i) in steps"
-    />-->
-    <!-- <AssetEditor
-      :key="i"
-      :inAsset="obj"
-      @asset="$set(step.assets, i, $event)"
-      @delete="step.assets.splice(i, 1)"
-      @duplicate="step.assets.push(step.assets[i])"
-      v-for="(obj, i) in step.assets"
-    />-->
+    <Instruction :instructions="instructions" @select="index_in=$event" />
+    <Step :steps="steps" @select="index_st=$event" />
+    <!-- <Asset /> -->
     <Render />
   </div>
 </template>
 
 <script>
-import { v4 as uuidv4 } from "uuid";
-
 import Instruction from "./components/Instruction";
-// import StepEditor from "./components/StepEditor";
-// import AssetEditor from "./components/AssetEditor";
+import Step from "./components/Step";
+// import Assetfrom "./components/Asset";
 import Render from "./components/Render";
 
 export default {
   name: "App",
   components: {
     Instruction,
-    // StepEditor,
-    // AssetEditor,
+    Step,
+    // Asset,
     Render
   },
   data() {
     return {
-      instructions: []
+      index_in: undefined,
+      instructions: [],
+      index_st: undefined,
+      steps: [],
+      index_as: undefined,
+      assets: []
     };
   },
-  methods: {
-    addInstruction() {
-      this.instructions.push({
-        id: uuidv4(),
-        name: "Instruction title",
-        description: "Lorem impsum dolor sit amet",
-        preview_url: undefined,
-        steps: []
-      });
-    },
-    deleteInstruction(index) {
-      this.instructions.splice(index, 1);
-    },
-    uploadInstruction(index) {
-      console.log(
-        "uploading (not yet)",
-        JSON.stringify(this.instructions[index])
-      );
-    },
-    duplicateInstruction(index) {
-      let duplciate = JSON.parse(JSON.stringify(this.instructions[index]));
-      duplciate.name += "(copy)";
-      this.instructions.push(duplciate);
+  watch: {
+    index_in: {
+      handler: function(value) {
+        this.steps =
+          this.instructions?.length > 0 ? this.instructions[value].steps : null;
+      },
+      immediate: true
     }
-  }
+  },
+  methods: {}
 };
 </script>
 
