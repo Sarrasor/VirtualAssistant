@@ -49,15 +49,8 @@ export default {
   },
   computed: {
     step: function() {
+      this.$emit("select", this.selected);
       return this.steps?.length > 0 ? this.steps[this.selected] : null;
-    }
-  },
-  watch: {
-    selected: {
-      handler: function(value) {
-        this.$emit("select", value);
-      },
-      immediate: true
     }
   },
   methods: {
@@ -70,22 +63,24 @@ export default {
         preview_url: undefined,
         assets: []
       });
-      this.selected = this.steps.length - 1;
+      this.selectLast();
     },
     duplicateStep() {
-      if (!this.steps) return;
+      if (!(this.steps && this.step)) return;
 
       let duplicate = JSON.parse(JSON.stringify(this.steps[this.selected]));
       duplicate.name += "(copy)";
       this.steps.push(duplicate);
-      this.selected = this.steps.length - 1;
+      this.selectLast();
     },
     deleteStep() {
       if (!this.steps) return;
 
       this.steps.splice(this.selected, 1);
-      if (this.selected >= this.steps.length)
-        this.selected = this.steps.length - 1;
+      if (this.selected >= this.steps.length) this.selectLast();
+    },
+    selectLast() {
+      this.selected = this.steps.length - 1;
     }
   }
 };

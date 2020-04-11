@@ -69,17 +69,10 @@ export default {
   },
   computed: {
     instruction: function() {
+      this.$emit("select", this.selected);
       return this.instructions?.length > 0
         ? this.instructions[this.selected]
         : null;
-    }
-  },
-  watch: {
-    selected: {
-      handler: function(value) {
-        this.$emit("select", value);
-      },
-      immediate: true
     }
   },
   methods: {
@@ -91,26 +84,30 @@ export default {
         preview_url: undefined,
         steps: []
       });
-      this.selected = this.instructions.length - 1;
+      this.selectLast();
     },
     duplicateInstruction() {
+      if (!this.instruction) return;
+
       let duplicate = JSON.parse(
         JSON.stringify(this.instructions[this.selected])
       );
       duplicate.name += "(copy)";
       this.instructions.push(duplicate);
-      this.selected = this.instructions.length - 1;
+      this.selectLast();
     },
     deleteInstruction() {
       this.instructions.splice(this.selected, 1);
-      if (this.selected >= this.instructions.length)
-        this.selected = this.instructions.length - 1;
+      if (this.selected >= this.instructions.length) this.selectLast();
     },
     uploadInstruction() {
       console.log(
         "uploading (not yet)",
         JSON.stringify(this.instructions[this.selected])
       );
+    },
+    selectLast() {
+      this.selected = this.instructions.length - 1;
     }
   }
 };

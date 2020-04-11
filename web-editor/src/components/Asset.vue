@@ -59,16 +59,11 @@ export default {
   },
   computed: {
     asset: function() {
+      this.$emit("select", this.selected);
       return this.assets?.length > 0 ? this.assets[this.selected] : null;
     }
   },
   watch: {
-    selected: {
-      handler: function(value) {
-        this.$emit("select", value);
-      },
-      immediate: true
-    },
     asset: {
       handler() {
         console.log("asset update");
@@ -96,22 +91,24 @@ export default {
         },
         hidden: false
       });
-      this.selected = this.assets.length - 1;
+      this.selectLast();
     },
     duplicateAsset() {
-      if (!this.assets) return;
+      if (!(this.assets && this.asset)) return;
 
       let duplicate = JSON.parse(JSON.stringify(this.assets[this.selected]));
       duplicate.name += "(copy)";
       this.assets.push(duplicate);
-      this.selected = this.assets.length - 1;
+      this.selectLast();
     },
     deleteAsset() {
       if (!this.assets) return;
 
       this.assets.splice(this.selected, 1);
-      if (this.selected >= this.assets.length)
-        this.selected = this.assets.length - 1;
+      if (this.selected >= this.assets.length) this.selectLast();
+    },
+    selectLast() {
+      this.selected = this.assets.length - 1;
     }
   }
 };

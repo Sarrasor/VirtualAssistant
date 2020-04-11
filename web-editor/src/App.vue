@@ -1,8 +1,8 @@
 <template>
   <div id="app">
-    <Instruction :instructions="instructions" @select="index_in=$event" />
-    <Step :steps="steps" @select="index_st=$event" />
-    <Asset :assets="assets" @select="idnex_as=$event" />
+    <Instruction :instructions="instructions" @select="selectInstruction" />
+    <Step :steps="steps" @select="selectStep" />
+    <Asset :assets="assets" />
     <Render />
   </div>
 </template>
@@ -23,30 +23,20 @@ export default {
   },
   data() {
     return {
-      index_in: undefined,
       instructions: [],
-      index_st: undefined,
       steps: [],
-      index_as: undefined,
       assets: []
     };
   },
-  watch: {
-    index_in: {
-      handler: function(value) {
-        this.steps =
-          this.instructions?.length > 0 ? this.instructions[value].steps : null;
-      },
-      immediate: true
+  methods: {
+    selectInstruction(index) {
+      this.steps =
+        this.instructions?.length > 0 ? this.instructions[index].steps : null;
     },
-    index_st: {
-      handler: function(value) {
-        this.assets = this.steps?.length > 0 ? this.steps[value].assets : null;
-      },
-      immediate: true
-    },
-  },
-  methods: {}
+    selectStep(index) {
+      this.assets = this.steps?.length > 0 ? this.steps[index].assets : null;
+    }
+  }
 };
 </script>
 
