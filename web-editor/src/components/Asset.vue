@@ -97,7 +97,7 @@ export default {
       if (!(this.assets && this.asset)) return;
 
       let duplicate = JSON.parse(JSON.stringify(this.assets[this.selected]));
-      duplicate.name += "(copy)";
+      duplicate.name += " (copy)";
       this.assets.push(duplicate);
       this.selectLast();
     },

@@ -69,7 +69,7 @@ export default {
       if (!(this.steps && this.step)) return;
 
       let duplicate = JSON.parse(JSON.stringify(this.steps[this.selected]));
-      duplicate.name += "(copy)";
+      duplicate.name += " (copy)";
       this.steps.push(duplicate);
       this.selectLast();
     },

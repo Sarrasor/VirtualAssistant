@@ -92,7 +92,7 @@ export default {
       let duplicate = JSON.parse(
         JSON.stringify(this.instructions[this.selected])
       );
-      duplicate.name += "(copy)";
+      duplicate.name += " (copy)";
       this.instructions.push(duplicate);
       this.selectLast();
     },
