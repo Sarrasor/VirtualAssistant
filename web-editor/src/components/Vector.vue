@@ -2,7 +2,7 @@
   <div>
     <input
       type="number"
-      step="0.01"
+      step="0.1"
       :style="{width: 100/fields.length+'%'}"
       :key="k"
       :value="vector[k]"

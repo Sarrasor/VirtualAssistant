@@ -34,7 +34,7 @@
         <Vector :fields="['x','y','z']" @vector="asset.transform.rotation=$event" />
         <p class="label">scale</p>
         <Vector :fields="['x']" @vector="asset.transform.scale=$event.x" />
-        <input type="checkbox" id="visible" v-bind="asset.hidden" />
+        <input type="checkbox" id="visible" v-model="asset.hidden" />
         <label for="visible">Hidden</label>
       </template>
     </div>
@@ -68,6 +68,13 @@ export default {
         this.$emit("select", value);
       },
       immediate: true
+    },
+    asset: {
+      handler() {
+        console.log("asset update");
+      },
+      immediate: true,
+      deep: true
     }
   },
   methods: {
