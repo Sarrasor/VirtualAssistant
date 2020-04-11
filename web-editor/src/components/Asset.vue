@@ -3,19 +3,18 @@
     <div class="card">
       <p class="label bold">assets</p>
       <div class="toolbar">
-        <button class="flat icon" @click="$emit('add')" :tooltip="'create new'">
+        <button @click="$emit('add')" :tooltip="'create new'">
           <i class="material-icons-outlined">add</i>
         </button>
-        <button class="flat icon" @click="$emit('duplicate')" :tooltip="'duplicate'">
+        <button @click="$emit('duplicate')" :tooltip="'duplicate'">
           <i class="material-icons-outlined">library_add</i>
         </button>
-        <button class="flat icon" @click="$emit('delete')" :tooltip="'delete'">
+        <button @click="$emit('delete')" :tooltip="'delete'">
           <i class="material-icons-outlined">delete</i>
         </button>
       </div>
       <div class="list" style="height: 125px">
         <button
-          class="flat"
           :class="{selected: i===selected}"
           :key="i"
           @click="selected=i"
@@ -43,7 +42,7 @@ import FileDrop from "./FileDrop";
 import Vector from "./Vector";
 
 export default {
-  name: "AssetEditor",
+  name: "Asset",
   props: ["assets"],
   components: {
     FileDrop,

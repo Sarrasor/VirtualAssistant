@@ -179,3 +179,67 @@ textarea:read-only, input:read-only {
 textarea:read-write:hover, textarea:read-write:focus, input:read-write:hover, input:read-write:focus {
     border-color: var(--text);
 }
+
+.material-icons-outlined {
+    font-size: 18px !important;
+    pointer-events: none !important;
+}
+
+.list {
+    display: flex;
+    flex-wrap: wrap;
+    place-content: flex-start;
+    overflow-y: auto;
+    box-shadow: inset 0 0 5px var(--shadow);
+}
+
+.list>* {
+    width: 100%;
+    border-radius: 0;
+    margin: 0;
+}
+
+.list>.selected {
+    text-decoration: underline;
+    background-color: var(--select);
+}
+
+.list>button {
+    justify-content: left;
+}
+
+.list>button, .toolbar>button {
+    background: transparent;
+    border: none;
+}
+
+.list>button:hover, .toolbar>button:hover {
+    background-color: var(--select);
+}
+
+.toolbar>button {
+    width: 40px;
+    height: 30px;
+    margin: 0;
+    place-content: center;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--select);
+}
+
+.list::-webkit-scrollbar-thumb {
+    border-radius: 0 4px 4px 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text);
+}

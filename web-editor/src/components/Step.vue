@@ -3,19 +3,18 @@
     <div class="card">
       <p class="label bold">steps</p>
       <div class="toolbar">
-        <button class="flat icon" @click="createStep" :tooltip="'create new'">
+        <button @click="createStep" :tooltip="'create new'">
           <i class="material-icons-outlined">add</i>
         </button>
-        <button class="flat icon" @click="duplicateStep" :tooltip="'duplicate'">
+        <button @click="duplicateStep" :tooltip="'duplicate'">
           <i class="material-icons-outlined">library_add</i>
         </button>
-        <button class="flat icon" @click="deleteStep" :tooltip="'delete'">
+        <button @click="deleteStep" :tooltip="'delete'">
           <i class="material-icons-outlined">delete</i>
         </button>
       </div>
       <div class="list" style="height: 125px">
         <button
-          class="flat"
           :class="{selected: i===selected}"
           :key="i"
           @click="selected=i"

@@ -3,22 +3,21 @@
     <div class="card">
       <p class="label bold">instructions</p>
       <div class="toolbar">
-        <button class="flat icon" @click="createInstruction" :tooltip="'create new'">
+        <button @click="createInstruction" :tooltip="'create new'">
           <i class="material-icons-outlined">add</i>
         </button>
-        <button class="flat icon" @click="duplicateInstruction" :tooltip="'duplicate'">
+        <button @click="duplicateInstruction" :tooltip="'duplicate'">
           <i class="material-icons-outlined">library_add</i>
         </button>
-        <button class="flat icon" @click="uploadInstruction" :tooltip="'upload to server'">
+        <button @click="uploadInstruction" :tooltip="'upload to server'">
           <i class="material-icons-outlined">publish</i>
         </button>
-        <button class="flat icon" @click="deleteInstruction" :tooltip="'delete'">
+        <button @click="deleteInstruction" :tooltip="'delete'">
           <i class="material-icons-outlined">delete</i>
         </button>
       </div>
       <div class="list" style="height: 125px">
         <button
-          class="flat"
           :class="{selected: i===selected}"
           :key="i"
           @click="selected=i"
@@ -39,7 +38,6 @@
       <div id="files" v-if="instruction">
         <div class="list" style="height: 125px">
           <button
-            class="flat"
             :key="i"
             @click="selectedFile=i"
             v-for="(item, i) in ['preview.png', 'schema.png', 'narration.m4a', 'duck.obj', 'tutorial.mp4', 'arrow.obj']"
