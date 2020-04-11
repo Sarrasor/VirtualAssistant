@@ -1,8 +1,14 @@
 <template>
   <div id="app">
-    <InstructionEditor />
-    <StepEditor />
-    <AssetEditor />
+    <Instruction
+      :instructions="instructions"
+      @add="addInstruction"
+      @duplicate="duplicateInstruction"
+      @delete="deleteInstruction"
+      @upload="uploadInstruction"
+    />
+    <!-- <StepEditor />
+    <AssetEditor />-->
     <!-- <StepEditor
       :key="i"
       :inStep="sld"
@@ -24,23 +30,50 @@
 </template>
 
 <script>
-import InstructionEditor from "./components/IntructionEditor";
-import StepEditor from "./components/StepEditor";
-import AssetEditor from "./components/AssetEditor";
+import { v4 as uuidv4 } from "uuid";
+
+import Instruction from "./components/Instruction";
+// import StepEditor from "./components/StepEditor";
+// import AssetEditor from "./components/AssetEditor";
 import Render from "./components/Render";
 
 export default {
   name: "App",
   components: {
-    InstructionEditor,
-    StepEditor,
-    AssetEditor,
+    Instruction,
+    // StepEditor,
+    // AssetEditor,
     Render
   },
-  computed: {
-    // step: function() {
-    //   return this.stepI < this.steps.length ? this.steps[this.stepI] : null;
-    // }
+  data() {
+    return {
+      instructions: []
+    };
+  },
+  methods: {
+    addInstruction() {
+      this.instructions.push({
+        id: uuidv4(),
+        name: "Instruction title",
+        description: "Lorem impsum dolor sit amet",
+        preview_url: undefined,
+        steps: []
+      });
+    },
+    deleteInstruction(index) {
+      this.instructions.splice(index, 1);
+    },
+    uploadInstruction(index) {
+      console.log(
+        "uploading (not yet)",
+        JSON.stringify(this.instructions[index])
+      );
+    },
+    duplicateInstruction(index) {
+      let duplciate = JSON.parse(JSON.stringify(this.instructions[index]));
+      duplciate.name += "(copy)";
+      this.instructions.push(duplciate);
+    }
   }
 };
 </script>

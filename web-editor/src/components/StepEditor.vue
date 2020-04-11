@@ -61,6 +61,7 @@ export default {
     },
     step: {
       handler: function(value) {
+        console.log("step", value);
         this.$emit("step", value);
       },
       immediate: true,

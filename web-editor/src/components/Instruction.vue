@@ -1,19 +1,19 @@
 <template>
-  <div id="root" v-if="instruction">
+  <div id="root">
     <div class="card">
       <p class="label bold">instructions</p>
       <div class="toolbar">
         <button class="flat icon" @click="$emit('add')" :tooltip="'create new'">
           <i class="material-icons-outlined">add</i>
         </button>
-        <button class="flat icon" @click="$emit('duplicate')" :tooltip="'duplicate'">
+        <button class="flat icon" @click="$emit('duplicate', selected)" :tooltip="'duplicate'">
           <i class="material-icons-outlined">library_add</i>
         </button>
-        <button class="flat icon" @click="$emit('delete')" :tooltip="'delete'">
-          <i class="material-icons-outlined">delete</i>
-        </button>
-        <button class="flat icon" @click="$emit('upload')" :tooltip="'upload to server'">
+        <button class="flat icon" @click="$emit('upload', selected)" :tooltip="'upload to server'">
           <i class="material-icons-outlined">publish</i>
+        </button>
+        <button class="flat icon" @click="$emit('delete', selected)" :tooltip="'delete'">
+          <i class="material-icons-outlined">delete</i>
         </button>
       </div>
       <div class="list" style="height: 125px">
@@ -22,19 +22,21 @@
           :class="{selected: i===selected}"
           :key="i"
           @click="selected=i"
-          v-for="(item, i) in ['instruction 1', 'instruction 2', 'instruction 3', 'instruction 4', 'instruction 5', 'instruction 6']"
-        >{{item}}</button>
+          v-for="(inst, i) in instructions"
+        >{{inst.name}}</button>
       </div>
-      <p class="label">name</p>
-      <input type="text" v-model="instruction.name" />
-      <p class="label">description</p>
-      <textarea v-model="instruction.description" />
-      <p class="label">preview</p>
-      <FileDrop :label="'preview'" />
+      <template v-if="instruction">
+        <p class="label">name</p>
+        <input type="text" v-model="instruction.name" />
+        <p class="label">description</p>
+        <textarea v-model="instruction.description" />
+        <p class="label">preview</p>
+        <FileDrop :label="'preview'" />
+      </template>
     </div>
     <div class="card" style="margin-top: 20px; width: 380px">
       <p class="label bold">files</p>
-      <div id="files">
+      <div id="files" v-if="instruction">
         <div class="list" style="height: 125px">
           <button
             class="flat"
@@ -51,45 +53,49 @@
 </template>
 
 <script>
-import { v4 as uuidv4 } from "uuid";
-
 import FileDrop from "./FileDrop";
 import FileUpload from "./FileUpload";
 
 export default {
-  name: "InstructionEditor",
-  props: ["inInstruction"],
+  name: "Instruction",
+  props: ["instructions"],
   components: {
     FileDrop,
     FileUpload
   },
   data() {
     return {
-      instruction: undefined,
       selected: 0,
       selectedFile: 0
     };
   },
+  computed: {
+    instruction: function() {
+      return this.instructions.length > 0
+        ? this.instructions[this.selected]
+        : null;
+    }
+  },
   watch: {
-    inInstruction: {
+    instructions: {
       handler: function(value) {
-        this.instruction = value || {
-          id: uuidv4(),
-          name: "Instruction title",
-          description: "Lorem impsum dolor sit amet",
-          preview_url: undefined,
-          steps: [null]
-        };
+        console.log("instructions arrived", value);
+        if (this.selected >= value.length)
+          this.selected = Math.max(0, value.length - 1);
       },
       immediate: true
     },
     instruction: {
       handler: function(value) {
+        console.log("instruction changed", value);
         this.$emit("instruction", value);
       },
       immediate: true,
       deep: true
     }
+  },
+  methods: {
+    delete() {}
   }
 };
 </script>

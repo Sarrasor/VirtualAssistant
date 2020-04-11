@@ -29,7 +29,7 @@
       <p class="label">media</p>
       <FileDrop />
       <p class="label">position</p>
-      <Vector :fields="['x','y','z']" @vector="asset.transform.position=$event" />
+      <Vector :fields="['x','y','z']" @vector="$set(asset.transform, 'position', $event)" />
       <p class="label">rotation</p>
       <Vector :fields="['x','y','z']" @vector="asset.transform.rotation=$event" />
       <p class="label">scale</p>
@@ -44,7 +44,7 @@ import Vector from "./Vector";
 
 export default {
   name: "AssetEditor",
-  props: ["inAsset"],
+  props: ["assets"],
   components: {
     FileDrop,
     Vector
@@ -77,6 +77,7 @@ export default {
     },
     asset: {
       handler: function(value) {
+        console.log("asset", value);
         this.$emit("asset", value);
       },
       immediate: true,

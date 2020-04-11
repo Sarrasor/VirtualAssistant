@@ -28,7 +28,6 @@ export default {
     update(k, v) {
       v = parseFloat(v);
       this.vector[k] = isNaN(v) ? 0 : v;
-      console.log("vector", this.vector);
       this.$emit("vector", this.vector);
     }
   }
