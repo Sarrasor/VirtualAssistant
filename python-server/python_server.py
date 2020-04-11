@@ -14,8 +14,8 @@ import json
 import shutil
 
 # Import the generated gRPC classes
-import virtual_assistant_pb2
-import virtual_assistant_pb2_grpc
+import server_pb2
+import server_pb2_grpc
 
 INSTRUCTIONS_FOLDER = "./instructions"
 DEFAULT_THUMB = "./aux_data/default_thumb.jpg"
@@ -31,14 +31,14 @@ def get_file_chunks(filename):
         filename (str): Path to file to slice
 
     Yields:
-        virtual_assistant_pb2.Chunk: byte chunk for gRPC stream
+        server_pb2.Chunk: byte chunk for gRPC stream
     """
     with open(filename, 'rb') as f:
         while True:
             piece = f.read(CHUNK_SIZE)
             if len(piece) == 0:
                 return
-            yield virtual_assistant_pb2.Chunk(buffer=piece)
+            yield server_pb2.Chunk(buffer=piece)
 
 
 def save_chunks_to_file(chunks, filename):
@@ -46,7 +46,7 @@ def save_chunks_to_file(chunks, filename):
     Concatenates received chunks to file
 
     Args:
-        chunks (virtual_assistant_pb2.Chunk): byte chunk from gRPC stream
+        chunks (server_pb2.Chunk): byte chunk from gRPC stream
         filename (string): File to write to
     """
     with open(filename, 'wb') as f:
@@ -54,10 +54,10 @@ def save_chunks_to_file(chunks, filename):
             f.write(chunk.buffer)
 
 
-class VirtualAssistantServicer(virtual_assistant_pb2_grpc.VirtualAssistantServicer):
+class VirtualAssistantServicer(server_pb2_grpc.VirtualAssistantServicer):
 
     """
-    Class that implements rpcs from virtual_assistant.proto
+    Class that implements VirtualAssistant rpcs from server.proto
     """
 
     def GetAllInstructions(self, request, context):
@@ -67,21 +67,21 @@ class VirtualAssistantServicer(virtual_assistant_pb2_grpc.VirtualAssistantServic
         Thumbnails
 
         Args:
-            request (virtual_assistant_pb2.InstructionRequest): Request msg
+            request (server_pb2.InstructionRequest): Request msg
             context (gRPC context): gRPC context
 
         Returns:
-            virtual_assistant_pb2.InstructionResponse: Description
+            server_pb2.InstructionResponse: Description
         """
         print("All instructions request")
 
-        response = virtual_assistant_pb2.AllInstructioinsResponse()
+        response = server_pb2.AllInstructioinsResponse()
         instructions = os.listdir(INSTRUCTIONS_FOLDER)
 
         # Go through each instruction one-by-one and create a thumb out of it
         for instruction in instructions:
             path = "{}/{}".format(INSTRUCTIONS_FOLDER, instruction)
-            thumbnail = virtual_assistant_pb2.InstructionThumbnail()
+            thumbnail = server_pb2.InstructionThumbnail()
 
             # Parse index.json
             try:
@@ -121,32 +121,32 @@ class VirtualAssistantServicer(virtual_assistant_pb2_grpc.VirtualAssistantServic
         Parses and returns steps.json for a particular instruction
 
         Args:
-            request (virtual_assistant_pb2.InstructionRequest): Request msg
+            request (server_pb2.InstructionRequest): Request msg
             context (gRPC context): gRPC context
 
         Returns:
-            virtual_assistant_pb2.InstructionResponse: Instruction Response message
+            server_pb2.InstructionResponse: Instruction Response message
         """
 
         print("Instruction {} request".format(request.id))
         # Path to the instruction
         path = "{}/{}".format(INSTRUCTIONS_FOLDER, request.id)
 
-        response = virtual_assistant_pb2.InstructionResponse()
+        response = server_pb2.InstructionResponse()
         try:
             response.status = 1
             # Parse steps.json and put it in the response message
             with open('{}/steps.json'.format(path), 'r') as file:
                 steps = json.load(file)
                 for step in steps:
-                    step_msg = virtual_assistant_pb2.Step()
+                    step_msg = server_pb2.Step()
 
                     step_msg.name = step['name']
                     step_msg.description = step['description']
                     step_msg.preview_url = step['preview_url']
 
                     for asset in step['assets']:
-                        asset_msg = virtual_assistant_pb2.Asset()
+                        asset_msg = server_pb2.Asset()
 
                         asset_msg.name = asset['name']
                         asset_msg.media.type = asset['media']['type']
@@ -178,11 +178,11 @@ class VirtualAssistantServicer(virtual_assistant_pb2_grpc.VirtualAssistantServic
         The procedure returns chunked media.zip
 
         Args:
-            request (virtual_assistant_pb2.MediaRequest): Request msg
+            request (server_pb2.MediaRequest): Request msg
             context (gRPC context): gRPC context
 
         Returns:
-            virtual_assistant_pb2.Chunk: gRPC Chunk stream
+            server_pb2.Chunk: gRPC Chunk stream
         """
 
         # Define path to media folder
@@ -196,6 +196,41 @@ class VirtualAssistantServicer(virtual_assistant_pb2_grpc.VirtualAssistantServic
         # Split and send media.zip archive
         return get_file_chunks(zip_path + ".zip")
 
+
+class WebEditorServicer(server_pb2_grpc.WebEditorServicer):
+    """
+    Class that implements WebEditor rpcs from server.proto
+    """
+
+    def DownloadInstruction(self, request, context):
+        """
+        Defines the body of DownloadInstruction rpc.
+        The procedure returns chunked instruction_id.zip
+
+        Args:
+            request (server_pb2.MediaRequest): Request msg
+            context (gRPC context): gRPC context
+
+        Returns:
+            server_pb2.Chunk: gRPC Chunk stream
+        """
+
+        print("Web-editor request for instruction: {}".format(request.id))
+        try:
+            # Define path to media folder
+            media_path = "{}/{}".format(INSTRUCTIONS_FOLDER, request.id)
+            # Define path to instruction_id.zip
+            zip_path = "{}/{}".format(INSTRUCTIONS_FOLDER, request.id)
+
+            # Create zip archive from media folder
+            shutil.make_archive(zip_path, "zip", media_path)
+
+            # Split and send media.zip archive
+            return get_file_chunks(zip_path + ".zip")
+
+        except Exception as e:
+            print("Download failed:\n", e)
+
     def UploadInstructions(self, request_iterator, context):
         """
         Defines the body of UploadInstructions rpc.
@@ -205,11 +240,11 @@ class VirtualAssistantServicer(virtual_assistant_pb2_grpc.VirtualAssistantServic
         Received zip file will be deleted after
 
         Args:
-            request_iterator (virtual_assistant_pb2.Chunk): List of chunks
+            request_iterator (server_pb2.Chunk): List of chunks
             context (gRPC context): gRPC context
 
         Returns:
-            virtual_assistant_pb2.Status: Upload status code
+            server_pb2.Status: Upload status code
         """
         print("Upload attempt")
         try:
@@ -221,20 +256,23 @@ class VirtualAssistantServicer(virtual_assistant_pb2_grpc.VirtualAssistantServic
 
             os.remove(INSTRUCTIONS_FOLDER + "/upload.zip")
 
-            return virtual_assistant_pb2.Status(status=1)
+            print("Upload successful")
+            return server_pb2.Status(status=1)
         except Exception as e:
             print("Upload failed:\n", e)
-            return virtual_assistant_pb2.Status(status=0)
+            return server_pb2.Status(status=0)
 
 
-def server():
+def main():
     """
     Create gRPC server as a thread and wait for requests
     """
     print("Creating Server")
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    virtual_assistant_pb2_grpc.add_VirtualAssistantServicer_to_server(
+    server_pb2_grpc.add_VirtualAssistantServicer_to_server(
         VirtualAssistantServicer(), server)
+    server_pb2_grpc.add_WebEditorServicer_to_server(
+        WebEditorServicer(), server)
 
     print('Listening on port 50051')
     server.add_insecure_port('[::]:50051')
@@ -249,4 +287,4 @@ def server():
 
 
 if __name__ == '__main__':
-    server()
+    main()

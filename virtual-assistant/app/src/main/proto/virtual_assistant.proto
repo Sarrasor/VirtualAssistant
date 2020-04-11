@@ -122,8 +122,6 @@ service VirtualAssistant
     rpc GetInstruction(InstructionRequest) returns (InstructionResponse) {}
     // Request media folder in zip format
     rpc DownloadMedia(MediaRequest) returns (stream Chunk) {}
-    // Upload instruction(s) from web-editor
-    rpc UploadInstructions(stream Chunk) returns (Status) {}
     // Check when the object was modified last time
     rpc LastModified(InstructionRequest) returns (Timestamp) {}
 }

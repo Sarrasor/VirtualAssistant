@@ -4,8 +4,8 @@ Sample python client to download/upload media folder in zip
 import grpc
 
 # Import the generated gRPC classes
-import virtual_assistant_pb2
-import virtual_assistant_pb2_grpc
+import server_pb2
+import server_pb2_grpc
 
 CHUNK_SIZE = 1024 * 1024  # 1MB
 
@@ -15,7 +15,7 @@ def save_chunks_to_file(chunks, filename):
     Concatenates received chunks to file
 
     Args:
-        chunks (virtual_assistant_pb2.Chunk): byte chunk from gRPC stream
+        chunks (server_pb2.Chunk): byte chunk from gRPC stream
         filename (string): File to write to
     """
     with open(filename, 'wb') as f:
@@ -31,14 +31,14 @@ def get_file_chunks(filename):
         filename (str): Path to file to slice
 
     Yields:
-        virtual_assistant_pb2.Chunk: byte chunk for gRPC stream
+        server_pb2.Chunk: byte chunk for gRPC stream
     """
     with open(filename, 'rb') as f:
         while True:
             piece = f.read(CHUNK_SIZE)
             if len(piece) == 0:
                 return
-            yield virtual_assistant_pb2.Chunk(buffer=piece)
+            yield server_pb2.Chunk(buffer=piece)
 
 
 def upload(stub, in_file_name):
@@ -55,13 +55,13 @@ def main():
 
     # Create gRPC stub
     channel = grpc.insecure_channel('localhost:50051')
-    stub = virtual_assistant_pb2_grpc.VirtualAssistantStub(channel)
+    stub = server_pb2_grpc.WebEditorStub(channel)
 
-    upload(stub, "instr.zip")
+    upload(stub, "media.zip")
 
     # # Make the call
     # response = stub.DownloadMedia(
-    #     instruction_pb2.MediaRequest(id="3rf323g4234g3"))
+    #     server_pb2.MediaRequest(id="3rf323g4234g3"))
 
     # # Save the result
     # save_chunks_to_file(response, "result.zip")
