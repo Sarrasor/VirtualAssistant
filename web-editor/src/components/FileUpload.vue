@@ -3,7 +3,7 @@
   <form @submit.prevent="sendFile" enctype = "multipart/form-data">
 <div class = "field">
     <div class="file is-boxed is-primary">
-      <label class="field-label" id="upload">
+      <label class="field-label" id="root">
         <input
          type="file"
          ref="file"
@@ -11,9 +11,11 @@
          class ="file-input"
          id = "empty"
          />
-          <span class="file-label" id="root">
+          <span class="file-label">
             Choose a file...
           </span>
+          <!-- TODO : handle the size of the box and check 2 cases : file selected or not (for now selected case only has a good size) -->
+          <span v-if="file" class="file-name">{{file.name}}</span>
       </label>
       </div>
       </div>
@@ -74,7 +76,7 @@ export default {
   display: inline-block;     
   position: relative;    
   z-index: 1;     
-  padding: 2em;     
+  padding: 20%;     
   margin: 0em; 
 }
 #root:hover {
@@ -85,7 +87,6 @@ export default {
 }
 #root > * {
   width: 100%;
-  height: 100%;
 }
 #empty {
   font-size: 12px;
