@@ -1,12 +1,12 @@
 <template>
-  <div>
+  <div id="root">
     <input
       type="number"
       step="0.1"
       :style="{width: width}"
       :key="i"
       :value="vector[k]"
-      @input="update(k, $event.target.value)"
+      @input="vector[k] = $toFloat($event.target.value)"
       v-for="(k, i) of keys"
     />
   </div>
@@ -22,12 +22,6 @@ export default {
     },
     width: function() {
       return 100 / this.keys.length + "%";
-    }
-  },
-  methods: {
-    update(k, v) {
-      v = parseFloat(v);
-      this.vector[k] = isNaN(v) ? 0 : v;
     }
   }
 };

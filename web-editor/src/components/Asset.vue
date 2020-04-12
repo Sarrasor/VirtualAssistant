@@ -33,7 +33,12 @@
         <p class="label">rotation</p>
         <Vector :vector="asset.transform.rotation" />
         <p class="label">scale</p>
-        <input type="number" step="0.1" v-model="asset.transform.scale" />
+        <input
+          type="number"
+          step="0.1"
+          :value="asset.transform.scale"
+          @input="asset.transform.scale=$toFloat($event.target.value)"
+        />
         <input type="checkbox" id="visible" v-model="asset.hidden" />
         <label for="visible">Hidden</label>
       </template>

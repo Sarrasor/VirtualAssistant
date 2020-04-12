@@ -13,6 +13,12 @@ import Step from "./components/Step";
 import Asset from "./components/Asset";
 import Render from "./components/Render";
 
+import Vue from "vue";
+Vue.prototype.$toFloat = f => {
+  f = parseFloat(f);
+  return isNaN(f) ? 0 : f;
+};
+
 export default {
   name: "App",
   components: {
