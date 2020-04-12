@@ -66,7 +66,7 @@ export default {
       this.selectLast();
     },
     duplicateStep() {
-      let duplicate = JSON.parse(JSON.stringify(this.steps[this.selected]));
+      let duplicate = JSON.parse(JSON.stringify(this.step));
       duplicate.name += " (copy)";
       this.steps.push(duplicate);
       this.selectLast();

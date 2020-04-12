@@ -81,17 +81,18 @@ export default {
     createInstruction() {
       this.instructions.push({
         id: uuidv4(),
+        size: 0,
         name: "Instruction " + (this.instructions.length + 1),
         description: "Lorem impsum dolor sit amet",
-        preview_url: undefined,
-        steps: []
+        preview_url: "",
+        steps: [],
+        step_count: 0,
+        last_modified: ""
       });
       this.selectLast();
     },
     duplicateInstruction() {
-      let duplicate = JSON.parse(
-        JSON.stringify(this.instructions[this.selected])
-      );
+      let duplicate = JSON.parse(JSON.stringify(this.instruction));
       duplicate.name += " (copy)";
       this.instructions.push(duplicate);
       this.selectLast();
@@ -101,10 +102,9 @@ export default {
       if (this.selected >= this.instructions.length) this.selectLast();
     },
     uploadInstruction() {
-      console.log(
-        "uploading (not yet)",
-        JSON.stringify(this.instructions[this.selected])
-      );
+      this.instruction.step_count = this.instruction.steps.length;
+      this.instruction.last_modified = Date.now()
+      console.log(JSON.stringify(this.instruction));
     },
     selectLast() {
       this.selected = this.instructions.length - 1;

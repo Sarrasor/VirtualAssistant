@@ -91,7 +91,7 @@ export default {
       this.selectLast();
     },
     duplicateAsset() {
-      let duplicate = JSON.parse(JSON.stringify(this.assets[this.selected]));
+      let duplicate = JSON.parse(JSON.stringify(this.asset));
       duplicate.name += " (copy)";
       this.assets.push(duplicate);
       this.selectLast();
