@@ -3,7 +3,7 @@
     <Instruction :instructions="instructions" @select="selectInstruction" />
     <Step :steps="steps" @select="selectStep" />
     <Asset :assets="assets" />
-    <Render />
+    <Render :assets="assets" />
   </div>
 </template>
 
@@ -18,6 +18,9 @@ Vue.prototype.$toFloat = f => {
   f = parseFloat(f);
   return isNaN(f) ? 0 : f;
 };
+
+import * as VueThreejs from "vue-threejs";
+Vue.use(VueThreejs);
 
 export default {
   name: "App",

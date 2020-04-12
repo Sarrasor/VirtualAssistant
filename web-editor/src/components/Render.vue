@@ -1,39 +1,19 @@
 <template>
-  <div class="card" ref="root"></div>
+  <renderer :size="{ w: 600, h: 400 }">
+    <scene>
+      <camera :position="{ z: 15 }"></camera>
+      <mesh :position="asset.transform.position" :key="i" v-for="(asset, i) in assets">
+        <geometry type="Box" :args="[1, 1, 1]"></geometry>
+        <material type="MeshBasic"></material>
+      </mesh>
+    </scene>
+  </renderer>
 </template>
 
 <script>
-import * as THREE from "three";
-
 export default {
   name: "Render",
-  mounted() {
-    let root = this.$refs["root"];
-    let size = { x: root.offsetWidth, y: root.offsetHeight };
-
-    var scene = new THREE.Scene();
-    var camera = new THREE.PerspectiveCamera(75, size.x / size.y, 0.1, 1000);
-    var renderer = new THREE.WebGLRenderer();
-    renderer.setSize(size.x, size.y);
-    root.appendChild(renderer.domElement);
-
-    var geometry = new THREE.BoxGeometry();
-    var material = new THREE.MeshBasicMaterial({ color: 0x2e3440 });
-    var cube = new THREE.Mesh(geometry, material);
-    cube.scale.x = cube.scale.y = cube.scale.z = 5;
-    scene.add(cube);
-    scene.background = new THREE.Color(0xffffff);
-
-    camera.position.z = 10;
-
-    function animate() {
-      requestAnimationFrame(animate);
-      cube.rotation.x += 0.01;
-      cube.rotation.y += 0.01;
-      renderer.render(scene, camera);
-    }
-    animate();
-  }
+  props: ["assets"]
 };
 </script>
 
