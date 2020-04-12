@@ -2,25 +2,31 @@
   <div>
     <div class="card">
       <p class="label bold">assets</p>
-      <div class="toolbar">
-        <button @click="createAsset" :tooltip="'create new'">
-          <i class="material-icons-outlined">add</i>
-        </button>
-        <button @click="duplicateAsset" :tooltip="'duplicate'">
-          <i class="material-icons-outlined">library_add</i>
-        </button>
-        <button @click="deleteAsset" :tooltip="'delete'">
-          <i class="material-icons-outlined">delete</i>
-        </button>
-      </div>
-      <div class="list" style="height: 125px">
-        <button
-          :class="{selected: i===selected}"
-          :key="i"
-          @click="selected=i"
-          v-for="(ast, i) in assets"
-        >{{ast.name}}</button>
-      </div>
+      <template v-if="assets">
+        <div class="toolbar">
+          <button @click="createAsset" :tooltip="'create new'">
+            <i class="material-icons-outlined">add</i>
+          </button>
+          <button v-if="asset" @click="duplicateAsset" :tooltip="'duplicate'">
+            <i class="material-icons-outlined">library_add</i>
+          </button>
+          <button v-if="asset" @click="asset.hidden=!asset.hidden" :tooltip="'visibility'">
+            <i v-if="asset.hidden" class="material-icons-outlined">visibility_off</i>
+            <i v-else class="material-icons-outlined">visibility</i>
+          </button>
+          <button v-if="asset" @click="deleteAsset" :tooltip="'delete'">
+            <i class="material-icons-outlined">delete</i>
+          </button>
+        </div>
+        <div v-if="assets.length>0" class="list" style="height: 125px">
+          <button
+            :class="{selected: i===selected}"
+            :key="i"
+            @click="selected=i"
+            v-for="(ast, i) in assets"
+          >{{ast.name}}</button>
+        </div>
+      </template>
       <template v-if="asset">
         <p class="label">name</p>
         <input type="text" v-model="asset.name" />
@@ -39,8 +45,6 @@
           :value="asset.transform.scale"
           @input="asset.transform.scale=$toFloat($event.target.value)"
         />
-        <input type="checkbox" id="visible" v-model="asset.hidden" />
-        <label for="visible">Hidden</label>
       </template>
     </div>
   </div>
@@ -70,9 +74,6 @@ export default {
   },
   methods: {
     createAsset() {
-      console.log(this.assets);
-      if (!this.assets) return;
-
       this.assets.push({
         name: "Asset " + (this.assets.length + 1),
         media: {
@@ -90,16 +91,12 @@ export default {
       this.selectLast();
     },
     duplicateAsset() {
-      if (!(this.assets && this.asset)) return;
-
       let duplicate = JSON.parse(JSON.stringify(this.assets[this.selected]));
       duplicate.name += " (copy)";
       this.assets.push(duplicate);
       this.selectLast();
     },
     deleteAsset() {
-      if (!this.assets) return;
-
       this.assets.splice(this.selected, 1);
       if (this.selected >= this.assets.length) this.selectLast();
     },

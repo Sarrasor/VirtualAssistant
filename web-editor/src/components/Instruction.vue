@@ -2,28 +2,30 @@
   <div>
     <div class="card">
       <p class="label bold">instructions</p>
-      <div class="toolbar">
-        <button @click="createInstruction" :tooltip="'create new'">
-          <i class="material-icons-outlined">add</i>
-        </button>
-        <button @click="duplicateInstruction" :tooltip="'duplicate'">
-          <i class="material-icons-outlined">library_add</i>
-        </button>
-        <button @click="uploadInstruction" :tooltip="'upload to server'">
-          <i class="material-icons-outlined">publish</i>
-        </button>
-        <button @click="deleteInstruction" :tooltip="'delete'">
-          <i class="material-icons-outlined">delete</i>
-        </button>
-      </div>
-      <div class="list" style="height: 125px">
-        <button
-          :class="{selected: i===selected}"
-          :key="i"
-          @click="selected=i"
-          v-for="(ins, i) in instructions"
-        >{{ins.name}}</button>
-      </div>
+      <template v-if="instructions">
+        <div class="toolbar">
+          <button v-if="instructions" @click="createInstruction" :tooltip="'create new'">
+            <i class="material-icons-outlined">add</i>
+          </button>
+          <button v-if="instruction" @click="duplicateInstruction" :tooltip="'duplicate'">
+            <i class="material-icons-outlined">library_add</i>
+          </button>
+          <button v-if="instruction" @click="uploadInstruction" :tooltip="'upload to server'">
+            <i class="material-icons-outlined">publish</i>
+          </button>
+          <button v-if="instruction" @click="deleteInstruction" :tooltip="'delete'">
+            <i class="material-icons-outlined">delete</i>
+          </button>
+        </div>
+        <div v-if="instructions.length>0" class="list" style="height: 125px">
+          <button
+            :class="{selected: i===selected}"
+            :key="i"
+            @click="selected=i"
+            v-for="(ins, i) in instructions"
+          >{{ins.name}}</button>
+        </div>
+      </template>
       <template v-if="instruction">
         <p class="label">name</p>
         <input type="text" v-model="instruction.name" />
@@ -87,8 +89,6 @@ export default {
       this.selectLast();
     },
     duplicateInstruction() {
-      if (!this.instruction) return;
-
       let duplicate = JSON.parse(
         JSON.stringify(this.instructions[this.selected])
       );
