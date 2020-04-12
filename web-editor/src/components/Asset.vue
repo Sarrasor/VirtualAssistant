@@ -29,11 +29,11 @@
         <p class="label">media</p>
         <FileDrop />
         <p class="label">position</p>
-        <Vector :fields="['x','y','z']" @vector="$set(asset.transform, 'position', $event)" />
+        <Vector :vector="asset.transform.position" />
         <p class="label">rotation</p>
-        <Vector :fields="['x','y','z']" @vector="asset.transform.rotation=$event" />
+        <Vector :vector="asset.transform.rotation" />
         <p class="label">scale</p>
-        <Vector :fields="['x']" @vector="asset.transform.scale=$event.x" />
+        <input type="number" step="0.1" v-model="asset.transform.scale" />
         <input type="checkbox" id="visible" v-model="asset.hidden" />
         <label for="visible">Hidden</label>
       </template>
@@ -61,15 +61,6 @@ export default {
     asset: function() {
       this.$emit("select", this.selected);
       return this.assets?.length > 0 ? this.assets[this.selected] : null;
-    }
-  },
-  watch: {
-    asset: {
-      handler() {
-        console.log("asset update");
-      },
-      immediate: true,
-      deep: true
     }
   },
   methods: {
