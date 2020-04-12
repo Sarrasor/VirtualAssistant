@@ -72,6 +72,11 @@ export default {
       return this.assets?.length > 0 ? this.assets[this.selected] : null;
     }
   },
+  watch: {
+    assets(value) {
+      if (value) this.selectLast();
+    }
+  },
   methods: {
     createAsset() {
       this.assets.push({
@@ -84,7 +89,7 @@ export default {
         transform: {
           position: { x: 0, y: 0, z: 0 },
           rotation: { x: 0, y: 0, z: 0 },
-          scale: 0
+          scale: 1
         },
         hidden: false
       });

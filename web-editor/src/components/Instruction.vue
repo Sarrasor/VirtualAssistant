@@ -69,6 +69,11 @@ export default {
       selected: undefined
     };
   },
+  watch: {
+    instructions(value) {
+      if (value) this.selectLast();
+    }
+  },
   computed: {
     instruction: function() {
       this.$emit("select", this.selected);
@@ -103,7 +108,7 @@ export default {
     },
     uploadInstruction() {
       this.instruction.step_count = this.instruction.steps.length;
-      this.instruction.last_modified = Date.now()
+      this.instruction.last_modified = Date.now();
       console.log(JSON.stringify(this.instruction));
     },
     selectLast() {

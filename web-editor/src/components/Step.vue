@@ -55,6 +55,11 @@ export default {
       return this.steps?.length > 0 ? this.steps[this.selected] : null;
     }
   },
+  watch: {
+    steps(value) {
+      if (value) this.selectLast();
+    }
+  },
   methods: {
     createStep() {
       this.steps.push({
