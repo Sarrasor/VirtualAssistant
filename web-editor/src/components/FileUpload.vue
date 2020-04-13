@@ -1,49 +1,35 @@
 <template>
-  <!-- learned from : https://www.youtube.com/watch?v=GXe_JpBQLTQ -->
-  <form @submit.prevent="sendFile" enctype = "multipart/form-data">
-<div class = "field">
-    <div class="file is-boxed is-primary">
-      <label class="field-label" id="root">
-        <input
-         multiple
-         type="file"
-         ref="files"
-         @change="selectFile"
-         class ="file-input"
-         id = "empty"
-         />
-          <span class="file-label">
-            Choose a file...
-          </span>
-          <!-- TODO : handle the size of the box and check 2 cases : file selected or not (for now selected case only has a good size) -->
-      </label>
-      </div>
-      </div>
-    <!--
-      <label for="file" class="label">
-    <p id = "empty"> click or drag your local files here to upload </p>
-    <input type = "file" ref = "file" @change="selectFile">
-    </label>
-  </div>
-  -->
-  <div class="field">
-    <div v-for="(file, index) in files" :key="index" class="level">
-      <div class="level-left">
-       <div class="level-item">{{file.name}}</div>
-      </div>
-      <div class="level-right">
-        <div class="level-item">
-          <a class="delete"></a>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <div class = "field">
-    <button class="button is-info">Send</button>
-  </div>
-  
-  </form>
+<form @submit.prevent="sendFile" enctype="multipart/form-data">
+
+<div class="dropzone">
+    <input
+     type="file"
+     class = "input-file"
+     ref = "file"
+     @change = "sendFile"
+    />
+<p v-if="!uploading" class="call-to-action">
+  Drag your files here
+</p>
+<p v-if="uploading" class="progress-bar">
+
+</p>
+
+</div>
+
+<div class="content">
+  <ul>
+    <li v-for="file in uploadedFiles" :key="file.originalname">
+      {{file.originalname}}
+    </li>
+  </ul>  
+</div>
+
+
+
+</form>
+
 </template>
 
 <script>
@@ -51,18 +37,38 @@ export default {
   name: "FileUpload",
   data(){
     return {
-      files: [],
+      file: "",
       message: "",
-      error: false
+      error: false,
+      uploading:false,
+      uploadedFiles:[],
+      progress: 0
     }
   },
 
   methods: {
-   selectFile(){
-     const files = this.$refs.files.files;
-     this.files = [ ...this.files, ...files];
-   },
+    //we don't need selectFile() because we directly upload as we drag it to the zone
    async sendFile(){
+      const file= this.$refs.file.files[0];
+      const formData = new FormData();
+      formData.append("file", file);
+
+
+      try{ 
+        this.uploading = true;
+        //TODO : upload to server (stored in 'file')
+         console.log("Hi ");
+         //const res = ....
+         //this.uploadedFiles.push(res.data.file);
+         this.uploading = false;
+      }
+      catch(err){
+        //TODO : handle server errors
+        this.error = true;
+         console.log("Error");
+         this.uploading = false;
+
+     }
    }
   }
 }
@@ -102,5 +108,30 @@ export default {
 #upload {
   width: 200%;
   height: 200%;
+}
+.dropzone {
+  min-height: 200px;
+  padding: 10 px 10 px;
+  position: relative;
+  cursor: pointer;
+  outline: 2px dashed grey;
+  outline-offset: -10px;
+  background: lightcyan;
+  color: dimgray;
+}
+.input-file {
+  opacity: 0;
+  width :100%;
+  height: 200px;
+  position: absolute;
+  cursor: pointer;
+}
+.dropzone:hover {
+  background: lightblue;
+}
+.dropzone .call-to-action{
+  font-size: 1.2rem;
+  text-align: center;
+  padding: 85px 0;
 }
 </style>
