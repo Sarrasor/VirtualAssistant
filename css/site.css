@@ -246,10 +246,7 @@ textarea:read-write:hover, textarea:read-write:focus, input:read-write:hover, in
 
 ::-webkit-scrollbar-thumb {
     background: var(--select);
-}
-
-.list::-webkit-scrollbar-thumb {
-    border-radius: 0 4px 4px 0;
+    border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
