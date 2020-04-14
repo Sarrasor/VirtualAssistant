@@ -1,13 +1,13 @@
 <template>
-  <div>
+  <div id="root">
     <input
       type="number"
-      step="0.01"
-      :style="{width: 100/fields.length+'%'}"
-      :key="k"
+      step="0.1"
+      :style="{width: width}"
+      :key="i"
       :value="vector[k]"
-      @input="update(k, $event.target.value)"
-      v-for="k in fields"
+      @input="vector[k] = $toFloat($event.target.value)"
+      v-for="(k, i) of keys"
     />
   </div>
 </template>
@@ -15,21 +15,13 @@
 <script>
 export default {
   name: "Vector",
-  props: ["fields"],
-  data() {
-    return {
-      vector: {}
-    };
-  },
-  created() {
-    this.fields.forEach(f => (this.vector[f] = 0));
-  },
-  methods: {
-    update(k, v) {
-      v = parseFloat(v);
-      this.vector[k] = isNaN(v) ? 0 : v;
-      console.log("vector", this.vector);
-      this.$emit("vector", this.vector);
+  props: ["vector"],
+  computed: {
+    keys: function() {
+      return Object.keys(this.vector);
+    },
+    width: function() {
+      return 100 / this.keys.length + "%";
     }
   }
 };
@@ -49,13 +41,5 @@ input:last-of-type {
 }
 input:only-of-type {
   border-radius: 4px;
-}
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-input[type="number"] {
-  -moz-appearance: textfield;
 }
 </style>

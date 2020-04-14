@@ -21,9 +21,6 @@ export default {
 #root:hover {
   border-color: var(--text);
 }
-#root:active {
-  box-shadow: inset 0px 0px 20px var(--shadow);
-}
 #root > * {
   width: 100%;
 }
