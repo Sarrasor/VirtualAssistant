@@ -1,0 +1,42 @@
+// Instruction transfer API description
+// Used to generate nodejs gRPC classes
+
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package virtual_assistant;
+
+message Timestamp
+{
+    // google.protobuf.Timestamp timestamp = 1;
+    int32 timestamp = 1;
+}
+
+// Request for instruction wtih id
+message InstructionRequest
+{
+    string id = 1;
+}
+
+// Chunks for big files requests
+message Chunk
+{
+    bytes buffer = 1;
+}
+
+// Status to indicate if data was received or not
+message Status
+{
+    int32 status = 1;
+}
+
+service WebEditor
+{
+    // Download Instruction from server to web-editor
+    rpc DownloadInstructions(InstructionRequest) returns (stream Chunk) {}
+    // Upload instruction(s) from web-editor to server
+    rpc UploadInstructions(stream Chunk) returns (Status) {}
+    // Check when the object was modified last time
+    rpc LastModified(InstructionRequest) returns (Timestamp) {}
+}
