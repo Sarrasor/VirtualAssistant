@@ -3,6 +3,11 @@ var grpc = require('grpc');
 var protoLoader = require('@grpc/proto-loader');
 var fs = require('fs');
 
+// Main variables
+var FILENAME = 'instructions.zip';
+var SERVER_ADDRESS = 'localhost:50051';
+var CHUNK_SIZE = 1024 * 1024; // 1 MB
+
 // Load web_editor.proto
 var packageDefinition = protoLoader.loadSync(
     PROTO_PATH,
@@ -14,64 +19,35 @@ var packageDefinition = protoLoader.loadSync(
     });
 
 var protoDescriptor = grpc.loadPackageDefinition(packageDefinition);
-var web_editor = protoDescriptor.virtual_assistant;
 
 // Create client
-var client = new web_editor.WebEditor('localhost:50051',
-                                       grpc.credentials.createInsecure());
+var client = new protoDescriptor.virtual_assistant.WebEditor(
+	SERVER_ADDRESS, grpc.credentials.createInsecure());
 
 // Read file and call sendFile()
-var filename = 'instructions.zip'
-fs.readFile( __dirname + '/' + filename, function (err, data) {
+fs.readFile( __dirname + '/' + FILENAME, function (err, file) 
+{
   if (err) 
   {
     throw err; 
   }
-  const file = data;
   sendFile(file);
 });
 
-function assert (cond, err)
-{
-	if (!cond) 
-	{
-		throw new Error(err);
-	}
-}
-
-function create_chunks(buffer, chunkSize) 
-{
-	assert(Buffer.isBuffer(buffer), 'Buffer is required');
-	assert(!isNaN(chunkSize) && chunkSize > 0, 'Chunk size should be positive number');
-
-	var result = [];
-	var len = buffer.length;
-	var i = 0;
-
-	while (i < len) {
-		result.push(buffer.slice(i, i += chunkSize));
-	}
-
-	return result;
-}
-
-// Send file
+// Slices file in chunks and sends it
 function sendFile(file)
 {	
-	// Slice file in chunks
-	var chunk_size = 1024 * 1024;
-	var chunks = create_chunks(file, chunk_size);
-
 	// Open connection
 	var call = client.UploadInstructions(
 	function(error, response){console.log(response)});
 
-	// Stream each chunk
-	for (var i = 0; i < chunks.length; i++) 
+	var i = 0;
+	// Slice file in chunks and send them
+	while (i < file.length) 
 	{
-		call.write({buffer: chunks[i]});
+		call.write({buffer: file.slice(i, i += CHUNK_SIZE)});
 	}
 
-	// Close connection
+	// Close the connection
 	call.end();  
 }
