@@ -1,8 +1,8 @@
 <template>
 
 <form @submit.prevent="sendFile" enctype="multipart/form-data">
-
-<div class="dropzone">
+<div v-bind:uploadedFiles="uploadedFiles"></div>
+<div class="dropzone" v-if="!uploading">
     <input
      multiple
      type="file"
@@ -14,7 +14,7 @@
   Drag your files here
 </p>
 <p v-if="uploading" class="progress-bar">
-
+  Uploading
 </p>
 
 </div>
@@ -34,7 +34,7 @@ export default {
       message: "",
       error: false,
       uploading:false,
-      uploadedFiles:[],
+      //uploadedFiles:[],
       progress: 0
     }
   },
@@ -43,24 +43,26 @@ export default {
     //we don't need selectFile() because we directly upload as we drag it to the zone
    async sendFile(){
     const files = this.$refs.files.files;
-    this.files = [...this.files, ...files];
+    //this.files = [...this.files, ...files];
 
 
       try{ 
         this.uploading = true;
+        this.$emit('uploaded',files);
         //TODO : upload to server (stored in 'file')
-        //print the names of the files to the console
-        for(var i = 0; i<this.files.length;i++)
-            console.log(this.files[i].name);
-        this.uploading = false;
+        // //print the names of the files to the console
+        // for(var i = 0; i<this.files.length;i++)
+        //     console.log(this.files[i].name);
+        // this.uploading = false;
       }
       catch(err){
-        //TODO : handle server errors
+        //TODO : handle errors
         this.error = true;
          console.log("Error");
          this.uploading = false;
-
      }
+     //Add files to the 
+     //this.uploadedFiles = [...this.uploadedFiles, ...files];
    }
   }
 }
