@@ -4,9 +4,10 @@
 
 <div class="dropzone">
     <input
+     multiple
      type="file"
      class = "input-file"
-     ref = "file"
+     ref = "files"
      @change = "sendFile"
     />
 <p v-if="!uploading" class="call-to-action">
@@ -16,14 +17,6 @@
 
 </p>
 
-</div>
-
-<div class="content">
-  <ul>
-    <li v-for="file in uploadedFiles" :key="file.originalname">
-      {{file.originalname}}
-    </li>
-  </ul>  
 </div>
 
 
@@ -37,7 +30,7 @@ export default {
   name: "FileUpload",
   data(){
     return {
-      file: "",
+      files: [],
       message: "",
       error: false,
       uploading:false,
@@ -49,18 +42,17 @@ export default {
   methods: {
     //we don't need selectFile() because we directly upload as we drag it to the zone
    async sendFile(){
-      const file= this.$refs.file.files[0];
-      const formData = new FormData();
-      formData.append("file", file);
+    const files = this.$refs.files.files;
+    this.files = [...this.files, ...files];
 
 
       try{ 
         this.uploading = true;
         //TODO : upload to server (stored in 'file')
-         console.log("Hi ");
-         //const res = ....
-         //this.uploadedFiles.push(res.data.file);
-         this.uploading = false;
+        //print the names of the files to the console
+        for(var i = 0; i<this.files.length;i++)
+            console.log(this.files[i].name);
+        this.uploading = false;
       }
       catch(err){
         //TODO : handle server errors

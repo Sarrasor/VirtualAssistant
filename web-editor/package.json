@@ -11,7 +11,8 @@
     "core-js": "^3.6.4",
     "three": "^0.115.0",
     "uuid": "^7.0.3",
-    "vue": "^2.6.11"
+    "vue": "^2.6.11",
+    "vue-file-agent": "^1.6.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.2.0",
