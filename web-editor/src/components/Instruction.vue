@@ -109,7 +109,13 @@ export default {
     uploadInstruction() {
       this.instruction.step_count = this.instruction.steps.length;
       this.instruction.last_modified = Date.now();
-      console.log(JSON.stringify(this.instruction));
+
+      let {steps, ...index} = this.instruction;
+      const index_json = JSON.stringify(index);
+      const steps_json = JSON.stringify(steps);
+
+      console.log(index_json);
+      console.log(steps_json);
     },
     selectLast() {
       this.selected = this.instructions.length - 1;
