@@ -43,7 +43,7 @@
           type="number"
           step="0.1"
           :value="asset.transform.scale"
-          @input="asset.transform.scale=$toFloat($event.target.value)"
+          @input="asset.transform.scale=Math.max(0.1, $toFloat($event.target.value))"
         />
       </template>
     </div>
