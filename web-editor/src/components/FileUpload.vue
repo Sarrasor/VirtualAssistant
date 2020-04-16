@@ -3,7 +3,7 @@
     <p id="empty">click or drag your local files here to upload</p>
     <input
       ref="input"
-      accept="audio/*, video/*, image/*, .gltf"
+      accept="audio/*, video/*, image/*, .glb"
       hidden
       multiple
       type="file"
