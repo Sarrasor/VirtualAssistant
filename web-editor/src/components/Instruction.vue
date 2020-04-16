@@ -39,13 +39,9 @@
       <p class="label bold">files</p>
       <div id="files" v-if="instruction">
         <div class="list" style="height: 125px">
-          <button
-            :key="i"
-            @click="selectedFile=i"
-            v-for="(item, i) in ['preview.png', 'schema.png', 'narration.m4a', 'duck.obj', 'tutorial.mp4', 'arrow.obj']"
-          >{{item}}</button>
+          <button :key="i" @click="selectedFile=i" v-for="(file, i) in files">{{file.name}}</button>
         </div>
-        <FileUpload />
+        <FileUpload v-model="files" />
       </div>
     </div>
   </div>
@@ -66,7 +62,8 @@ export default {
   },
   data() {
     return {
-      selected: undefined
+      selected: undefined,
+      files: []
     };
   },
   watch: {
@@ -110,7 +107,7 @@ export default {
       this.instruction.step_count = this.instruction.steps.length;
       this.instruction.last_modified = Date.now();
 
-      let {steps, ...index} = this.instruction;
+      let { steps, ...index } = this.instruction;
       const index_json = JSON.stringify(index);
       const steps_json = JSON.stringify(steps);
 
