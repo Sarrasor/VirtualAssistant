@@ -1,12 +1,28 @@
 <template>
-  <div id="root">
-    <p id="empty">drag an uploaded file here</p>
+  <div id="root" @drop="drop" @dragover="$event.preventDefault()">
+    <p v-if="file">{{file}}</p>
+    <p v-else id="empty">[drag an uploaded file here]</p>
   </div>
 </template>
 
 <script>
 export default {
-  name: "FileDrop"
+  name: "FileDrop",
+  props: ["types"],
+  data() {
+    return { file: undefined };
+  },
+  watch: {
+    file(value) {
+      console.log(value);
+    }
+  },
+  methods: {
+    drop(event) {
+      const file = JSON.parse(event.dataTransfer.getData("text"));
+      if (!this.types || this.types.includes(file.type)) this.file = file.name;
+    }
+  }
 };
 </script>
 
@@ -21,7 +37,7 @@ export default {
 #root > * {
   width: 100%;
 }
-#empty {
+p {
   font-size: 12px;
   font-style: italic;
   text-align: center;

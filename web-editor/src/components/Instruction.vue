@@ -39,7 +39,13 @@
       <p class="label bold">files</p>
       <div id="files" v-if="instruction">
         <div class="list" style="height: 125px">
-          <button :key="i" @click="selectedFile=i" v-for="(file, i) in files">{{file.name}}</button>
+          <button
+            draggable
+            @dragstart="dragFile($event, i)"
+            :key="i"
+            @click="selectedFile=i"
+            v-for="(file, i) in files"
+          >{{file.name}}</button>
         </div>
         <FileUpload v-model="files" />
       </div>
@@ -80,6 +86,12 @@ export default {
     }
   },
   methods: {
+    dragFile(event, index) {
+      event.dataTransfer.setData(
+        "text/plain",
+        JSON.stringify(this.files[index])
+      );
+    },
     createInstruction() {
       this.instructions.push({
         id: uuidv4(),
