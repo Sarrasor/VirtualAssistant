@@ -2,10 +2,11 @@
   <div id="root" @click="$refs.input.click()" @drop="drop" @dragover="$event.preventDefault()">
     <p id="empty">click or drag your local files here to upload</p>
     <input
+      ref="input"
       hidden
       multiple
       type="file"
-      :accept="extensions.join(' ')"
+      :accept="extensions.join()"
       @change="upload(Array.from($event.target.files))"
     />
   </div>
