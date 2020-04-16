@@ -57,7 +57,7 @@ export default {
     },
     getType(name) {
       const ext = this.getExt(name);
-      for (const [i, type] in this.types.entries())
+      for (const [i, type] of this.types.entries())
         if (type.includes(ext)) return i + 1;
       return 0;
     },
