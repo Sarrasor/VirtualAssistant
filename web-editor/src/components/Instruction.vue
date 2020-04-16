@@ -121,12 +121,12 @@ export default {
 
       let { steps, ...index } = this.instruction;
       steps.forEach(s =>
-        s.assets.forEach(
-          a =>
-            (a.media.type = a.media.url
-              ? this.files.find(f => f.name === a.media.url).type
-              : null)
-        )
+        s.assets.forEach(a => {
+          a.media.type = a.media.url
+            ? this.files.find(f => f.name === a.media.url).type
+            : 0;
+          if (a.media.type === 0) a.media.url = null;
+        })
       );
 
       const index_json = JSON.stringify(index);
