@@ -1,5 +1,11 @@
 <template>
-  <div id="root" @drop="drop" @dragover="$event.preventDefault()">
+  <div
+    :class="{delete: file}"
+    id="root"
+    @drop="drop"
+    @dragover="$event.preventDefault()"
+    @click="file=null"
+  >
     <p v-if="file">{{file}}</p>
     <p v-else id="empty">[drag an uploaded file here]</p>
   </div>
@@ -15,6 +21,7 @@ export default {
   watch: {
     file(value) {
       this.$emit("drop", value);
+      this.$forceUpdate();
     }
   },
   methods: {
@@ -34,6 +41,10 @@ export default {
   height: 25px;
   place-content: center;
 }
+#root.delete:hover {
+  border-color: var(--text);
+  cursor: pointer;
+}
 #root > * {
   width: 100%;
 }
@@ -43,5 +54,8 @@ p {
   text-align: center;
   width: 100%;
   user-select: none;
+}
+p:not(#empty) {
+  font-weight: bold;
 }
 </style>

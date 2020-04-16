@@ -123,7 +123,9 @@ export default {
       steps.forEach(s =>
         s.assets.forEach(
           a =>
-            (a.media.type = this.files.find(f => f.name === a.media.url).type)
+            (a.media.type = a.media.url
+              ? this.files.find(f => f.name === a.media.url).type
+              : null)
         )
       );
 
