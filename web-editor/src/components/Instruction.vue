@@ -32,7 +32,7 @@
         <p class="label">description</p>
         <textarea v-model="instruction.description" />
         <p class="label">preview</p>
-        <FileDrop @drop="instruction.preview_url=$event" />
+        <FileDrop :types="[1]" @drop="instruction.preview_url=$event" />
       </template>
     </div>
     <div class="card" style="margin-top: 20px; width: 430px">
