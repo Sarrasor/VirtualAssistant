@@ -19,9 +19,6 @@ Vue.prototype.$toFloat = f => {
   return isNaN(f) ? 0 : f;
 };
 
-import * as VueThreejs from "vue-threejs";
-Vue.use(VueThreejs);
-
 export default {
   name: "App",
   components: {
