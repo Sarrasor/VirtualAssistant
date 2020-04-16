@@ -1,13 +1,12 @@
 <template>
-  <div id="root" @click="$refs.input.click()">
+  <div id="root" @click="$refs.input.click()" @drop="drop" @dragover="$event.preventDefault()">
     <p id="empty">click or drag your local files here to upload</p>
     <input
-      ref="input"
-      accept="audio/*, video/*, image/*, .glb"
       hidden
       multiple
       type="file"
-      @change="upload"
+      :accept="extensions.join(' ')"
+      @change="upload(Array.from($event.target.files))"
     />
   </div>
 </template>
@@ -16,23 +15,62 @@
 export default {
   name: "FileUpload",
   props: ["files"],
+  data() {
+    return {
+      images: [".bmp", ".jpeg", ".jpg", ".png"],
+      audios: [".mp3"],
+      videos: [".mp4"],
+      models: [".glb"]
+    };
+  },
+  computed: {
+    types: function() {
+      return [this.images, this.audios, this.videos, this.models];
+    },
+    extensions: function() {
+      return this.types.flat();
+    }
+  },
   methods: {
-    async upload(event) {
+    async upload(files) {
       this.$emit(
         "upload",
-        this.files.concat(
-          await Promise.all(Array.from(event.target.files).map(this.readFile))
-        )
+        this.files.concat(await Promise.all(files.map(this.readFile)))
       );
     },
     readFile(file) {
+      const type = this.getType;
       return new Promise(function(resolve, reject) {
         const reader = new FileReader();
         reader.onload = () =>
-          resolve({ name: file.name, type: file.type, content: reader.result });
+          resolve({
+            name: file.name,
+            type: type(file.name),
+            content: reader.result
+          });
         reader.onerror = reject;
         reader.readAsBinaryString(file);
       });
+    },
+    getExt(name) {
+      return "." + name.split(".").pop();
+    },
+    getType(name) {
+      const ext = this.getExt(name);
+      for (const [i, type] in this.types.entries())
+        if (type.includes(ext)) return i + 1;
+      return 0;
+    },
+    async drop(event) {
+      event.preventDefault();
+      await this.upload(
+        Array.from(event.dataTransfer.files).filter(f =>
+          this.extensions.includes(this.getExt(f.name))
+        )
+      );
+    },
+    dragOver(event) {
+      event.preventDefault();
     }
   },
   model: {
