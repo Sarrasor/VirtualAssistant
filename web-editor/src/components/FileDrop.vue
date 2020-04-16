@@ -1,6 +1,6 @@
 <template>
   <div id="root">
-    <p id="empty">drag an asset here</p>
+    <p id="empty">drag an uploaded file here</p>
   </div>
 </template>
 

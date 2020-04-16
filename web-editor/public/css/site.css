@@ -42,7 +42,6 @@ html, body, #app {
 }
 
 .label {
-    margin: 5px 0;
     font-style: italic;
     font-size: 12px;
     width: 100%;
@@ -51,7 +50,6 @@ html, body, #app {
 }
 
 .label.bold {
-    margin: 5px 0;
     font-style: normal;
     font-size: 14px;
     width: 100%;
