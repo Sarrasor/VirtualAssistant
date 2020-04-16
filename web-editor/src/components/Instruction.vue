@@ -32,7 +32,7 @@
         <p class="label">description</p>
         <textarea v-model="instruction.description" />
         <p class="label">preview</p>
-        <FileDrop :label="'preview'" />
+        <FileDrop @drop="instruction.preview_url=$event" />
       </template>
     </div>
     <div class="card" style="margin-top: 20px; width: 430px">
@@ -120,9 +120,15 @@ export default {
       this.instruction.last_modified = Date.now();
 
       let { steps, ...index } = this.instruction;
+      steps.forEach(s =>
+        s.assets.forEach(
+          a =>
+            (a.media.type = this.files.find(f => f.name === a.media.url).type)
+        )
+      );
+
       const index_json = JSON.stringify(index);
       const steps_json = JSON.stringify(steps);
-
       console.log(index_json);
       console.log(steps_json);
     },

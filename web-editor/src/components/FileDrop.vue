@@ -14,7 +14,7 @@ export default {
   },
   watch: {
     file(value) {
-      console.log(value);
+      this.$emit("drop", value);
     }
   },
   methods: {

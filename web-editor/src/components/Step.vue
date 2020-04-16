@@ -29,7 +29,7 @@
         <p class="label">description</p>
         <textarea v-model="step.description" />
         <p class="label">preview</p>
-        <FileDrop />
+        <FileDrop @drop="step.preview_url=$event" />
       </template>
     </div>
   </div>

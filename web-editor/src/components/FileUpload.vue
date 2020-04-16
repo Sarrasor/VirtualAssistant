@@ -63,11 +63,19 @@ export default {
     },
     async drop(event) {
       event.preventDefault();
-      await this.upload(
-        Array.from(event.dataTransfer.files).filter(f =>
-          this.extensions.includes(this.getExt(f.name))
-        )
-      );
+      if (event.dataTransfer.files?.length > 0)
+        await this.upload(
+          Array.from(event.dataTransfer.files).filter(f =>
+            this.extensions.includes(this.getExt(f.name))
+          )
+        );
+      else {
+        const file = JSON.parse(event.dataTransfer.getData("text"));
+        this.$emit(
+          "upload",
+          this.files.filter(f => f.name !== file.name)
+        );
+      }
     },
     dragOver(event) {
       event.preventDefault();
