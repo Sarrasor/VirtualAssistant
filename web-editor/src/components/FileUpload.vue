@@ -1,6 +1,8 @@
 <template>
   <div id="root" @click="$refs.input.click()" @drop="drop" @dragover="$event.preventDefault()">
-    <p id="empty">click or drag your local files here to upload</p>
+    <p id="empty">click or drag your local files here to upload them</p>
+    <br />
+    <p id="empty">or drag an uploaded file to delete it</p>
     <input
       ref="input"
       hidden
