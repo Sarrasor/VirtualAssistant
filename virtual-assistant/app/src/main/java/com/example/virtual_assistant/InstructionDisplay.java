@@ -1,11 +1,9 @@
 package com.example.virtual_assistant;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -25,16 +23,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.ar.core.Anchor;
+import com.google.ar.core.AugmentedImage;
+import com.google.ar.core.AugmentedImageDatabase;
+import com.google.ar.core.Config;
+import com.google.ar.core.Frame;
 import com.google.ar.core.HitResult;
 import com.google.ar.core.Plane;
+import com.google.ar.core.Session;
+import com.google.ar.core.TrackingState;
+import com.google.ar.core.exceptions.UnavailableApkTooOldException;
+import com.google.ar.core.exceptions.UnavailableArcoreNotInstalledException;
+import com.google.ar.core.exceptions.UnavailableDeviceNotCompatibleException;
+import com.google.ar.core.exceptions.UnavailableSdkTooOldException;
 import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.ArSceneView;
+import com.google.ar.sceneform.FrameTime;
 import com.google.ar.sceneform.assets.RenderableSource;
 import com.google.ar.sceneform.math.Quaternion;
 import com.google.ar.sceneform.math.Vector3;
@@ -52,6 +60,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -71,7 +80,11 @@ import virtual_assistant.VirtualAssistantOuterClass.MediaRequest;
 import virtual_assistant.VirtualAssistantOuterClass.Step;
 
 public class InstructionDisplay extends AppCompatActivity {
-
+    Session mSession;
+    private ArSceneView arSceneView;
+    private boolean foundAnchor;
+    private boolean anchorInstruction;
+    private AugmentedImageDatabase imageDatabase;
     private static final String TAG = InstructionDisplay.class.getSimpleName();
     private static final double MIN_OPENGL_VERSION = 3.0;
     File instruction_dir;
@@ -86,6 +99,7 @@ public class InstructionDisplay extends AppCompatActivity {
     private ViewRenderable imgRenderable;
     private ViewRenderable textRenderable;
     private ModelRenderable modelRenderable;
+
 
     /**
      * Function that checks if user's device supports ARCore and stuff.
@@ -132,10 +146,12 @@ public class InstructionDisplay extends AppCompatActivity {
         String id = "";
         String host = "";
         String portStr = "";
+        long lastModified = 0;
         if (bundle != null) {
             id = bundle.getString("id");
             host = bundle.getString("host");
             portStr = bundle.getString("port");
+            lastModified = bundle.getLong("lastModified");
         }
         int port = TextUtils.isEmpty(portStr) ? 0 : Integer.valueOf(portStr);
 
@@ -200,10 +216,35 @@ public class InstructionDisplay extends AppCompatActivity {
             Toast.makeText(this, "Failed to get the instruction", Toast.LENGTH_SHORT).show();
         }
 
+        anchorInstruction = false;
+
+        // Get current step
+        Step step = steps.get(step_number);
+        List<Asset> assets = step.getAssetsList();
+
+        for(Asset a: assets)
+        {
+            if(a.getName().equals("anchor"))
+            {
+                anchorInstruction = true;
+            }
+        }
+
+
         // Try displaying instruction
-        if (instruction_dir != null) {
-            displayInstruction(instruction_dir);
-        } else {
+        if (instruction_dir != null)
+        {
+            if(anchorInstruction)
+            {
+                displayInstructionAnchor(instruction_dir);
+            }
+            else
+            {
+                displayInstructionPlane(instruction_dir);
+            }
+        }
+        else
+        {
             Toast.makeText(this, "Failed to display the instruction", Toast.LENGTH_SHORT).show();
         }
     }
@@ -260,7 +301,6 @@ public class InstructionDisplay extends AppCompatActivity {
             Bitmap myBitmap = BitmapFactory.decodeFile(instruction_dir.getPath() + "/" + main_asset.getMedia().getUrl());
             stepImgView.setImageBitmap(myBitmap);
             stepImgView.invalidate();
-            stepNode.setRotate(true);
             stepNode.setRenderable(imgRenderable);
 
         }
@@ -291,8 +331,6 @@ public class InstructionDisplay extends AppCompatActivity {
                             return null;
                         });
 
-            stepNode.setRotate(false);
-
             stepNode.setRenderable(modelRenderable);
         }
 
@@ -301,9 +339,12 @@ public class InstructionDisplay extends AppCompatActivity {
             // Set text
             stepTxtView.setText(main_asset.getMedia().getDescription());
             stepTxtView.invalidate();
-            stepNode.setRotate(true);
             stepNode.setRenderable(textRenderable);
         }
+
+        // Set billboard(always face to the user) property
+//        Toast.makeText(this, String.format("Billboard: %b", main_asset.getBillboard()), Toast.LENGTH_SHORT).show();
+        stepNode.setRotate(main_asset.getBillboard());
 
         // Update Transform
         float scale = main_asset.getTransform().getScale();
@@ -327,33 +368,125 @@ public class InstructionDisplay extends AppCompatActivity {
     }
 
 
-    /**
-     * Displays the first step of the instruction of plane tap
-     * @param instruction_dir path to the instruction
-     */
-    private void displayInstruction(File instruction_dir)
+    private void displayInstructionAnchor(File instruction_dir)
     {
+        foundAnchor = false;
+
         // Create AR fragment
         arFragment = (WritingArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
+        arFragment.getPlaneDiscoveryController().hide();
+        arFragment.getPlaneDiscoveryController().setInstructionView(null);
+        arFragment.getArSceneView().getScene().addOnUpdateListener(this::onUpdateFrame);
 
-        // Get current step
-        Step step = steps.get(step_number);
-        List<Asset> assets = step.getAssetsList();
-        Asset main_asset = assets.get(0);
-        // Extract image from it
-        Bitmap myBitmap = BitmapFactory.decodeFile(instruction_dir.getPath() + "/" + main_asset.getMedia().getUrl());
+        arSceneView = arFragment.getArSceneView();
 
-        // Prepare current step for the display
+        // Prepare image steps display
         ViewRenderable.builder().setView(arFragment.getContext(), R.layout.ar_step)
                 .build()
                 .thenAccept(renderrable ->
                 {
                     stepImgView = renderrable.getView().findViewById(R.id.step_img);
-                    stepImgView.setImageBitmap(myBitmap);
                     imgRenderable = renderrable;
                 });
 
-        // Prepare current step for the display
+        // Prepare text steps display
+        ViewRenderable.builder().setView(arFragment.getContext(), R.layout.step_text)
+                .build()
+                .thenAccept(renderrable ->
+                {
+                    stepTxtView = renderrable.getView().findViewById(R.id.step_text);
+                    textRenderable = renderrable;
+                });
+
+        try
+        {
+            mSession = new Session(this);
+        } catch (UnavailableArcoreNotInstalledException | UnavailableApkTooOldException | UnavailableSdkTooOldException | UnavailableDeviceNotCompatibleException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        Config config = new Config(mSession);
+
+        // Get current step
+        Step step = steps.get(step_number);
+        List<Asset> assets = step.getAssetsList();
+
+        Asset anchor = null;
+        for(Asset a: assets)
+        {
+            if(a.getName().equals("anchor"))
+            {
+                anchor = a;
+            }
+        }
+
+        if (anchor != null)
+        {
+            Bitmap anchorBitmap = BitmapFactory.decodeFile(instruction_dir.getPath() + "/" + anchor.getMedia().getUrl());
+            Toast.makeText(this, "Found anchor asset", Toast.LENGTH_LONG).show();
+
+            imageDatabase = new AugmentedImageDatabase(mSession);
+            imageDatabase.addImage("anchor", anchorBitmap);
+            config.setAugmentedImageDatabase(imageDatabase);
+        }
+        else
+        {
+            Toast.makeText(this, "No anchor asset", Toast.LENGTH_LONG).show();
+
+        }
+        config.setUpdateMode(Config.UpdateMode.LATEST_CAMERA_IMAGE);
+        config.setLightEstimationMode(Config.LightEstimationMode.DISABLED);
+        mSession.configure(config);
+        arSceneView.setupSession(mSession);
+    }
+
+    private void onUpdateFrame(FrameTime frameTime)
+    {
+        if (!foundAnchor)
+        {
+            Frame frame = arFragment.getArSceneView().getArFrame();
+
+            Collection<AugmentedImage> augmentedImages = frame.getUpdatedTrackables(AugmentedImage.class);
+
+            for (AugmentedImage augmentedImage : augmentedImages) {
+                if (augmentedImage.getTrackingState() == TrackingState.TRACKING) {
+                    if (augmentedImage.getName().contains("anchor")) {
+                        Toast.makeText(this, "Detected anchor", Toast.LENGTH_SHORT).show();
+                        Anchor anchor = augmentedImage.createAnchor(augmentedImage.getCenterPose());
+                        AnchorNode anchorNode = new AnchorNode(anchor);
+                        anchorNode.setParent(arFragment.getArSceneView().getScene());
+                        stepNode = new RotatingNode(arFragment.getTransformationSystem());
+                        stepNode.setParent(anchorNode);
+                        setStep(step_number);
+
+                        foundAnchor = true;
+                    }
+                }
+            }
+        }
+    }
+
+
+    /**
+     * Displays the first step of the instruction of plane tap
+     * @param instruction_dir path to the instruction
+     */
+    private void displayInstructionPlane(File instruction_dir)
+    {
+        // Create AR fragment
+        arFragment = (WritingArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
+
+        // Prepare image steps display
+        ViewRenderable.builder().setView(arFragment.getContext(), R.layout.ar_step)
+                .build()
+                .thenAccept(renderrable ->
+                {
+                    stepImgView = renderrable.getView().findViewById(R.id.step_img);
+                    imgRenderable = renderrable;
+                });
+
+        // Prepare text steps display
         ViewRenderable.builder().setView(arFragment.getContext(), R.layout.step_text)
                 .build()
                 .thenAccept(renderrable ->
@@ -370,42 +503,12 @@ public class InstructionDisplay extends AppCompatActivity {
                     AnchorNode anchorNode = new AnchorNode(anchor);
                     anchorNode.setParent(arFragment.getArSceneView().getScene());
 
-//                    Toast.makeText(this, "Creating initial node", Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(this, "Creating initial node", Toast.LENGTH_SHORT).show();
 
                     // Put current step on anchor
                     stepNode = new RotatingNode(arFragment.getTransformationSystem());
                     stepNode.setParent(anchorNode);
-
-                    if(main_asset.getMedia().getType() == Media.MediaType.IMAGE || main_asset.getMedia().getType() == Media.MediaType.TEXT)
-                    {
-                        stepNode.setRotate(true);
-                    }
-                    else
-                    {
-                        stepNode.setRotate(false);
-                    }
-
-                    stepNode.setRenderable(imgRenderable);
-
-                    float scale = main_asset.getTransform().getScale();
-
-                    if (scale == 0.0f)
-                    {
-                        stepNode.getScaleController().setMinScale(0.01f);
-                        stepNode.getScaleController().setMaxScale(3.0f);
-                    }
-                    else
-                    {
-                        stepNode.getScaleController().setMinScale(scale - 0.01f);
-                        stepNode.getScaleController().setMaxScale(scale);
-                    }
-
-                    VirtualAssistantOuterClass.Transform.Vector3 pos = main_asset.getTransform().getPosition();
-                    VirtualAssistantOuterClass.Transform.Vector3 orient = main_asset.getTransform().getOrientation();
-
-                    stepNode.setLocalPosition(new Vector3(pos.getX(), pos.getY(), pos.getZ()));
-                    stepNode.setLocalRotation(new Quaternion(new Vector3(orient.getX(), orient.getY(), orient.getZ())));
-                    stepNode.select();
+                    setStep(step_number);
                 });
     }
 

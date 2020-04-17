@@ -12,24 +12,24 @@
         android:src="@drawable/pony"/>
 
     <Button
-        android:id="@+id/nextButton"
+        android:id="@+id/prevButton"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginTop="10dp"
         android:layout_alignParentLeft="true"
         android:scaleX="-1"
         android:background="@drawable/arrow"
-        android:onClick="nextStep"/>
+        android:onClick="prevStep"/>
 
     <Button
-        android:id="@+id/prevButton"
+        android:id="@+id/nextButton"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="10dp"
         android:background="@drawable/arrow"
-        android:onClick="prevStep"/>
+        android:onClick="nextStep"/>
 
 
 </RelativeLayout>

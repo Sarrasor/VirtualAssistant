@@ -2,6 +2,8 @@ package com.example.virtual_assistant;
 
 import android.graphics.Bitmap;
 
+import com.google.protobuf.Timestamp;
+
 public class InstructionThumbItem {
     private String id;
     private String name;
@@ -9,14 +11,22 @@ public class InstructionThumbItem {
     private Bitmap image;
     private int stepCount;
     private int size;
+    private Timestamp lastModified;
 
-    public InstructionThumbItem(String id, String name, String description, Bitmap image, int stepCount, int size) {
+    public InstructionThumbItem(String id, String name, String description, Bitmap image, int stepCount, int size, Timestamp lastModified)
+    {
         this.id = id;
         this.name = name;
+        this.size = size;
         this.description = description;
         this.image = image;
+        this.lastModified = lastModified;
         this.stepCount = stepCount;
-        this.size = size;
+    }
+
+    public Timestamp getLastModified()
+    {
+        return this.lastModified;
     }
 
     public String getId() {

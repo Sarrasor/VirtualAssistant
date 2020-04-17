@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='virtual_assistant',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=b'\n\x0cserver.proto\x12\x11virtual_assistant\x1a\x1fgoogle/protobuf/timestamp.proto\"\x19\n\x17\x41llInstructioinsRequest\":\n\tTimestamp\x12-\n\ttimestamp\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"\xab\x01\n\x14InstructionThumbnail\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0c\n\x04size\x18\x03 \x01(\x05\x12\x13\n\x0b\x64\x65scription\x18\x04 \x01(\t\x12\r\n\x05image\x18\x05 \x01(\x0c\x12\x33\n\rlast_modified\x18\x06 \x01(\x0b\x32\x1c.virtual_assistant.Timestamp\x12\x12\n\nstep_count\x18\x07 \x01(\x05\"W\n\x18\x41llInstructioinsResponse\x12;\n\nthumbnails\x18\x01 \x03(\x0b\x32\'.virtual_assistant.InstructionThumbnail\" \n\x12InstructionRequest\x12\n\n\x02id\x18\x01 \x01(\t\"M\n\x13InstructionResponse\x12\x0e\n\x06status\x18\x01 \x01(\x05\x12&\n\x05steps\x18\x02 \x03(\x0b\x32\x17.virtual_assistant.Step\"\xb9\x01\n\tTransform\x12\x36\n\x08position\x18\x01 \x01(\x0b\x32$.virtual_assistant.Transform.Vector3\x12\x39\n\x0borientation\x18\x02 \x01(\x0b\x32$.virtual_assistant.Transform.Vector3\x12\r\n\x05scale\x18\x03 \x01(\x02\x1a*\n\x07Vector3\x12\t\n\x01x\x18\x01 \x01(\x02\x12\t\n\x01y\x18\x02 \x01(\x02\x12\t\n\x01z\x18\x03 \x01(\x02\"\x9e\x01\n\x05Media\x12\x30\n\x04type\x18\x01 \x01(\x0e\x32\".virtual_assistant.Media.MediaType\x12\x0b\n\x03url\x18\x02 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x03 \x01(\t\"A\n\tMediaType\x12\t\n\x05IMAGE\x10\x00\x12\t\n\x05\x41UDIO\x10\x01\x12\t\n\x05VIDEO\x10\x02\x12\t\n\x05MODEL\x10\x03\x12\x08\n\x04TEXT\x10\x04\"\x7f\n\x05\x41sset\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\'\n\x05media\x18\x02 \x01(\x0b\x32\x18.virtual_assistant.Media\x12/\n\ttransform\x18\x03 \x01(\x0b\x32\x1c.virtual_assistant.Transform\x12\x0e\n\x06hidden\x18\x04 \x01(\x08\"h\n\x04Step\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x02 \x01(\t\x12\x13\n\x0bpreview_url\x18\x03 \x01(\t\x12(\n\x06\x61ssets\x18\x04 \x03(\x0b\x32\x18.virtual_assistant.Asset\"\x17\n\x05\x43hunk\x12\x0e\n\x06\x62uffer\x18\x01 \x01(\x0c\"\x18\n\x06Status\x12\x0e\n\x06status\x18\x01 \x01(\x05\"\x1a\n\x0cMediaRequest\x12\n\n\x02id\x18\x01 \x01(\t2\x8d\x03\n\x10VirtualAssistant\x12o\n\x12GetAllInstructions\x12*.virtual_assistant.AllInstructioinsRequest\x1a+.virtual_assistant.AllInstructioinsResponse\"\x00\x12\x61\n\x0eGetInstruction\x12%.virtual_assistant.InstructionRequest\x1a&.virtual_assistant.InstructionResponse\"\x00\x12N\n\rDownloadMedia\x12\x1f.virtual_assistant.MediaRequest\x1a\x18.virtual_assistant.Chunk\"\x00\x30\x01\x12U\n\x0cLastModified\x12%.virtual_assistant.InstructionRequest\x1a\x1c.virtual_assistant.Timestamp\"\x00\x32\x8d\x02\n\tWebEditor\x12Z\n\x13\x44ownloadInstruction\x12%.virtual_assistant.InstructionRequest\x1a\x18.virtual_assistant.Chunk\"\x00\x30\x01\x12M\n\x12UploadInstructions\x12\x18.virtual_assistant.Chunk\x1a\x19.virtual_assistant.Status\"\x00(\x01\x12U\n\x0cLastModified\x12%.virtual_assistant.InstructionRequest\x1a\x1c.virtual_assistant.Timestamp\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x0cserver.proto\x12\x11virtual_assistant\x1a\x1fgoogle/protobuf/timestamp.proto\"\x19\n\x17\x41llInstructioinsRequest\":\n\tTimestamp\x12-\n\ttimestamp\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"\xab\x01\n\x14InstructionThumbnail\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0c\n\x04size\x18\x03 \x01(\x05\x12\x13\n\x0b\x64\x65scription\x18\x04 \x01(\t\x12\r\n\x05image\x18\x05 \x01(\x0c\x12\x33\n\rlast_modified\x18\x06 \x01(\x0b\x32\x1c.virtual_assistant.Timestamp\x12\x12\n\nstep_count\x18\x07 \x01(\x05\"W\n\x18\x41llInstructioinsResponse\x12;\n\nthumbnails\x18\x01 \x03(\x0b\x32\'.virtual_assistant.InstructionThumbnail\" \n\x12InstructionRequest\x12\n\n\x02id\x18\x01 \x01(\t\"M\n\x13InstructionResponse\x12\x0e\n\x06status\x18\x01 \x01(\x05\x12&\n\x05steps\x18\x02 \x03(\x0b\x32\x17.virtual_assistant.Step\"\xb9\x01\n\tTransform\x12\x36\n\x08position\x18\x01 \x01(\x0b\x32$.virtual_assistant.Transform.Vector3\x12\x39\n\x0borientation\x18\x02 \x01(\x0b\x32$.virtual_assistant.Transform.Vector3\x12\r\n\x05scale\x18\x03 \x01(\x02\x1a*\n\x07Vector3\x12\t\n\x01x\x18\x01 \x01(\x02\x12\t\n\x01y\x18\x02 \x01(\x02\x12\t\n\x01z\x18\x03 \x01(\x02\"\x9e\x01\n\x05Media\x12\x30\n\x04type\x18\x01 \x01(\x0e\x32\".virtual_assistant.Media.MediaType\x12\x0b\n\x03url\x18\x02 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x03 \x01(\t\"A\n\tMediaType\x12\x08\n\x04TEXT\x10\x00\x12\t\n\x05IMAGE\x10\x01\x12\t\n\x05\x41UDIO\x10\x02\x12\t\n\x05VIDEO\x10\x03\x12\t\n\x05MODEL\x10\x04\"\x92\x01\n\x05\x41sset\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\'\n\x05media\x18\x02 \x01(\x0b\x32\x18.virtual_assistant.Media\x12/\n\ttransform\x18\x03 \x01(\x0b\x32\x1c.virtual_assistant.Transform\x12\x11\n\tbillboard\x18\x04 \x01(\x08\x12\x0e\n\x06hidden\x18\x05 \x01(\x08\"h\n\x04Step\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x02 \x01(\t\x12\x13\n\x0bpreview_url\x18\x03 \x01(\t\x12(\n\x06\x61ssets\x18\x04 \x03(\x0b\x32\x18.virtual_assistant.Asset\"\x17\n\x05\x43hunk\x12\x0e\n\x06\x62uffer\x18\x01 \x01(\x0c\"\x18\n\x06Status\x12\x0e\n\x06status\x18\x01 \x01(\x05\"\x1a\n\x0cMediaRequest\x12\n\n\x02id\x18\x01 \x01(\t2\x8d\x03\n\x10VirtualAssistant\x12o\n\x12GetAllInstructions\x12*.virtual_assistant.AllInstructioinsRequest\x1a+.virtual_assistant.AllInstructioinsResponse\"\x00\x12\x61\n\x0eGetInstruction\x12%.virtual_assistant.InstructionRequest\x1a&.virtual_assistant.InstructionResponse\"\x00\x12N\n\rDownloadMedia\x12\x1f.virtual_assistant.MediaRequest\x1a\x18.virtual_assistant.Chunk\"\x00\x30\x01\x12U\n\x0cLastModified\x12%.virtual_assistant.InstructionRequest\x1a\x1c.virtual_assistant.Timestamp\"\x00\x32\x8d\x02\n\tWebEditor\x12Z\n\x13\x44ownloadInstruction\x12%.virtual_assistant.InstructionRequest\x1a\x18.virtual_assistant.Chunk\"\x00\x30\x01\x12M\n\x12UploadInstructions\x12\x18.virtual_assistant.Chunk\x1a\x19.virtual_assistant.Status\"\x00(\x01\x12U\n\x0cLastModified\x12%.virtual_assistant.InstructionRequest\x1a\x1c.virtual_assistant.Timestamp\"\x00\x62\x06proto3'
   ,
   dependencies=[google_dot_protobuf_dot_timestamp__pb2.DESCRIPTOR,])
 
@@ -32,23 +32,23 @@ _MEDIA_MEDIATYPE = _descriptor.EnumDescriptor(
   file=DESCRIPTOR,
   values=[
     _descriptor.EnumValueDescriptor(
-      name='IMAGE', index=0, number=0,
+      name='TEXT', index=0, number=0,
       serialized_options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='AUDIO', index=1, number=1,
+      name='IMAGE', index=1, number=1,
       serialized_options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='VIDEO', index=2, number=2,
+      name='AUDIO', index=2, number=2,
       serialized_options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='MODEL', index=3, number=3,
+      name='VIDEO', index=3, number=3,
       serialized_options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='TEXT', index=4, number=4,
+      name='MODEL', index=4, number=4,
       serialized_options=None,
       type=None),
   ],
@@ -452,8 +452,15 @@ _ASSET = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='hidden', full_name='virtual_assistant.Asset.hidden', index=3,
+      name='billboard', full_name='virtual_assistant.Asset.billboard', index=3,
       number=4, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='hidden', full_name='virtual_assistant.Asset.hidden', index=4,
+      number=5, type=8, cpp_type=7, label=1,
       has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -470,8 +477,8 @@ _ASSET = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=880,
-  serialized_end=1007,
+  serialized_start=881,
+  serialized_end=1027,
 )
 
 
@@ -522,8 +529,8 @@ _STEP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1009,
-  serialized_end=1113,
+  serialized_start=1029,
+  serialized_end=1133,
 )
 
 
@@ -553,8 +560,8 @@ _CHUNK = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1115,
-  serialized_end=1138,
+  serialized_start=1135,
+  serialized_end=1158,
 )
 
 
@@ -584,8 +591,8 @@ _STATUS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1140,
-  serialized_end=1164,
+  serialized_start=1160,
+  serialized_end=1184,
 )
 
 
@@ -615,8 +622,8 @@ _MEDIAREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1166,
-  serialized_end=1192,
+  serialized_start=1186,
+  serialized_end=1212,
 )
 
 _TIMESTAMP.fields_by_name['timestamp'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
@@ -753,8 +760,8 @@ _VIRTUALASSISTANT = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=1195,
-  serialized_end=1592,
+  serialized_start=1215,
+  serialized_end=1612,
   methods=[
   _descriptor.MethodDescriptor(
     name='GetAllInstructions',
@@ -804,8 +811,8 @@ _WEBEDITOR = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=1,
   serialized_options=None,
-  serialized_start=1595,
-  serialized_end=1864,
+  serialized_start=1615,
+  serialized_end=1884,
   methods=[
   _descriptor.MethodDescriptor(
     name='DownloadInstruction',
