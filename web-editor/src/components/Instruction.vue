@@ -37,18 +37,7 @@
     </div>
     <div class="card" style="margin-top: 20px; width: 430px">
       <p class="label bold">files</p>
-      <div id="files" v-if="instruction">
-        <div class="list" style="height: 125px">
-          <button
-            draggable
-            @dragstart="dragFile($event, i)"
-            :key="i"
-            @click="selectedFile=i"
-            v-for="(file, i) in instruction.files"
-          >{{file.name}}</button>
-        </div>
-        <FileUpload v-model="instruction.files" @upload="validateMediaLinks" />
-      </div>
+      <FileUpload v-if="instruction" v-model="instruction.files" @upload="validateMediaLinks" />
     </div>
   </div>
 </template>
@@ -85,12 +74,6 @@ export default {
     }
   },
   methods: {
-    dragFile(event, index) {
-      event.dataTransfer.setData(
-        "text/plain",
-        JSON.stringify(this.instruction.files[index])
-      );
-    },
     validateMediaLinks() {
       const files = this.instruction.files;
       const missing = file => !files.find(f => f.name === file);
@@ -158,11 +141,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-#files {
-  display: grid;
-  grid-template-columns: 250px 1fr;
-  gap: 5px;
-}
-</style>

@@ -1,16 +1,26 @@
 <template>
-  <div id="root" @click="$refs.input.click()" @drop="drop" @dragover="$event.preventDefault()">
-    <p id="empty">click or drag your local files here to upload them</p>
-    <br />
-    <p id="empty">or drag an uploaded file to delete it</p>
-    <input
-      ref="input"
-      hidden
-      multiple
-      type="file"
-      :accept="extensions.join()"
-      @change="upload(Array.from($event.target.files))"
-    />
+  <div id="root">
+    <div class="list" style="height: 125px">
+      <button
+        draggable
+        @dragstart="drag($event, i)"
+        :key="i"
+        v-for="(file, i) in files"
+      >{{file.name}}</button>
+    </div>
+    <div id="drop" @click="$refs.input.click()" @drop="drop" @dragover="$event.preventDefault()">
+      <p id="empty">click or drag your local files here to upload them</p>
+      <br />
+      <p id="empty">or drag an uploaded file to delete it</p>
+      <input
+        ref="input"
+        hidden
+        multiple
+        type="file"
+        :accept="extensions.join()"
+        @change="upload(Array.from($event.target.files))"
+      />
+    </div>
   </div>
 </template>
 
@@ -49,7 +59,6 @@ export default {
       );
     },
     readFile(file) {
-      console.log(file);
       const type = this.getType;
       return new Promise(function(resolve, reject) {
         const reader = new FileReader();
@@ -88,8 +97,11 @@ export default {
         );
       }
     },
-    dragOver(event) {
-      event.preventDefault();
+    drag(event, index) {
+      event.dataTransfer.setData(
+        "text/plain",
+        JSON.stringify(this.files[index])
+      );
     }
   },
   model: {
@@ -101,16 +113,21 @@ export default {
 
 <style scoped>
 #root {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  gap: 5px;
+}
+#drop {
   display: flex;
   flex-wrap: wrap;
   border: 2px dashed var(--select);
   place-content: center;
   cursor: pointer;
 }
-#root:hover {
+#drop:hover {
   border-color: var(--text);
 }
-#root > * {
+#drop > * {
   width: 100%;
 }
 #empty {
