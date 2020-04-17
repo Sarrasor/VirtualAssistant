@@ -92,7 +92,6 @@ export default {
       );
     },
     validateMediaLinks() {
-      console.log("validate media links");
       const files = this.instruction.files;
       const missing = file => !files.find(f => f.name === file);
 
