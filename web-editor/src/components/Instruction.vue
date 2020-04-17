@@ -92,14 +92,22 @@ export default {
       );
     },
     validateMediaLinks() {
-      this.instruction.steps.forEach(s =>
-        s.assets.forEach(a => {
-          a.media.type = a.media.url
-            ? this.instruction.files.find(f => f.name === a.media.url).type
-            : 0;
-          if (a.media.type === 0) a.media.url = null;
-        })
-      );
+      console.log("validate media links");
+      const files = this.instruction.files;
+      const missing = file => !files.find(f => f.name === file);
+
+      if (missing(this.instruction.preview_url))
+        this.instruction.preview_url = "";
+
+      for (const step of this.instruction.steps) {
+        if (missing(step.preview_url)) step.preview_url = "";
+        for (const asset of step.assets) {
+          if (missing(asset.media.url)) {
+            asset.media.url = "";
+            asset.media.type = 0;
+          }
+        }
+      }
     },
     createInstruction() {
       this.instructions.push({
@@ -130,6 +138,13 @@ export default {
       this.instruction.last_modified = Date.now();
 
       let { steps, files, ...index } = this.instruction;
+      steps.forEach(s =>
+        s.assets
+          .filter(a => a.media.url)
+          .forEach(
+            a => (a.media.type = files.find(f => f.name === a.media.url).type)
+          )
+      );
 
       const index_json = JSON.stringify(index);
       const steps_json = JSON.stringify(steps);
