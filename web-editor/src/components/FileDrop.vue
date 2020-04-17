@@ -4,7 +4,7 @@
     id="root"
     @drop="drop"
     @dragover="$event.preventDefault()"
-    @click="file=null"
+    @click="$emit('drop', null)"
   >
     <p v-if="file">{{file}}</p>
     <p v-else id="empty">[drag an uploaded file here]</p>

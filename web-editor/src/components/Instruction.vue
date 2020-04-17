@@ -32,7 +32,7 @@
         <p class="label">description</p>
         <textarea v-model="instruction.description" />
         <p class="label">preview</p>
-        <FileDrop :types="[1]" @drop="instruction.preview_url=$event" />
+        <FileDrop :types="[1]" v-model="instruction.preview_url" />
       </template>
     </div>
     <div class="card" style="margin-top: 20px; width: 430px">
@@ -47,7 +47,7 @@
             v-for="(file, i) in instruction.files"
           >{{file.name}}</button>
         </div>
-        <FileUpload v-model="instruction.files" />
+        <FileUpload v-model="instruction.files" @upload="validateMediaLinks" />
       </div>
     </div>
   </div>
@@ -91,6 +91,16 @@ export default {
         JSON.stringify(this.instruction.files[index])
       );
     },
+    validateMediaLinks() {
+      this.instruction.steps.forEach(s =>
+        s.assets.forEach(a => {
+          a.media.type = a.media.url
+            ? this.instruction.files.find(f => f.name === a.media.url).type
+            : 0;
+          if (a.media.type === 0) a.media.url = null;
+        })
+      );
+    },
     createInstruction() {
       this.instructions.push({
         id: uuidv4(),
@@ -120,14 +130,6 @@ export default {
       this.instruction.last_modified = Date.now();
 
       let { steps, files, ...index } = this.instruction;
-      steps.forEach(s =>
-        s.assets.forEach(a => {
-          a.media.type = a.media.url
-            ? files.find(f => f.name === a.media.url).type
-            : 0;
-          if (a.media.type === 0) a.media.url = null;
-        })
-      );
 
       const index_json = JSON.stringify(index);
       const steps_json = JSON.stringify(steps);
