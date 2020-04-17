@@ -96,7 +96,7 @@ export default {
         id: uuidv4(),
         size: 0,
         name: "Instruction " + (this.instructions.length + 1),
-        description: "Lorem impsum dolor sit amet",
+        description: "",
         preview_url: "",
         steps: [],
         files: [],

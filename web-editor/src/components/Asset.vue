@@ -87,8 +87,8 @@ export default {
         name: "Asset " + (this.assets.length + 1),
         media: {
           type: 0,
-          url: undefined,
-          description: "Lorem impsum dolor sit amet"
+          url: "",
+          description: ""
         },
         transform: {
           position: { x: 0, y: 0, z: 0 },
