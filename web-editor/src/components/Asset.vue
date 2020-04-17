@@ -33,7 +33,7 @@
         <p class="label">description</p>
         <textarea v-model="asset.media.description" />
         <p class="label">media</p>
-        <FileDrop @drop="asset.media.url=$event" />
+        <FileDrop v-model="asset.media.url" />
         <p class="label">position</p>
         <Vector :vector="asset.transform.position" />
         <p class="label">rotation</p>

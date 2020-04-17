@@ -14,20 +14,16 @@
 <script>
 export default {
   name: "FileDrop",
-  props: ["types"],
-  data() {
-    return { file: undefined };
-  },
-  watch: {
-    file(value) {
-      this.$emit("drop", value);
-      this.$forceUpdate();
-    }
+  props: ["file", "types"],
+  model: {
+    prop: "file",
+    event: "drop"
   },
   methods: {
     drop(event) {
       const file = JSON.parse(event.dataTransfer.getData("text"));
-      if (!this.types || this.types.includes(file.type)) this.file = file.name;
+      if (!this.types || this.types.includes(file.type))
+        this.$emit("drop", file.name);
     }
   }
 };
