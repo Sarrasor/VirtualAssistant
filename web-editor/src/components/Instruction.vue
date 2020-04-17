@@ -10,7 +10,7 @@
           <button v-if="instruction" @click="duplicateInstruction" :tooltip="'duplicate'">
             <i class="material-icons-outlined">library_add</i>
           </button>
-          <button v-if="instruction" @click="uploadInstruction" :tooltip="'upload to server'">
+          <button v-if="instruction" @click="$emit('upload')" :tooltip="'upload to server'">
             <i class="material-icons-outlined">publish</i>
           </button>
           <button v-if="instruction" @click="deleteInstruction" :tooltip="'delete'">
@@ -23,16 +23,16 @@
             :key="i"
             @click="selected=i"
             v-for="(ins, i) in instructions"
-          >{{ins.name}}</button>
+          >{{ins.index.name}}</button>
         </div>
       </template>
       <template v-if="instruction">
         <p class="label">name</p>
-        <input type="text" v-model="instruction.name" />
+        <input type="text" v-model="instruction.index.name" />
         <p class="label">description</p>
-        <textarea v-model="instruction.description" />
+        <textarea v-model="instruction.index.description" />
         <p class="label">preview</p>
-        <FileDrop :types="[1]" v-model="instruction.preview_url" />
+        <FileDrop :types="[1]" v-model="instruction.index.preview_url" />
       </template>
     </div>
     <div class="card" style="margin-top: 20px; width: 430px">
@@ -93,15 +93,17 @@ export default {
     },
     createInstruction() {
       this.instructions.push({
-        id: uuidv4(),
-        size: 0,
-        name: "Instruction " + (this.instructions.length + 1),
-        description: "",
-        preview_url: "",
+        index: {
+          id: uuidv4(),
+          size: 0,
+          name: "Instruction " + (this.instructions.length + 1),
+          description: "",
+          preview_url: "",
+          step_count: 0,
+          last_modified: ""
+        },
         steps: [],
-        files: [],
-        step_count: 0,
-        last_modified: ""
+        files: []
       });
       this.selectLast();
     },
@@ -114,26 +116,6 @@ export default {
     deleteInstruction() {
       this.instructions.splice(this.selected, 1);
       if (this.selected >= this.instructions.length) this.selectLast();
-    },
-    uploadInstruction() {
-      this.instruction.step_count = this.instruction.steps.length;
-      this.instruction.last_modified = Date.now();
-
-      let { steps, files, ...index } = this.instruction;
-      steps.forEach(s =>
-        s.assets
-          .filter(a => a.media.url)
-          .forEach(
-            a => (a.media.type = files.find(f => f.name === a.media.url).type)
-          )
-      );
-
-      const index_json = JSON.stringify(index);
-      const steps_json = JSON.stringify(steps);
-      const files_json = JSON.stringify(files);
-      console.log(index_json);
-      console.log(steps_json);
-      console.log(files_json);
     },
     selectLast() {
       this.selected = this.instructions.length - 1;
