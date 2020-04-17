@@ -40,8 +40,8 @@
         <FileDrop v-model="asset.media.url" />
         <p class="label">position</p>
         <Vector :vector="asset.transform.position" />
-        <p class="label">rotation</p>
-        <Vector :vector="asset.transform.rotation" />
+        <p class="label">orientation</p>
+        <Vector :vector="asset.transform.orientation" />
         <p class="label">scale</p>
         <input
           type="number"
@@ -92,7 +92,7 @@ export default {
         },
         transform: {
           position: { x: 0, y: 0, z: 0 },
-          rotation: { x: 0, y: 0, z: 0 },
+          orientation: { x: 0, y: 0, z: 0 },
           scale: 1
         },
         hidden: false,
