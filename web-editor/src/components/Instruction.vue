@@ -44,10 +44,10 @@
             @dragstart="dragFile($event, i)"
             :key="i"
             @click="selectedFile=i"
-            v-for="(file, i) in files"
+            v-for="(file, i) in instruction.files"
           >{{file.name}}</button>
         </div>
-        <FileUpload v-model="files" />
+        <FileUpload v-model="instruction.files" />
       </div>
     </div>
   </div>
@@ -68,8 +68,7 @@ export default {
   },
   data() {
     return {
-      selected: undefined,
-      files: []
+      selected: undefined
     };
   },
   watch: {
@@ -89,7 +88,7 @@ export default {
     dragFile(event, index) {
       event.dataTransfer.setData(
         "text/plain",
-        JSON.stringify(this.files[index])
+        JSON.stringify(this.instruction.files[index])
       );
     },
     createInstruction() {
@@ -100,6 +99,7 @@ export default {
         description: "Lorem impsum dolor sit amet",
         preview_url: "",
         steps: [],
+        files: [],
         step_count: 0,
         last_modified: ""
       });
@@ -119,11 +119,11 @@ export default {
       this.instruction.step_count = this.instruction.steps.length;
       this.instruction.last_modified = Date.now();
 
-      let { steps, ...index } = this.instruction;
+      let { steps, files, ...index } = this.instruction;
       steps.forEach(s =>
         s.assets.forEach(a => {
           a.media.type = a.media.url
-            ? this.files.find(f => f.name === a.media.url).type
+            ? files.find(f => f.name === a.media.url).type
             : 0;
           if (a.media.type === 0) a.media.url = null;
         })

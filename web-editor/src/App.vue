@@ -3,7 +3,7 @@
     <Instruction :instructions="instructions" @select="selectInstruction" />
     <Step :steps="steps" @select="selectStep" />
     <Asset :assets="assets" />
-    <Render :assets="assets" />
+    <Render :assets="assets" :files="files" />
   </div>
 </template>
 
@@ -30,14 +30,17 @@ export default {
   data() {
     return {
       instructions: [],
+      files: [],
       steps: [],
       assets: []
     };
   },
   methods: {
     selectInstruction(index) {
-      this.steps =
-        this.instructions?.length > 0 ? this.instructions[index].steps : null;
+      const instruction =
+        this.instructions?.length > 0 ? this.instructions[index] : null;
+      this.steps = instruction?.steps;
+      this.files = instruction?.files;
     },
     selectStep(index) {
       this.assets = this.steps?.length > 0 ? this.steps[index].assets : null;
