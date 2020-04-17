@@ -56,7 +56,7 @@ export default {
           resolve({
             name: file.name,
             type: type(file.name),
-            content: reader.result
+            content: btoa(reader.result)
           });
         reader.onerror = reject;
         reader.readAsBinaryString(file);
