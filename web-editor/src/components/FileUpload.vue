@@ -32,13 +32,20 @@ export default {
     },
     extensions: function() {
       return this.types.flat();
+    },
+    names: function() {
+      return this.files.map(f => f.name);
     }
   },
   methods: {
     async upload(files) {
       this.$emit(
         "upload",
-        this.files.concat(await Promise.all(files.map(this.readFile)))
+        this.files.concat(
+          await Promise.all(
+            files.filter(f => !this.names.includes(f.name)).map(this.readFile)
+          )
+        )
       );
     },
     readFile(file) {
