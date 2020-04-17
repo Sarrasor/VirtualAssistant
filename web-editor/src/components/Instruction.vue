@@ -131,8 +131,10 @@ export default {
 
       const index_json = JSON.stringify(index);
       const steps_json = JSON.stringify(steps);
+      const files_json = JSON.stringify(files);
       console.log(index_json);
       console.log(steps_json);
+      console.log(files_json);
     },
     selectLast() {
       this.selected = this.instructions.length - 1;
