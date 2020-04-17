@@ -29,7 +29,7 @@
         <p class="label">description</p>
         <textarea v-model="step.description" />
         <p class="label">preview</p>
-        <FileDrop />
+        <FileDrop :types="[1]" v-model="step.preview_url" />
       </template>
     </div>
   </div>
@@ -64,8 +64,8 @@ export default {
     createStep() {
       this.steps.push({
         name: "Step " + (this.steps.length + 1),
-        description: "Lorem impsum dolor sit amet",
-        preview_url: undefined,
+        description: "",
+        preview_url: "",
         assets: []
       });
       this.selectLast();

@@ -10,7 +10,7 @@
           <button v-if="instruction" @click="duplicateInstruction" :tooltip="'duplicate'">
             <i class="material-icons-outlined">library_add</i>
           </button>
-          <button v-if="instruction" @click="uploadInstruction" :tooltip="'upload to server'">
+          <button v-if="instruction" @click="$emit('upload')" :tooltip="'upload to server'">
             <i class="material-icons-outlined">publish</i>
           </button>
           <button v-if="instruction" @click="deleteInstruction" :tooltip="'delete'">
@@ -23,30 +23,21 @@
             :key="i"
             @click="selected=i"
             v-for="(ins, i) in instructions"
-          >{{ins.name}}</button>
+          >{{ins.index.name}}</button>
         </div>
       </template>
       <template v-if="instruction">
         <p class="label">name</p>
-        <input type="text" v-model="instruction.name" />
+        <input type="text" v-model="instruction.index.name" />
         <p class="label">description</p>
-        <textarea v-model="instruction.description" />
+        <textarea v-model="instruction.index.description" />
         <p class="label">preview</p>
-        <FileDrop :label="'preview'" />
+        <FileDrop :types="[1]" v-model="instruction.index.preview_url" />
       </template>
     </div>
     <div class="card" style="margin-top: 20px; width: 430px">
       <p class="label bold">files</p>
-      <div id="files" v-if="instruction">
-        <div class="list" style="height: 125px">
-          <button
-            :key="i"
-            @click="selectedFile=i"
-            v-for="(item, i) in ['preview.png', 'schema.png', 'narration.m4a', 'duck.obj', 'tutorial.mp4', 'arrow.obj']"
-          >{{item}}</button>
-        </div>
-        <FileUpload />
-      </div>
+      <FileUpload v-if="instruction" v-model="instruction.files" @upload="validateMediaLinks" />
     </div>
   </div>
 </template>
@@ -83,16 +74,36 @@ export default {
     }
   },
   methods: {
+    validateMediaLinks() {
+      const files = this.instruction.files;
+      const missing = file => !files.find(f => f.name === file);
+
+      if (missing(this.instruction.preview_url))
+        this.instruction.preview_url = "";
+
+      for (const step of this.instruction.steps) {
+        if (missing(step.preview_url)) step.preview_url = "";
+        for (const asset of step.assets) {
+          if (missing(asset.media.url)) {
+            asset.media.url = "";
+            asset.media.type = 0;
+          }
+        }
+      }
+    },
     createInstruction() {
       this.instructions.push({
-        id: uuidv4(),
-        size: 0,
-        name: "Instruction " + (this.instructions.length + 1),
-        description: "Lorem impsum dolor sit amet",
-        preview_url: "",
+        index: {
+          id: uuidv4(),
+          size: 0,
+          name: "Instruction " + (this.instructions.length + 1),
+          description: "",
+          preview_url: "",
+          step_count: 0,
+          last_modified: ""
+        },
         steps: [],
-        step_count: 0,
-        last_modified: ""
+        files: []
       });
       this.selectLast();
     },
@@ -106,22 +117,9 @@ export default {
       this.instructions.splice(this.selected, 1);
       if (this.selected >= this.instructions.length) this.selectLast();
     },
-    uploadInstruction() {
-      this.instruction.step_count = this.instruction.steps.length;
-      this.instruction.last_modified = Date.now();
-      console.log(JSON.stringify(this.instruction));
-    },
     selectLast() {
       this.selected = this.instructions.length - 1;
     }
   }
 };
 </script>
-
-<style scoped>
-#files {
-  display: grid;
-  grid-template-columns: 250px 1fr;
-  gap: 5px;
-}
-</style>

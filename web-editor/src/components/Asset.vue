@@ -10,7 +10,11 @@
           <button v-if="asset" @click="duplicateAsset" :tooltip="'duplicate'">
             <i class="material-icons-outlined">library_add</i>
           </button>
-          <button v-if="asset" @click="asset.hidden=!asset.hidden" :tooltip="'visibility'">
+          <button v-if="asset" @click="asset.billboard=!asset.billboard" :tooltip="'awlays face camera'">
+            <i v-if="asset.billboard" class="material-icons-outlined">screen_rotation</i>
+            <i v-else class="material-icons-outlined">screen_lock_rotation</i>
+          </button>
+          <button v-if="asset" @click="asset.hidden=!asset.hidden" :tooltip="'toggle visibility'">
             <i v-if="asset.hidden" class="material-icons-outlined">visibility_off</i>
             <i v-else class="material-icons-outlined">visibility</i>
           </button>
@@ -33,17 +37,17 @@
         <p class="label">description</p>
         <textarea v-model="asset.media.description" />
         <p class="label">media</p>
-        <FileDrop />
+        <FileDrop v-model="asset.media.url" />
         <p class="label">position</p>
         <Vector :vector="asset.transform.position" />
-        <p class="label">rotation</p>
-        <Vector :vector="asset.transform.rotation" />
+        <p class="label">orientation</p>
+        <Vector :vector="asset.transform.orientation" />
         <p class="label">scale</p>
         <input
           type="number"
           step="0.1"
           :value="asset.transform.scale"
-          @input="asset.transform.scale=$toFloat($event.target.value)"
+          @input="asset.transform.scale=Math.max(0.1, $toFloat($event.target.value))"
         />
       </template>
     </div>
@@ -83,15 +87,16 @@ export default {
         name: "Asset " + (this.assets.length + 1),
         media: {
           type: 0,
-          url: undefined,
-          description: "Lorem impsum dolor sit amet"
+          url: "",
+          description: ""
         },
         transform: {
           position: { x: 0, y: 0, z: 0 },
-          rotation: { x: 0, y: 0, z: 0 },
+          orientation: { x: 0, y: 0, z: 0 },
           scale: 1
         },
-        hidden: false
+        hidden: false,
+        billboard: false
       });
       this.selectLast();
     },
