@@ -215,7 +215,11 @@ textarea:read-write:hover, textarea:read-write:focus, input:read-write:hover, in
 }
 
 .list>button {
-    justify-content: left;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    display: block;
 }
 
 .list>button, .toolbar>button {
