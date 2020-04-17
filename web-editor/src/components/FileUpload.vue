@@ -49,6 +49,7 @@ export default {
       );
     },
     readFile(file) {
+      console.log(file);
       const type = this.getType;
       return new Promise(function(resolve, reject) {
         const reader = new FileReader();
@@ -56,10 +57,10 @@ export default {
           resolve({
             name: file.name,
             type: type(file.name),
-            content: btoa(reader.result)
+            content: reader.result
           });
         reader.onerror = reject;
-        reader.readAsBinaryString(file);
+        reader.readAsDataURL(file);
       });
     },
     getExt(name) {
