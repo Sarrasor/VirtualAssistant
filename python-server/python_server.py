@@ -290,7 +290,7 @@ class WebEditorServicer(server_pb2_grpc.WebEditorServicer):
             with open(INSTRUCTIONS_FOLDER + "/{}index.json".format(folder_name), "r") as descr:
                 index = json.load(descr)
 
-            index["size"] = get_size(folder_name)
+            index["size"] = get_size(INSTRUCTIONS_FOLDER + "/" + folder_name)
 
             with open(INSTRUCTIONS_FOLDER + "/{}index.json".format(folder_name), "w") as descr:
                 json.dump(index, descr)
@@ -344,7 +344,7 @@ class PostServer(BaseHTTPRequestHandler):
             with open(INSTRUCTIONS_FOLDER + "/{}index.json".format(folder_name), "r") as descr:
                 index = json.load(descr)
 
-            index["size"] = get_size(folder_name)
+            index["size"] = get_size(INSTRUCTIONS_FOLDER + "/" + folder_name)
 
             with open(INSTRUCTIONS_FOLDER + "/{}index.json".format(folder_name), "w") as descr:
                 json.dump(index, descr)
