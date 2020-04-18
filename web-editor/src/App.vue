@@ -86,6 +86,7 @@ export default {
         .then(zip => {
           let req = new XMLHttpRequest();
           req.open("POST", "https://sarrasor.github.io/INNO-S20-SP/", true);
+          xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
           req.send(zip);
         });
     }

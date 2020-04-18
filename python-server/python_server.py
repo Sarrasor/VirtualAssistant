@@ -13,6 +13,9 @@ import os
 import json
 import shutil
 
+# Imports for POST listenner server
+from http.server import HTTPServer, BaseHTTPRequestHandler
+
 # Import the generated gRPC classes
 import server_pb2
 import server_pb2_grpc
@@ -265,20 +268,71 @@ class WebEditorServicer(server_pb2_grpc.WebEditorServicer):
             return server_pb2.Status(status=0)
 
 
+class PostServer(BaseHTTPRequestHandler):
+    def _set_headers(self):
+        self.send_response(200)
+        self.send_header("Content-type", "text/html")
+        self.end_headers()
+
+    def _html(self, message):
+        content = "<html><body><h1>{}</h1></body></html>".format(message)
+        return content.encode("utf8")
+
+    def do_GET(self):
+        self._set_headers()
+        self.wfile.write(self._html(
+            "Hi. I'm waiting for POSTs with instructions."))
+
+    def do_HEAD(self):
+        self._set_headers()
+
+    def do_POST(self):
+        print("Upload attempt")
+        try:
+            content_length = int(self.headers['Content-Length'])
+            body = self.rfile.read(content_length)
+
+            zip_temp_name = "/upload.zip"
+
+            with open(INSTRUCTIONS_FOLDER + zip_temp_name, 'wb') as f:
+                f.write(body)
+
+            shutil.unpack_archive(INSTRUCTIONS_FOLDER +
+                                  zip_temp_name, INSTRUCTIONS_FOLDER, 'zip')
+
+            os.remove(INSTRUCTIONS_FOLDER + zip_temp_name)
+
+            print("Upload successful")
+            self.send_response(200)
+        except Exception as e:
+            print("Upload failed:\n", e)
+            self.send_response(500)
+        self.end_headers()
+
+
 def main():
     """
     Create gRPC server as a thread and wait for requests
     """
-    print("Creating Server")
+    print("Creating gRPC Server")
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     server_pb2_grpc.add_VirtualAssistantServicer_to_server(
         VirtualAssistantServicer(), server)
     server_pb2_grpc.add_WebEditorServicer_to_server(
         WebEditorServicer(), server)
 
-    print('Listening on port 80')
-    server.add_insecure_port('[::]:80')
+    print('Listening on port 50051')
+    server.add_insecure_port('[::]:50051')
     server.start()
+
+    print("Creating POST Server")
+    addr = "localhost"
+    port = 50052
+    server_address = (addr, port)
+    httpd = HTTPServer(server_address, PostServer)
+
+    print("Starting httpd server on {}:{}".format(addr, port))
+    httpd.serve_forever()
 
     # Wait, since threads are non-blocking
     try:
