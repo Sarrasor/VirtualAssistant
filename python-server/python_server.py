@@ -161,6 +161,7 @@ class VirtualAssistantServicer(server_pb2_grpc.VirtualAssistantServicer):
                         asset_msg.transform.orientation.z = asset['transform']['orientation']['z']
                         asset_msg.transform.scale = asset['transform']['scale']
 
+                        asset_msg.billboard = asset['billboard']
                         asset_msg.hidden = asset['hidden']
 
                         step_msg.assets.extend([asset_msg])
@@ -248,13 +249,14 @@ class WebEditorServicer(server_pb2_grpc.WebEditorServicer):
         """
         print("Upload attempt")
         try:
+            zip_temp_name = "/upload.zip"
             save_chunks_to_file(
-                request_iterator, INSTRUCTIONS_FOLDER + "/upload.zip")
+                request_iterator, INSTRUCTIONS_FOLDER + zip_temp_name)
 
             shutil.unpack_archive(INSTRUCTIONS_FOLDER +
-                                  "/upload.zip", INSTRUCTIONS_FOLDER, 'zip')
+                                  zip_temp_name, INSTRUCTIONS_FOLDER, 'zip')
 
-            os.remove(INSTRUCTIONS_FOLDER + "/upload.zip")
+            os.remove(INSTRUCTIONS_FOLDER + zip_temp_name)
 
             print("Upload successful")
             return server_pb2.Status(status=1)
@@ -274,8 +276,8 @@ def main():
     server_pb2_grpc.add_WebEditorServicer_to_server(
         WebEditorServicer(), server)
 
-    print('Listening on port 50051')
-    server.add_insecure_port('[::]:50051')
+    print('Listening on port 80')
+    server.add_insecure_port('[::]:80')
     server.start()
 
     # Wait, since threads are non-blocking

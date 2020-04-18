@@ -22,12 +22,12 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import virtual_assistant.VirtualAssistantGrpc;
 import virtual_assistant.VirtualAssistantGrpc.VirtualAssistantBlockingStub;
-import virtual_assistant.VirtualAssistantOuterClass;
 import virtual_assistant.VirtualAssistantOuterClass.AllInstructioinsRequest;
 import virtual_assistant.VirtualAssistantOuterClass.AllInstructioinsResponse;
 import virtual_assistant.VirtualAssistantOuterClass.InstructionThumbnail;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+{
 
     private Button getInstrButton;
     private EditText hostIP;
@@ -38,28 +38,10 @@ public class MainActivity extends AppCompatActivity {
     private List<InstructionThumbItem> listThumbs;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-//        View view = findViewById(android.R.id.content).getRootView();
-
-//        view.setOnTouchListener(new OnSwipeTouchListener(MainActivity.this) {
-//            public void onSwipeTop() {
-//                Toast.makeText(MainActivity.this, "top", Toast.LENGTH_SHORT).show();
-//            }
-//            public void onSwipeRight() {
-//                Toast.makeText(MainActivity.this, "right", Toast.LENGTH_SHORT).show();
-//            }
-//            public void onSwipeLeft() {
-//                Toast.makeText(MainActivity.this, "left", Toast.LENGTH_SHORT).show();
-//            }
-//            public void onSwipeBottom() {
-//                Toast.makeText(MainActivity.this, "bottom", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-
-
 
         // Get UI elements variables
         hostIP = findViewById(R.id.hostIP);
@@ -90,7 +72,8 @@ public class MainActivity extends AppCompatActivity {
         String portStr = hostPort.getText().toString();
         int port = TextUtils.isEmpty(portStr) ? 0 : Integer.valueOf(portStr);
 
-        try {
+        try
+        {
             // Create gRPC stub
             ManagedChannel channel = ManagedChannelBuilder.forAddress(host, port).usePlaintext().build();
             VirtualAssistantBlockingStub stub = VirtualAssistantGrpc.newBlockingStub(channel);
@@ -103,13 +86,11 @@ public class MainActivity extends AppCompatActivity {
             List<InstructionThumbnail> thumbs = allInstructionsResponse.getThumbnailsList();
 
             // Go through every thumbnail and add them to listThumbs for card display
-            for (InstructionThumbnail thumb : thumbs) {
-
-//                long ts = thumb.getLastModified().getTimestamp().getSeconds();
-
+            for (InstructionThumbnail thumb : thumbs)
+            {
                 byte[] data = thumb.getImage().toByteArray();
                 Bitmap bMap = BitmapFactory.decodeByteArray(data, 0, data.length);
-                InstructionThumbItem iti = new InstructionThumbItem(thumb.getId(), thumb.getName(), thumb.getDescription(), bMap, thumb.getStepCount(), thumb.getSize());
+                InstructionThumbItem iti = new InstructionThumbItem(thumb.getId(), thumb.getName(), thumb.getDescription(), bMap, thumb.getStepCount(), thumb.getSize(), thumb.getLastModified().getTimestamp());
 
                 listThumbs.add(iti);
             }
@@ -118,7 +99,9 @@ public class MainActivity extends AppCompatActivity {
             adapter = new InstructionThumbAdapter(listThumbs, this);
             recyclerView.setAdapter(adapter);
 
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             // If something goes wrong...
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);

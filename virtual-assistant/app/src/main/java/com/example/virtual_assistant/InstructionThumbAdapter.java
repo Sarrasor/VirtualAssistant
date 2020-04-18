@@ -45,7 +45,8 @@ public class InstructionThumbAdapter extends RecyclerView.Adapter<InstructionThu
 
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 View rootView = ((Activity) context).getWindow().getDecorView().findViewById(android.R.id.content);
                 EditText prt = rootView.findViewById(R.id.hostPort);
                 EditText ip = rootView.findViewById(R.id.hostIP);
@@ -53,6 +54,7 @@ public class InstructionThumbAdapter extends RecyclerView.Adapter<InstructionThu
                 intent.putExtra("id", thumbItem.getId());
                 intent.putExtra("host", ip.getText().toString());
                 intent.putExtra("port", prt.getText().toString());
+                intent.putExtra("lastModified", thumbItem.getLastModified().getSeconds());
                 context.startActivity(intent);
             }
         });

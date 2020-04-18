@@ -1,17 +1,17 @@
 [
 	{
         "name": "Step 1",
-        "description": "This is step 1 description",
-        "preview_url": "step1.jpg",
+        "description": "This is washing machine",
+        "preview_url": "step1.png",
         "assets": 
         [
             {
-                "name": "slide1",
-                "media" : 
+                "name": "step1",
+                "media":
                 {
                     "type" : 1, 
-                    "url" : "slide1.jpg",
-                    "description" : "Image1 description"
+                    "url" : "step1.png",
+                    "description" : "This is washing machine"
                 },
 
                 "transform" : 
@@ -19,30 +19,30 @@
                     "position" : 
                     {
                         "x" : 0.0,
-                        "y" : 0.0,
+                        "y" : -0.2,
                         "z" : 0.0
                     },
 
                     "orientation":
                     {
-                        "x" : 90.0,
+                        "x" : 0.0,
                         "y" : 90.0,
                         "z" : 0.0
                     },
 
-                    "scale" : 0.8
+                    "scale" : 0.4
                 },
                 "billboard": true,
                 "hidden" : false
             },
 
             {
-                "name": "hidden_part",
+                "name": "anchor",
                 "media" : 
                 {
                     "type" : 1, 
-                    "url" : "thumb.jpg",
-                    "description" : "Hidden object"
+                    "url" : "anchor.jpg",
+                    "description" : "Anchor"
                 },
 
                 "transform" : 
@@ -71,65 +71,26 @@
 
     {
         "name": "Step 2",
-        "description": "This is step 2 description",
-        "preview_url": "slide2.jpg",
+        "description": "Open the door and put your stuff in there",
+        "preview_url": "step2.png",
         "assets": 
         [
             {
-                "name": "slide2",
-                "media" : 
+                "name": "step2",
+                "media":
                 {
                     "type" : 1, 
-                    "url" : "slide2.jpg",
-                    "description" : "Image2 description"
+                    "url" : "step2.png",
+                    "description" : "Handle arrow"
                 },
 
                 "transform" : 
                 {
                     "position" : 
                     {
-                        "x" : 1.0,
-                        "y" : 0.0,
-                        "z" : 0.0
-                    },
-
-                    "orientation":
-                    {
-                        "x" : 0.0,
-                        "y" : 0.0,
-                        "z" : 0.0
-                    },
-
-                    "scale" : 1.0
-                },
-                "billboard": true,
-                "hidden" : false
-            }
-        ]
-    },
-
-    {
-        "name": "Model 1",
-        "description": "This is 3D model description",
-        "preview_url": "duck.jpg",
-        "assets":
-        [
-            {
-                "name": "duck_asset",
-                "media" : 
-                {
-                    "type" : 4, 
-                    "url" : "MallardDuck.gltf",
-                    "description" : "3D model of duck"
-                },
-
-                "transform" : 
-                {
-                    "position" : 
-                    {
-                        "x" : 0.0,
-                        "y" : 0.0,
-                        "z" : 0.0
+                        "x" : 0.6,
+                        "y" : -0.65,
+                        "z" : 0.1
                     },
 
                     "orientation":
@@ -149,26 +110,26 @@
 
     {
         "name": "Step 3",
-        "description": "This is step 3 description",
-        "preview_url": "slide3.jpg",
+        "description": "Put some washing powder inside",
+        "preview_url": "step3.png",
         "assets": 
         [
             {
-                "name": "slide3_asset",
-                "media" : 
+                "name": "step3",
+                "media":
                 {
                     "type" : 1, 
-                    "url" : "slide3.jpg",
-                    "description" : "Image3 description"
+                    "url" : "step3.png",
+                    "description" : "Washing powder"
                 },
 
                 "transform" : 
                 {
                     "position" : 
                     {
-                        "x" : -0.5,
-                        "y" : 0.0,
-                        "z" : 0.0
+                        "x" : 0.1,
+                        "y" : -0.7,
+                        "z" : 0.1
                     },
 
                     "orientation":
@@ -178,9 +139,9 @@
                         "z" : 0.0
                     },
 
-                    "scale" : 0.0
+                    "scale" : 0.5
                 },
-                "billboard": true,
+                "billboard": false,
                 "hidden" : false
             }
         ]
@@ -188,26 +149,26 @@
 
     {
         "name": "Step 4",
-        "description": "This is step 2 description",
-        "preview_url": "duck.jpg",
+        "description": "Press the start button",
+        "preview_url": "step4.png",
         "assets": 
         [
             {
-                "name": "text4",
-                "media" : 
+                "name": "step4",
+                "media":
                 {
-                    "type" : 0, 
-                    "url" : "",
-                    "description" : "Some cool text to put on the step. You should do this and that."
+                    "type" : 1, 
+                    "url" : "step4.png",
+                    "description" : "Start button"
                 },
 
                 "transform" : 
                 {
                     "position" : 
                     {
-                        "x" : 0.5,
-                        "y" : 0.0,
-                        "z" : 0.0
+                        "x" : 0.0,
+                        "y" : -0.4,
+                        "z" : 0.1
                     },
 
                     "orientation":
@@ -216,9 +177,88 @@
                         "y" : 0.0,
                         "z" : 0.0
                     },
-                    "scale" : 1.0
+
+                    "scale" : 0.5
                 },
-                "billboard": true,
+                "billboard": false,
+                "hidden" : false
+            }
+        ]
+    },
+
+    {
+        "name": "Step 5",
+        "description": "Select the desired mode",
+        "preview_url": "step5.png",
+        "assets": 
+        [
+            {
+                "name": "step5",
+                "media":
+                {
+                    "type" : 1, 
+                    "url" : "step5.png",
+                    "description" : "Start button"
+                },
+
+                "transform" : 
+                {
+                    "position" : 
+                    {
+                        "x" : 0.0,
+                        "y" : -0.5,
+                        "z" : 0.1
+                    },
+
+                    "orientation":
+                    {
+                        "x" : 0.0,
+                        "y" : 0.0,
+                        "z" : 0.0
+                    },
+
+                    "scale" : 0.5
+                },
+                "billboard": false,
+                "hidden" : false
+            }
+        ]
+    },
+
+    {
+        "name": "Step 6",
+        "description": "Start the machine",
+        "preview_url": "step6.png",
+        "assets": 
+        [
+            {
+                "name": "step6",
+                "media":
+                {
+                    "type" : 1, 
+                    "url" : "step6.png",
+                    "description" : "Start button"
+                },
+
+                "transform" : 
+                {
+                    "position" : 
+                    {
+                        "x" : 0.0,
+                        "y" : -0.5,
+                        "z" : 0.1
+                    },
+
+                    "orientation":
+                    {
+                        "x" : 0.0,
+                        "y" : 0.0,
+                        "z" : 0.0
+                    },
+
+                    "scale" : 0.5
+                },
+                "billboard": false,
                 "hidden" : false
             }
         ]

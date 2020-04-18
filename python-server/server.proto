@@ -67,11 +67,11 @@ message Media
 {
     enum MediaType
     {
-        IMAGE = 0; //default not default? no default?
-        AUDIO = 1;
-        VIDEO = 2;
-        MODEL = 3;
-        TEXT = 4;
+        TEXT = 0;
+        IMAGE = 1;
+        AUDIO = 2;
+        VIDEO = 3;
+        MODEL = 4;
     }
 
     MediaType type = 1;
@@ -85,7 +85,8 @@ message Asset
     string name = 1;
     Media media = 2;
     Transform transform = 3;
-    bool hidden = 4;
+    bool billboard = 4; 
+    bool hidden = 5;
 }
 
 // One step might containt multiple Assets
