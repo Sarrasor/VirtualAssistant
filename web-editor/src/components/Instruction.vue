@@ -7,15 +7,17 @@
           <button v-if="instructions" @click="createInstruction" :tooltip="'create new'">
             <i class="material-icons-outlined">add</i>
           </button>
-          <button v-if="instruction" @click="duplicateInstruction" :tooltip="'duplicate'">
-            <i class="material-icons-outlined">library_add</i>
-          </button>
-          <button v-if="instruction" @click="$emit('upload')" :tooltip="'upload to server'">
-            <i class="material-icons-outlined">publish</i>
-          </button>
-          <button v-if="instruction" @click="deleteInstruction" :tooltip="'delete'">
-            <i class="material-icons-outlined">delete</i>
-          </button>
+          <template v-if="instruction">
+            <button @click="duplicateInstruction" :tooltip="'duplicate'">
+              <i class="material-icons-outlined">library_add</i>
+            </button>
+            <button @click="$emit('upload')" :tooltip="'upload to server'">
+              <i class="material-icons-outlined">publish</i>
+            </button>
+            <button @click="deleteInstruction" :tooltip="'delete'">
+              <i class="material-icons-outlined">delete</i>
+            </button>
+          </template>
         </div>
         <div v-if="instructions.length>0" class="list" style="height: 125px">
           <button

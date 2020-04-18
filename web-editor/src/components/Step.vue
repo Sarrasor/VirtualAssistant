@@ -7,12 +7,20 @@
           <button @click="createStep" :tooltip="'create new'">
             <i class="material-icons-outlined">add</i>
           </button>
-          <button v-if="step" @click="duplicateStep" :tooltip="'duplicate'">
-            <i class="material-icons-outlined">library_add</i>
-          </button>
-          <button v-if="step" @click="deleteStep" :tooltip="'delete'">
-            <i class="material-icons-outlined">delete</i>
-          </button>
+          <template v-if="step">
+            <button @click="duplicateStep" :tooltip="'duplicate'">
+              <i class="material-icons-outlined">library_add</i>
+            </button>
+            <button @click="deleteStep" :tooltip="'delete'">
+              <i class="material-icons-outlined">delete</i>
+            </button>
+            <button :tooltip="'move up'">
+              <i class="material-icons-outlined">arrow_upward</i>
+            </button>
+            <button :tooltip="'move down'">
+              <i class="material-icons-outlined">arrow_downward</i>
+            </button>
+          </template>
         </div>
         <div v-if="steps.length>0" class="list" style="height: 125px">
           <button
