@@ -7,7 +7,7 @@
     @click="$emit('drop', null)"
   >
     <p v-if="file">{{file}}</p>
-    <p v-else id="empty">[drag an uploaded file here]</p>
+    <p v-else class="label">drag an uploaded file here</p>
   </div>
 </template>
 
@@ -35,6 +35,7 @@ export default {
   flex-wrap: wrap;
   border: 2px dashed var(--select);
   height: 25px;
+  padding: 5px;
   place-content: center;
 }
 #root.delete:hover {
@@ -44,14 +45,13 @@ export default {
 #root > * {
   width: 100%;
 }
-p {
+/* p {
   font-size: 12px;
   font-style: italic;
   text-align: center;
   width: 100%;
-  user-select: none;
 }
 p:not(#empty) {
   font-weight: bold;
-}
+} */
 </style>
