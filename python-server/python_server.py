@@ -326,7 +326,7 @@ def main():
     server.start()
 
     print("Creating POST Server")
-    addr = "localhost"
+    addr = "0.0.0.0"
     port = 50052
     server_address = (addr, port)
     httpd = HTTPServer(server_address, PostServer)
