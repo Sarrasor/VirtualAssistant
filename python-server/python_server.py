@@ -200,6 +200,14 @@ class VirtualAssistantServicer(server_pb2_grpc.VirtualAssistantServicer):
         # Split and send media.zip archive
         return get_file_chunks(zip_path + ".zip")
 
+    def LastModified(self, request, context):
+        path = "{}/{}".format(INSTRUCTIONS_FOLDER, request.id)
+        with open('{}/index.json'.format(path), 'r') as descr:
+            data = json.load(descr)
+            response = server_pb2.Timestamp()
+            response.timestamp = data["last_modified"]
+            return response
+
 
 class WebEditorServicer(server_pb2_grpc.WebEditorServicer):
     """
