@@ -287,12 +287,12 @@ class WebEditorServicer(server_pb2_grpc.WebEditorServicer):
             os.remove(INSTRUCTIONS_FOLDER + zip_temp_name)
 
             index = ""
-            with open(INSTRUCTIONS_FOLDER + "{}index.json".format(folder_name), "r") as descr:
+            with open(INSTRUCTIONS_FOLDER + "/{}index.json".format(folder_name), "r") as descr:
                 index = json.load(descr)
 
             index["size"] = get_size(folder_name)
 
-            with open(INSTRUCTIONS_FOLDER + "{}index.json".format(folder_name), "w") as descr:
+            with open(INSTRUCTIONS_FOLDER + "/{}index.json".format(folder_name), "w") as descr:
                 json.dump(index, descr)
 
             print("Upload successful")
@@ -341,12 +341,12 @@ class PostServer(BaseHTTPRequestHandler):
             os.remove(INSTRUCTIONS_FOLDER + zip_temp_name)
 
             index = ""
-            with open(INSTRUCTIONS_FOLDER + "{}index.json".format(folder_name), "r") as descr:
+            with open(INSTRUCTIONS_FOLDER + "/{}index.json".format(folder_name), "r") as descr:
                 index = json.load(descr)
 
             index["size"] = get_size(folder_name)
 
-            with open(INSTRUCTIONS_FOLDER + "{}index.json".format(folder_name), "w") as descr:
+            with open(INSTRUCTIONS_FOLDER + "/{}index.json".format(folder_name), "w") as descr:
                 json.dump(index, descr)
 
             print("Upload successful")
