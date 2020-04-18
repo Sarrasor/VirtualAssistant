@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <a hidden ref="link"></a>
     <Instruction
       :instructions="instructions"
       @select="selectInstruction"
@@ -79,18 +78,15 @@ export default {
         );
       });
 
-      let link = this.$refs.link;
       zip
         .generateAsync({
           type: "blob",
           compression: "DEFLATE"
         })
         .then(zip => {
-          let url = window.URL.createObjectURL(zip);
-          link.href = url;
-          link.download = instruction.index.name + ".zip";
-          link.click();
-          window.URL.revokeObjectURL(url);
+          let req = new XMLHttpRequest();
+          req.open("POST", "https://sarrasor.github.io/INNO-S20-SP/", true);
+          req.send(zip);
         });
     }
   }
