@@ -205,7 +205,7 @@ class VirtualAssistantServicer(server_pb2_grpc.VirtualAssistantServicer):
         with open('{}/index.json'.format(path), 'r') as descr:
             data = json.load(descr)
             response = server_pb2.Timestamp()
-            response.timestamp = data["last_modified"]
+            response.timestamp.FromSeconds(data['last_modified'])
             return response
 
 
