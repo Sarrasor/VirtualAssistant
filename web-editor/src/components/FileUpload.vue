@@ -135,6 +135,5 @@ export default {
   font-style: italic;
   text-align: center;
   width: 100%;
-  user-select: none;
 }
 </style>
