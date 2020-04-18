@@ -28,6 +28,7 @@ html, body, #app {
     transition: 0.15s;
     border: 0;
     font-family: 'Fira Sans', sans-serif;
+    user-select: none;
 }
 
 .toolbar {
@@ -46,7 +47,6 @@ html, body, #app {
     font-size: 12px;
     width: 100%;
     font-weight: 300;
-    user-select: none;
 }
 
 .label.bold {
@@ -111,7 +111,6 @@ button, select {
     justify-content: center;
     align-items: center;
     height: 25px;
-    user-select: none;
     margin: 10px 0;
     padding: 0 10px;
 }
@@ -154,7 +153,6 @@ hr {
 a {
     border: 1px dashed transparent;
     cursor: pointer;
-    user-select: none;
     padding: 3px 6px;
     text-decoration: underline;
 }
