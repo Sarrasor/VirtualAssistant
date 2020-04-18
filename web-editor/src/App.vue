@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <a hidden ref="link"></a>
     <Instruction
       :instructions="instructions"
       @select="selectInstruction"
@@ -55,10 +56,10 @@ export default {
     },
     uploadInstruction() {
       let instruction = this.instructions[this.currentInstruction];
-      instruction.index.step_count = instruction.steps.length;
-      instruction.index.last_modified = Date.now();
-
       let { steps, files, index } = instruction;
+
+      index.step_count = steps.length;
+      index.last_modified = Date.now();
       steps.forEach(s =>
         s.assets
           .filter(a => a.media.url)
@@ -70,6 +71,15 @@ export default {
       let zip = new JSZip();
       zip.file("index.json", JSON.stringify(index));
       zip.file("steps.json", JSON.stringify(steps));
+      files.forEach(f => {
+        zip.file(
+          "media/" + f.name,
+          f.content.substring(f.content.indexOf("base64,") + "base64,".length),
+          { base64: true }
+        );
+      });
+
+      let link = this.$refs.link;
       zip
         .generateAsync({
           type: "blob",
@@ -77,23 +87,11 @@ export default {
         })
         .then(zip => {
           let url = window.URL.createObjectURL(zip);
-          var a = document.createElement("a");
-          document.body.appendChild(a);
-
-          a.href = url;
-          a.download = instruction.zip;
-          a.click();
-
-          document.body.removeChild(a);
+          link.href = url;
+          link.download = instruction.index.name + ".zip";
+          link.click();
           window.URL.revokeObjectURL(url);
         });
-
-      // const index_json = JSON.stringify(index);
-      // const steps_json = JSON.stringify(steps);
-      // const files_json = JSON.stringify(files);
-      // console.log(index_json);
-      // console.log(steps_json);
-      // console.log(files_json);
     }
   }
 };
