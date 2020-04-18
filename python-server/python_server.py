@@ -281,19 +281,19 @@ class WebEditorServicer(server_pb2_grpc.WebEditorServicer):
             with ZipFile(INSTRUCTIONS_FOLDER + zip_temp_name, 'r') as zipObj:
                 folder_name = zipObj.namelist()[0]
 
-            index = ""
-            with open("{}/index.json".format(folder_name), "r") as descr:
-                index = json.load(descr)
-
-            index["size"] = get_size(folder_name)
-
-            with open("{}/index.json".format(folder_name), "w") as descr:
-                json.dump(index, descr)
-
             shutil.unpack_archive(INSTRUCTIONS_FOLDER +
                                   zip_temp_name, INSTRUCTIONS_FOLDER, 'zip')
 
             os.remove(INSTRUCTIONS_FOLDER + zip_temp_name)
+
+            index = ""
+            with open(INSTRUCTIONS_FOLDER + "{}index.json".format(folder_name), "r") as descr:
+                index = json.load(descr)
+
+            index["size"] = get_size(folder_name)
+
+            with open(INSTRUCTIONS_FOLDER + "{}index.json".format(folder_name), "w") as descr:
+                json.dump(index, descr)
 
             print("Upload successful")
             return server_pb2.Status(status=1)
@@ -335,19 +335,19 @@ class PostServer(BaseHTTPRequestHandler):
             with ZipFile(INSTRUCTIONS_FOLDER + zip_temp_name, 'r') as zipObj:
                 folder_name = zipObj.namelist()[0]
 
-            index = ""
-            with open("{}/index.json".format(folder_name), "r") as descr:
-                index = json.load(descr)
-
-            index["size"] = get_size(folder_name)
-
-            with open("{}/index.json".format(folder_name), "w") as descr:
-                json.dump(index, descr)
-
             shutil.unpack_archive(INSTRUCTIONS_FOLDER +
                                   zip_temp_name, INSTRUCTIONS_FOLDER, 'zip')
 
             os.remove(INSTRUCTIONS_FOLDER + zip_temp_name)
+
+            index = ""
+            with open(INSTRUCTIONS_FOLDER + "{}index.json".format(folder_name), "r") as descr:
+                index = json.load(descr)
+
+            index["size"] = get_size(folder_name)
+
+            with open(INSTRUCTIONS_FOLDER + "{}index.json".format(folder_name), "w") as descr:
+                json.dump(index, descr)
 
             print("Upload successful")
             self.send_response(200)
