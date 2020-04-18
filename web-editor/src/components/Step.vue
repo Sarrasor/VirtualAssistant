@@ -14,10 +14,10 @@
             <button @click="deleteStep" :tooltip="'delete'">
               <i class="material-icons-outlined">delete</i>
             </button>
-            <button :tooltip="'move up'">
+            <button @click="reoderSteps(true)" :tooltip="'move up'">
               <i class="material-icons-outlined">arrow_upward</i>
             </button>
-            <button :tooltip="'move down'">
+            <button @click="reoderSteps(false)" :tooltip="'move down'">
               <i class="material-icons-outlined">arrow_downward</i>
             </button>
           </template>
@@ -90,6 +90,16 @@ export default {
     },
     selectLast() {
       this.selected = this.steps.length - 1;
+    },
+    reoderSteps(up) {
+      const index = this.selected + (up ? -1 : 1);
+      if (index < 0 || index >= this.steps.length) return;
+
+      let temp = this.steps[index];
+      this.steps[index] = this.steps[this.selected];
+      this.steps[this.selected] = temp;
+
+      this.selected = index;
     }
   }
 };
