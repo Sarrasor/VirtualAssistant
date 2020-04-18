@@ -68,11 +68,11 @@ export default {
       );
 
       let zip = new JSZip();
-      zip.file("index.json", JSON.stringify(index));
-      zip.file("steps.json", JSON.stringify(steps));
+      zip.file(index.id + "/index.json", JSON.stringify(index));
+      zip.file(index.id + "/steps.json", JSON.stringify(steps));
       files.forEach(f => {
         zip.file(
-          "media/" + f.name,
+          index.id + "/media/" + f.name,
           f.content.substring(f.content.indexOf("base64,") + "base64,".length),
           { base64: true }
         );
