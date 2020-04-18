@@ -17,6 +17,8 @@ import Step from "./components/Step";
 import Asset from "./components/Asset";
 import Render from "./components/Render";
 
+var JSZip = require("jszip");
+
 import Vue from "vue";
 Vue.prototype.$toFloat = f => {
   f = parseFloat(f);
@@ -65,12 +67,33 @@ export default {
           )
       );
 
-      const index_json = JSON.stringify(index);
-      const steps_json = JSON.stringify(steps);
-      const files_json = JSON.stringify(files);
-      console.log(index_json);
-      console.log(steps_json);
-      console.log(files_json);
+      let zip = new JSZip();
+      zip.file("index.json", JSON.stringify(index));
+      zip.file("steps.json", JSON.stringify(steps));
+      zip
+        .generateAsync({
+          type: "blob",
+          compression: "DEFLATE"
+        })
+        .then(zip => {
+          let url = window.URL.createObjectURL(zip);
+          var a = document.createElement("a");
+          document.body.appendChild(a);
+
+          a.href = url;
+          a.download = instruction.zip;
+          a.click();
+
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(url);
+        });
+
+      // const index_json = JSON.stringify(index);
+      // const steps_json = JSON.stringify(steps);
+      // const files_json = JSON.stringify(files);
+      // console.log(index_json);
+      // console.log(steps_json);
+      // console.log(files_json);
     }
   }
 };
