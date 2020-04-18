@@ -12,6 +12,7 @@ import time
 import os
 import json
 import shutil
+from zipfile import ZipFile
 
 # Imports for POST listenner server
 from http.server import HTTPServer, BaseHTTPRequestHandler
@@ -24,6 +25,18 @@ INSTRUCTIONS_FOLDER = "./instructions"
 DEFAULT_THUMB = "./aux_data/default_thumb.jpg"
 
 CHUNK_SIZE = 1024 * 1024  # 1MB
+
+
+def get_size(start_path='.'):
+    total_size = 0
+    for dirpath, dirnames, filenames in os.walk(start_path):
+        for f in filenames:
+            fp = os.path.join(dirpath, f)
+            # skip if it is symbolic link
+            if not os.path.islink(fp):
+                total_size += os.path.getsize(fp)
+
+    return total_size
 
 
 def get_file_chunks(filename):
@@ -263,6 +276,19 @@ class WebEditorServicer(server_pb2_grpc.WebEditorServicer):
             zip_temp_name = "/upload.zip"
             save_chunks_to_file(
                 request_iterator, INSTRUCTIONS_FOLDER + zip_temp_name)
+
+            folder_name = ""
+            with ZipFile(INSTRUCTIONS_FOLDER + zip_temp_name, 'r') as zipObj:
+                folder_name = zipObj.namelist()[0]
+
+            index = ""
+            with open("{}/index.json".format(folder_name), "r") as descr:
+                index = json.load(descr)
+
+            index["size"] = get_size(folder_name)
+
+            with open("{}/index.json".format(folder_name), "w") as descr:
+                json.dump(index, descr)
 
             shutil.unpack_archive(INSTRUCTIONS_FOLDER +
                                   zip_temp_name, INSTRUCTIONS_FOLDER, 'zip')
