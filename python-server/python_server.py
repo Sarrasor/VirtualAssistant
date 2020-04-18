@@ -331,6 +331,19 @@ class PostServer(BaseHTTPRequestHandler):
             with open(INSTRUCTIONS_FOLDER + zip_temp_name, 'wb') as f:
                 f.write(body)
 
+            folder_name = ""
+            with ZipFile(INSTRUCTIONS_FOLDER + zip_temp_name, 'r') as zipObj:
+                folder_name = zipObj.namelist()[0]
+
+            index = ""
+            with open("{}/index.json".format(folder_name), "r") as descr:
+                index = json.load(descr)
+
+            index["size"] = get_size(folder_name)
+
+            with open("{}/index.json".format(folder_name), "w") as descr:
+                json.dump(index, descr)
+
             shutil.unpack_archive(INSTRUCTIONS_FOLDER +
                                   zip_temp_name, INSTRUCTIONS_FOLDER, 'zip')
 
