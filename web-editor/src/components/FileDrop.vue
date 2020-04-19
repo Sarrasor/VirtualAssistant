@@ -34,7 +34,7 @@ export default {
   display: flex;
   flex-wrap: wrap;
   border: 2px dashed var(--select);
-  height: 25px;
+  height: 30px;
   padding: 5px;
   place-content: center;
 }
