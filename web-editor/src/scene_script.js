@@ -62,7 +62,7 @@ export function init(node, assets, files) {
             scale: asset.transform.scale,
             billboard: asset.billboard,
             hidden: asset.hidden,
-            url: file ? file.content : ""
+            url: file?.content
         });
     }
     return slide;
