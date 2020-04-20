@@ -1,9 +1,25 @@
 # Task
-We need to have a server that sends the list of all available instructions to a client
-After this, the server should send the selected instruction and all media files to the client.
+We need to have a server that sends the list of all available instructions to a Virtual Assistant app client and receives instructions from the Web Editor
+The server also should send the selected instruction and all media files to the client.
 
 ## How to use
 `python3 python_server.py`
+
+If you want to run python_server.py on the Innopolis VM server:
+
+You can use [ngrok](https://ngrok.com) to expose your server to the global net
+
+```
+chmod +x python_server.py
+nohup /path/to/python_server.py > output.log &
+./ngrok http 50052 > /dev/null &
+```
+
+To stop background processes:
+```
+ps ax | grep python_server.py
+kill <pid>
+```
 
 ## To generate python from .proto
 

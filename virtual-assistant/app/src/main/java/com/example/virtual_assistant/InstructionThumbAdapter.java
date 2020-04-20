@@ -1,12 +1,10 @@
 package com.example.virtual_assistant;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -15,12 +13,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
+import java.util.Locale;
 
 public class InstructionThumbAdapter extends RecyclerView.Adapter<InstructionThumbAdapter.ViewHolder> {
 
     private List<InstructionThumbItem> listItems;
     private Context context;
-    public InstructionThumbAdapter(List<InstructionThumbItem> listItems, Context context) {
+    InstructionThumbAdapter(List<InstructionThumbItem> listItems, Context context) {
         this.listItems = listItems;
         this.context = context;
     }
@@ -40,23 +39,15 @@ public class InstructionThumbAdapter extends RecyclerView.Adapter<InstructionThu
         holder.imageView.setImageBitmap(thumbItem.getImage());
         holder.textViewName.setText(thumbItem.getName());
         holder.textViewDescription.setText(thumbItem.getDescription());
-        holder.textViewSize.setText(String.format("Size: %d bytes", thumbItem.getSize()));
-        holder.textViewSteps.setText(String.format("Steps: %d", thumbItem.getStepCount()));
+        double size = thumbItem.getSize() / (1024.0 * 1024.0);
+        holder.textViewSize.setText(String.format(Locale.ENGLISH, "Size: %.2f Mb", size));
+        holder.textViewSteps.setText(String.format(Locale.ENGLISH, "Steps: %d", thumbItem.getStepCount()));
 
-        holder.linearLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v)
-            {
-                View rootView = ((Activity) context).getWindow().getDecorView().findViewById(android.R.id.content);
-                EditText prt = rootView.findViewById(R.id.hostPort);
-                EditText ip = rootView.findViewById(R.id.hostIP);
-                Intent intent = new Intent(context, InstructionDisplay.class);
-                intent.putExtra("id", thumbItem.getId());
-                intent.putExtra("host", ip.getText().toString());
-                intent.putExtra("port", prt.getText().toString());
-                intent.putExtra("lastModified", thumbItem.getLastModified().getSeconds());
-                context.startActivity(intent);
-            }
+        holder.linearLayout.setOnClickListener(v -> {
+            Intent intent = new Intent(context, InstructionDisplay.class);
+            intent.putExtra("id", thumbItem.getId());
+            intent.putExtra("lastModified", thumbItem.getLastModified().getSeconds());
+            context.startActivity(intent);
         });
     }
 
@@ -65,17 +56,17 @@ public class InstructionThumbAdapter extends RecyclerView.Adapter<InstructionThu
         return listItems.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView textViewName;
-        public TextView textViewDescription;
-        public ImageView imageView;
-        public TextView textViewSize;
-        public TextView textViewSteps;
-        public LinearLayout linearLayout;
+        private TextView textViewName;
+        private TextView textViewDescription;
+        private ImageView imageView;
+        private TextView textViewSize;
+        private TextView textViewSteps;
+        private LinearLayout linearLayout;
 
 
-        public ViewHolder(@NonNull View itemView) {
+        ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             textViewName = itemView.findViewById(R.id.cardName);

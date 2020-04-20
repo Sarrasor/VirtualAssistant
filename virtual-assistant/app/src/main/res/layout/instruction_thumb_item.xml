@@ -22,7 +22,7 @@
                 android:id="@+id/cardImage"
                 android:src="@drawable/pony"
                 android:layout_width="match_parent"
-                android:layout_height="160dp"
+                android:layout_height="300dp"
                 android:scaleType="centerCrop"/>
 
             <LinearLayout
@@ -38,17 +38,19 @@
                     android:layout_marginBottom="8dp"
                     android:text="Instruction name"
                     android:textColor="#000"
+                    android:fontFamily="@font/roboto_black"
                     android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/cardDescription"
                 android:text="Some not so long description. This describes the instruction really well"
                 android:layout_width="match_parent"
+                android:fontFamily="@font/roboto_light"
                 android:layout_height="wrap_content"
-                android:textColor="#555"/>
+                android:textColor="#222"/>
 
                 <TextView
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="10dp"
                     android:id="@+id/stepCount"
                     android:text="Steps: 10"
                     android:layout_width="match_parent"
@@ -56,7 +58,7 @@
                     android:textColor="#111"/>
 
                 <TextView
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="0dp"
                     android:id="@+id/cardSize"
                     android:text="Size: 123 bytes"
                     android:layout_width="match_parent"

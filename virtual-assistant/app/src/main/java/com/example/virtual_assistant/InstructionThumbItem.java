@@ -13,7 +13,7 @@ public class InstructionThumbItem {
     private int size;
     private Timestamp lastModified;
 
-    public InstructionThumbItem(String id, String name, String description, Bitmap image, int stepCount, int size, Timestamp lastModified)
+    InstructionThumbItem(String id, String name, String description, Bitmap image, int stepCount, int size, Timestamp lastModified)
     {
         this.id = id;
         this.name = name;
@@ -24,7 +24,7 @@ public class InstructionThumbItem {
         this.stepCount = stepCount;
     }
 
-    public Timestamp getLastModified()
+    Timestamp getLastModified()
     {
         return this.lastModified;
     }
@@ -33,7 +33,7 @@ public class InstructionThumbItem {
         return id;
     }
 
-    public int getStepCount() {
+    int getStepCount() {
         return stepCount;
     }
 
@@ -45,11 +45,11 @@ public class InstructionThumbItem {
         return name;
     }
 
-    public String getDescription() {
+    String getDescription() {
         return description;
     }
 
-    public Bitmap getImage() {
+    Bitmap getImage() {
         return image;
     }
 }
