@@ -1,9 +1,1 @@
-{
-    "id": "washing_machine",
-    "name": "How to use washing machine",
-    "size": 1782579,
-    "description": "Want to clean some mess? This instruction will show you how to do it using washing machine from dorms.",
-    "preview_url": "thumb.jpg",
-    "last_modified": 1586550982,
-    "step_count": 1
-}
+{"id": "f56338d7-69c5-40ab-b219-1bf476e4eece", "size": 1989057, "name": "How to use washing machine", "description": "Want to clean some mess? This instruction will show you how to do it using washing machine from dorms.", "preview_url": "thumb.jpg", "step_count": 6, "last_modified": 1587249164481}
