@@ -27,6 +27,8 @@ files[j] is related to assets[i] iff assets[i].media.url === files[j].name
 */
 export function init(node, assets, files) {
     function findFileByName(name, files) {
+        if (!files || files.length == 0)
+            return -1;
         for (let i = 0; i < files.length; i++) {
             if (files[i].name.localeCompare(name) == 0) {
                 return files[i];
@@ -37,7 +39,7 @@ export function init(node, assets, files) {
     let slide = new Slide(node);
 
     // if assets and/or files are empty, empty scene will appear
-    if (assets.length == 0 || files.length == 0) {
+    if (!assets) {
         return slide;
     }
 
