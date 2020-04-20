@@ -13,7 +13,7 @@
 
 import * as THREE from 'three';
 import GLTFLoader from 'three-gltf-loader';
-import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 /*
 init function that should be called on slide creation
@@ -48,7 +48,7 @@ export function init(node, assets, files) {
         let temp_file = findFileByName(assets[ai].media.url, files);
         let file = (temp_file == -1) ? null : temp_file;
         slide.createAsset(asset.name, file ? file.type : 0, {
-            media_desc: asset.description,
+            media_desc: asset.media.description,
             position: {
                 x: asset.transform.position.x,
                 y: asset.transform.position.y,
@@ -321,9 +321,9 @@ class Asset {
             this.model.scale.set(value, value, value);
         // 1, 2, 3 - pictures
         else if (this.billboard)
-            this.model.scale.set(value*100, value*100, 1);
+            this.model.scale.set(value * 100, value * 100, 1);
         else
-            this.model.scale.set(value*0.2, value*0.2, 1);
+            this.model.scale.set(value * 0.2, value * 0.2, 1);
     }
 
     /*
@@ -402,13 +402,13 @@ class Asset {
     loadText(message, options) {
         if (options === undefined) options = {};
 
-        let fontface = fontface in options ?
+        let fontface = (fontface in options) ?
             options.fontface : "Arial";
 
-        let fontsize = fontsize in options ?
+        let fontsize = (fontsize in options) ?
             options.fontsize : 20;
 
-        let borderThickness = borderThickness in options ?
+        let borderThickness = (borderThickness in options) ?
             options.borderThickness : 10;
 
         let canvas = document.createElement('canvas');
@@ -440,13 +440,13 @@ class Asset {
     loadTextSprite(message, options) {
         if (options === undefined) options = {};
 
-        let fontface = fontface in options ?
+        let fontface = (fontface in options) ?
             options.fontface : "Arial";
 
-        let fontsize = fontsize in options ?
+        let fontsize = (fontsize in options) ?
             options.fontsize : 20;
 
-        let borderThickness = borderThickness in options ?
+        let borderThickness = (borderThickness in options) ?
             options.borderThickness : 10;
 
         let canvas = document.createElement('canvas');
