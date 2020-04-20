@@ -9,13 +9,13 @@ import com.google.ar.sceneform.ux.TransformationSystem;
 public class RotatingNode extends TransformableNode
 {
 
-    public RotatingNode(TransformationSystem transformationSystem) {
+    RotatingNode(TransformationSystem transformationSystem) {
         super(transformationSystem);
     }
 
     private boolean rotate;
 
-    public void setRotate(boolean rotate) {
+    void setRotate(boolean rotate) {
         this.rotate = rotate;
     }
 
@@ -28,7 +28,7 @@ public class RotatingNode extends TransformableNode
             Vector3 direction = Vector3.subtract(cameraPosition, slidePosition);
 
             // If you want only z rotation
-            direction.y = 0.0f;
+            direction.y = 0f;
 
             Quaternion lookRotation = Quaternion.lookRotation(direction, Vector3.up());
             this.setWorldRotation(lookRotation);

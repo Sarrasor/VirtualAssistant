@@ -7,24 +7,22 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.PixelCopy;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
-
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.ar.core.Anchor;
@@ -48,7 +46,6 @@ import com.google.ar.sceneform.math.Quaternion;
 import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.rendering.ViewRenderable;
-import com.google.ar.sceneform.ux.ArFragment;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -81,17 +78,14 @@ import virtual_assistant.VirtualAssistantOuterClass.Step;
 
 public class InstructionDisplay extends AppCompatActivity {
     Session mSession;
-    private ArSceneView arSceneView;
     private boolean foundAnchor;
-    private boolean anchorInstruction;
-    private AugmentedImageDatabase imageDatabase;
     private static final String TAG = InstructionDisplay.class.getSimpleName();
     private static final double MIN_OPENGL_VERSION = 3.0;
-    File instruction_dir;
+    File instructionDir;
     RotatingNode stepNode;
-    private TextView text;
-    private Context context;
-    private int step_number;
+    private Button nextBtn;
+    private Button prevBtn;
+    private int stepNumber;
     private List<Step> steps;
     private WritingArFragment arFragment;
     private ImageView stepImgView;
@@ -104,17 +98,11 @@ public class InstructionDisplay extends AppCompatActivity {
     /**
      * Function that checks if user's device supports ARCore and stuff.
      * Took if from the ARCore tutorial
-     * @param activity
-     * @return
+     * @param activity current activity
+     * @return bool
      */
     public static boolean checkIsSupportedDeviceOrFinish(final Activity activity)
     {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-            Log.e(TAG, "Sceneform requires Android N or later");
-            Toast.makeText(activity, "Sceneform requires Android N or later", Toast.LENGTH_LONG).show();
-            activity.finish();
-            return false;
-        }
         String openGlVersionString =
                 ((ActivityManager) activity.getSystemService(Context.ACTIVITY_SERVICE))
                         .getDeviceConfigurationInfo()
@@ -138,29 +126,33 @@ public class InstructionDisplay extends AppCompatActivity {
             return;
         }
 
-        context = getApplicationContext();
+        Context context = getApplicationContext();
         setContentView(R.layout.activity_instruction_display);
+
+        nextBtn = findViewById(R.id.nextButton);
+        prevBtn = findViewById(R.id.prevButton);
+        nextBtn.setEnabled(false);
+        prevBtn.setEnabled(false);
 
         // Get data from the previous view
         Bundle bundle = getIntent().getExtras();
         String id = "";
-        String host = "";
-        String portStr = "";
         long lastModified = 0;
         if (bundle != null) {
             id = bundle.getString("id");
-            host = bundle.getString("host");
-            portStr = bundle.getString("port");
             lastModified = bundle.getLong("lastModified");
         }
-        int port = TextUtils.isEmpty(portStr) ? 0 : Integer.valueOf(portStr);
 
-//         Prepare step variables
-        step_number = 0;
+        String host = "10.90.138.132";
+        int port = 50051;
+
+        // Prepare step variables
+        stepNumber = 0;
         steps = null;
-        instruction_dir = null;
+        instructionDir = null;
 
-        try {
+        try
+        {
             // Create gRPC stub
             ManagedChannel channel = ManagedChannelBuilder.forAddress(host, port).usePlaintext().build();
             VirtualAssistantGrpc.VirtualAssistantBlockingStub stub = VirtualAssistantGrpc.newBlockingStub(channel);
@@ -170,8 +162,9 @@ public class InstructionDisplay extends AppCompatActivity {
             InstructionResponse instructionResponse = stub.getInstruction(instructionRequest);
 
             // Extract info from instructionResponse
-            int result = instructionResponse.getStatus();
             steps = instructionResponse.getStepsList();
+
+            VirtualAssistantOuterClass.Timestamp timestamp = stub.lastModified(instructionRequest);
 
             // Request media folder for the instruction
             MediaRequest mediaRequest = MediaRequest.newBuilder().setId(id).build();
@@ -179,11 +172,11 @@ public class InstructionDisplay extends AppCompatActivity {
 
             // Create a directory for the instruction with id as name
             File directory = context.getFilesDir();
-            instruction_dir = new File(directory, id);
-            instruction_dir.mkdirs();
+            instructionDir = new File(directory, id);
+            instructionDir.mkdirs();
 
             // Concatenate the received chunks to media.zip
-            File zip_file = new File(instruction_dir, "media.zip");
+            File zip_file = new File(instructionDir, "media.zip");
             try (FileOutputStream zipFile = new FileOutputStream(zip_file)) {
                 while (media_chunks.hasNext()) {
                     Chunk chunk = media_chunks.next();
@@ -192,19 +185,8 @@ public class InstructionDisplay extends AppCompatActivity {
             }
 
             // Unpack media.zip and delete it
-            unpackZip(instruction_dir.getPath(), "/media.zip");
+            unpackZip(instructionDir.getPath(), "/media.zip");
             zip_file.delete();
-
-            // Prepare debug info
-//            String[] fileList = context.fileList();
-//            String res = "";
-//            for (Step step : steps) {
-//                res = res + step.getMediaUrl() + " ";
-//            }
-
-            // Display debug info
-            text = findViewById(R.id.instrText);
-            text.setText(String.format("Request status: %d %d", result, steps.size()));
         }
         catch (Exception e)
         {
@@ -216,10 +198,16 @@ public class InstructionDisplay extends AppCompatActivity {
             Toast.makeText(this, "Failed to get the instruction", Toast.LENGTH_SHORT).show();
         }
 
-        anchorInstruction = false;
+        if (steps.size() == 0)
+        {
+            Toast.makeText(this, "Your instruction has no steps", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        boolean anchorInstruction = false;
 
         // Get current step
-        Step step = steps.get(step_number);
+        Step step = steps.get(stepNumber);
         List<Asset> assets = step.getAssetsList();
 
         for(Asset a: assets)
@@ -230,17 +218,16 @@ public class InstructionDisplay extends AppCompatActivity {
             }
         }
 
-
         // Try displaying instruction
-        if (instruction_dir != null)
+        if (instructionDir != null)
         {
             if(anchorInstruction)
             {
-                displayInstructionAnchor(instruction_dir);
+                displayInstructionAnchor(instructionDir);
             }
             else
             {
-                displayInstructionPlane(instruction_dir);
+                displayInstructionPlane(instructionDir);
             }
         }
         else
@@ -258,13 +245,13 @@ public class InstructionDisplay extends AppCompatActivity {
     {
 
         // Set new step number
-        if (step_number < steps.size() - 1) {
-            step_number += 1;
+        if (stepNumber < steps.size() - 1) {
+            stepNumber += 1;
         } else {
-            step_number = 0;
+            stepNumber = 0;
         }
 
-       setStep(step_number);
+       setStep(stepNumber);
     }
 
     /**
@@ -275,13 +262,13 @@ public class InstructionDisplay extends AppCompatActivity {
     public void prevStep(View view)
     {
         // Set new step number
-        if (step_number > 0) {
-            step_number -= 1;
+        if (stepNumber > 0) {
+            stepNumber -= 1;
         } else {
-            step_number = steps.size() - 1;
+            stepNumber = steps.size() - 1;
         }
 
-       setStep(step_number);
+       setStep(stepNumber);
     }
 
     private void setStep(int number)
@@ -291,32 +278,32 @@ public class InstructionDisplay extends AppCompatActivity {
 
         // Get the first asset
         List<Asset> assets = step.getAssetsList();
-        Asset main_asset = assets.get(0);
+        Asset mainAsset = assets.get(0);
 
-        Toast.makeText(this, step.getName(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, step.getName(), Toast.LENGTH_SHORT).show();
 
-        if (main_asset.getMedia().getType() == Media.MediaType.IMAGE)
+        if (mainAsset.getMedia().getType() == Media.MediaType.IMAGE)
         {
             // Set image
-            Bitmap myBitmap = BitmapFactory.decodeFile(instruction_dir.getPath() + "/" + main_asset.getMedia().getUrl());
+            Bitmap myBitmap = BitmapFactory.decodeFile(instructionDir.getPath() + "/" + mainAsset.getMedia().getUrl());
             stepImgView.setImageBitmap(myBitmap);
             stepImgView.invalidate();
             stepNode.setRenderable(imgRenderable);
 
         }
-        else if (main_asset.getMedia().getType() == Media.MediaType.MODEL)
+        else if (mainAsset.getMedia().getType() == Media.MediaType.MODEL)
         {
-            Toast.makeText(this, String.format("Model: %s", main_asset.getMedia().getUrl()), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, String.format("Model: %s", mainAsset.getMedia().getUrl()), Toast.LENGTH_SHORT).show();
 
             ModelRenderable.builder()
                 .setSource(this, RenderableSource.builder().setSource(
                         this,
-                        Uri.parse(instruction_dir.getPath() + "/" + main_asset.getMedia().getUrl()),
+                        Uri.parse(instructionDir.getPath() + "/" + mainAsset.getMedia().getUrl()),
                         RenderableSource.SourceType.GLTF2)
                         .setScale(1.0f)  // Scale the original model to 1%.
                         .setRecenterMode(RenderableSource.RecenterMode.ROOT)
                         .build())
-                .setRegistryId(instruction_dir.getPath() + "/" + main_asset.getMedia().getUrl())
+                .setRegistryId(instructionDir.getPath() + "/" + mainAsset.getMedia().getUrl())
                 .build()
                 .thenAccept(renderable -> {
                     Toast.makeText(this, "Created model", Toast.LENGTH_SHORT).show();
@@ -325,7 +312,7 @@ public class InstructionDisplay extends AppCompatActivity {
                         throwable -> {
                             Toast toast =
                                     Toast.makeText(this, "Unable to load renderable " +
-                                            instruction_dir.getPath() + "/" + main_asset.getMedia().getUrl(), Toast.LENGTH_LONG);
+                                            instructionDir.getPath() + "/" + mainAsset.getMedia().getUrl(), Toast.LENGTH_LONG);
                             toast.setGravity(Gravity.CENTER, 0, 0);
                             toast.show();
                             return null;
@@ -334,23 +321,23 @@ public class InstructionDisplay extends AppCompatActivity {
             stepNode.setRenderable(modelRenderable);
         }
 
-        else if (main_asset.getMedia().getType() == Media.MediaType.TEXT)
+        else if (mainAsset.getMedia().getType() == Media.MediaType.TEXT)
         {
             // Set text
-            stepTxtView.setText(main_asset.getMedia().getDescription());
+            stepTxtView.setText(mainAsset.getMedia().getDescription());
             stepTxtView.invalidate();
             stepNode.setRenderable(textRenderable);
         }
 
         // Set billboard(always face to the user) property
-//        Toast.makeText(this, String.format("Billboard: %b", main_asset.getBillboard()), Toast.LENGTH_SHORT).show();
-        stepNode.setRotate(main_asset.getBillboard());
+//        Toast.makeText(this, String.format("Billboard: %b", mainAsset.getBillboard()), Toast.LENGTH_SHORT).show();
+        stepNode.setRotate(mainAsset.getBillboard());
 
         // Update Transform
-        float scale = main_asset.getTransform().getScale();
+        float scale = mainAsset.getTransform().getScale();
 
-        VirtualAssistantOuterClass.Transform.Vector3 pos = main_asset.getTransform().getPosition();
-        VirtualAssistantOuterClass.Transform.Vector3 orient = main_asset.getTransform().getOrientation();
+        VirtualAssistantOuterClass.Transform.Vector3 pos = mainAsset.getTransform().getPosition();
+        VirtualAssistantOuterClass.Transform.Vector3 orient = mainAsset.getTransform().getOrientation();
 
         if (scale == 0.0f)
         {
@@ -368,7 +355,7 @@ public class InstructionDisplay extends AppCompatActivity {
     }
 
 
-    private void displayInstructionAnchor(File instruction_dir)
+    private void displayInstructionAnchor(File instructionDir)
     {
         foundAnchor = false;
 
@@ -378,13 +365,15 @@ public class InstructionDisplay extends AppCompatActivity {
         arFragment.getPlaneDiscoveryController().setInstructionView(null);
         arFragment.getArSceneView().getScene().addOnUpdateListener(this::onUpdateFrame);
 
-        arSceneView = arFragment.getArSceneView();
+        ArSceneView arSceneView = arFragment.getArSceneView();
 
         // Prepare image steps display
         ViewRenderable.builder().setView(arFragment.getContext(), R.layout.ar_step)
                 .build()
                 .thenAccept(renderrable ->
                 {
+                    renderrable.setShadowReceiver(false);
+                    renderrable.setShadowCaster(false);
                     stepImgView = renderrable.getView().findViewById(R.id.step_img);
                     imgRenderable = renderrable;
                 });
@@ -394,6 +383,8 @@ public class InstructionDisplay extends AppCompatActivity {
                 .build()
                 .thenAccept(renderrable ->
                 {
+                    renderrable.setShadowReceiver(false);
+                    renderrable.setShadowCaster(false);
                     stepTxtView = renderrable.getView().findViewById(R.id.step_text);
                     textRenderable = renderrable;
                 });
@@ -409,7 +400,7 @@ public class InstructionDisplay extends AppCompatActivity {
         Config config = new Config(mSession);
 
         // Get current step
-        Step step = steps.get(step_number);
+        Step step = steps.get(stepNumber);
         List<Asset> assets = step.getAssetsList();
 
         Asset anchor = null;
@@ -423,10 +414,10 @@ public class InstructionDisplay extends AppCompatActivity {
 
         if (anchor != null)
         {
-            Bitmap anchorBitmap = BitmapFactory.decodeFile(instruction_dir.getPath() + "/" + anchor.getMedia().getUrl());
+            Bitmap anchorBitmap = BitmapFactory.decodeFile(instructionDir.getPath() + "/" + anchor.getMedia().getUrl());
             Toast.makeText(this, "Found anchor asset", Toast.LENGTH_LONG).show();
 
-            imageDatabase = new AugmentedImageDatabase(mSession);
+            AugmentedImageDatabase imageDatabase = new AugmentedImageDatabase(mSession);
             imageDatabase.addImage("anchor", anchorBitmap);
             config.setAugmentedImageDatabase(imageDatabase);
         }
@@ -458,9 +449,11 @@ public class InstructionDisplay extends AppCompatActivity {
                         anchorNode.setParent(arFragment.getArSceneView().getScene());
                         stepNode = new RotatingNode(arFragment.getTransformationSystem());
                         stepNode.setParent(anchorNode);
-                        setStep(step_number);
+                        setStep(stepNumber);
 
                         foundAnchor = true;
+                        nextBtn.setEnabled(true);
+                        prevBtn.setEnabled(true);
                     }
                 }
             }
@@ -470,9 +463,9 @@ public class InstructionDisplay extends AppCompatActivity {
 
     /**
      * Displays the first step of the instruction of plane tap
-     * @param instruction_dir path to the instruction
+     * @param instructionDir path to the instruction
      */
-    private void displayInstructionPlane(File instruction_dir)
+    private void displayInstructionPlane(File instructionDir)
     {
         // Create AR fragment
         arFragment = (WritingArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
@@ -482,6 +475,8 @@ public class InstructionDisplay extends AppCompatActivity {
                 .build()
                 .thenAccept(renderrable ->
                 {
+                    renderrable.setShadowReceiver(false);
+                    renderrable.setShadowCaster(false);
                     stepImgView = renderrable.getView().findViewById(R.id.step_img);
                     imgRenderable = renderrable;
                 });
@@ -491,6 +486,8 @@ public class InstructionDisplay extends AppCompatActivity {
                 .build()
                 .thenAccept(renderrable ->
                 {
+                    renderrable.setShadowReceiver(false);
+                    renderrable.setShadowCaster(false);
                     stepTxtView = renderrable.getView().findViewById(R.id.step_text);
                     textRenderable = renderrable;
                 });
@@ -508,7 +505,10 @@ public class InstructionDisplay extends AppCompatActivity {
                     // Put current step on anchor
                     stepNode = new RotatingNode(arFragment.getTransformationSystem());
                     stepNode.setParent(anchorNode);
-                    setStep(step_number);
+                    setStep(stepNumber);
+
+                    nextBtn.setEnabled(true);
+                    prevBtn.setEnabled(true);
                 });
     }
 
