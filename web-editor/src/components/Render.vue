@@ -9,20 +9,23 @@ export default {
   name: "Render",
   props: ["assets", "files"],
   watch: {
-    assets() {
-      this.render();
+    assets: {
+      handler() {
+        this.render();
+      },
+      deep: true
     },
-    files() {
-      this.render();
+    files: {
+      handler() {
+        this.render();
+      },
+      deep: true
     }
   },
   methods: {
     render() {
-      console.log("changed");
       this.$el.innerHTML = "";
-      if (this.assets && this.files) {
-        scene.init(this.$el, this.assets, this.files);
-      }
+      scene.init(this.$el, this.assets, this.files);
     }
   }
 };
