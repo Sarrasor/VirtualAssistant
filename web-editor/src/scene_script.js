@@ -39,7 +39,7 @@ export function init(node, assets, files) {
     let slide = new Slide(node);
 
     // if assets and/or files are empty, empty scene will appear
-    if (!assets) {
+    if (!assets || assets.length == 0) {
         return slide;
     }
 
