@@ -19,7 +19,8 @@ tunnels:
     proto: http    
   grpc-server:
     addr: 50051
-    proto: http
+    proto: tcp
+    bind_tls: true
 
 ```
 
