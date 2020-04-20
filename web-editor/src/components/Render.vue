@@ -20,8 +20,9 @@ export default {
     render() {
       console.log("changed");
       this.$el.innerHTML = "";
-      if (this.assets && this.files)
+      if (this.assets && this.files) {
         scene.init(this.$el, this.assets, this.files);
+      }
     }
   }
 };

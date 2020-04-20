@@ -34,8 +34,9 @@ export function init(node, assets, files) {
     let slide = new Slide(node);
     for (let ai = 0; ai < assets.length; ai++) {
         let asset = assets[ai];
-        let file = findFileByName(assets[ai].media.url, files);
-        slide.createAsset(asset.name, file.type, {
+        let fileI = findFileByName(assets[ai].media.url, files);
+        let file = fileI >= 0 ? files[fileI] : null;
+        slide.createAsset(asset.name, file ? file.type : 0, {
             media_desc: asset.description,
             position: {
                 x: asset.transform.position.x,
@@ -50,7 +51,7 @@ export function init(node, assets, files) {
             scale: asset.transform.scale,
             billboard: asset.billboard,
             hidden: asset.hidden,
-            url: file.content
+            url: file?.content
         });
     }
     return slide;
