@@ -5,12 +5,15 @@
 
 // import * as OrbitControls from "./render/OrbitControls.js";
 // https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/js/controls/OrbitControls.js
+// npm i --sace three-gltf-loader
 
 // import * as GLTFLoader from "./render/GLTFLoader.js";
 // https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/js/loaders/GLTFLoader.js
+// npm i --save three-gltf-loader
 
-import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import * as THREE from 'three';
+import GLTFLoader from 'three-gltf-loader';
+import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 
 /*
 init function that should be called on slide creation
@@ -236,7 +239,7 @@ class Slide {
     }
 
     createLoader() {
-        // this.loader = new THREE.GLTFLoader();
+        this.loader = new GLTFLoader();
         console.log("created loader");
     }
 

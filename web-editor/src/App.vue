@@ -85,7 +85,7 @@ export default {
         })
         .then(zip => {
           let req = new XMLHttpRequest();
-          req.open("POST", window.INNO_ADDR || "https://49578e3c.ngrok.io", true);
+          req.open("POST", "https://ab46651f.ngrok.io", true);
           req.setRequestHeader(
             "Content-Type",
             "application/x-www-form-urlencoded"
