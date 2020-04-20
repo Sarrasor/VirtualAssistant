@@ -308,7 +308,7 @@ class Asset {
 
     setScale(value) {
         if (this.media_type == 0)
-            this.model.scale(value, value / 2, 1);
+            this.model.scale.set(value, value / 2, 1);
         else if (this.media_type == 4)
             this.model.scale.set(value, value, value);
         else
