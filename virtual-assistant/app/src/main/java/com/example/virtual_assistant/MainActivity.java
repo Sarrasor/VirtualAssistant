@@ -34,6 +34,8 @@ public class MainActivity extends AppCompatActivity
 
     private List<InstructionThumbItem> listThumbs;
 
+    private SwipeRefreshLayout pullToRefresh;
+
     Activity mainActivity;
 
     @Override
@@ -56,10 +58,10 @@ public class MainActivity extends AppCompatActivity
 
         getInstructions(findViewById(R.id.pullToRefresh).getRootView());
 
-        final SwipeRefreshLayout pullToRefresh = findViewById(R.id.pullToRefresh);
+        pullToRefresh = findViewById(R.id.pullToRefresh);
+
         pullToRefresh.setOnRefreshListener(() -> {
             getInstructions(findViewById(R.id.pullToRefresh).getRootView());
-            pullToRefresh.setRefreshing(false);
         });
     }
 
@@ -72,8 +74,8 @@ public class MainActivity extends AppCompatActivity
         listThumbs = new ArrayList<>();
 
         // Get host and port of the server from user
-        String host = "10.90.138.132";
-        int port = 50051;
+        String host = "0.tcp.ngrok.io";
+        int port = 18390;
 
         new Thread(() -> {
             try
@@ -117,6 +119,8 @@ public class MainActivity extends AppCompatActivity
             view.post(() -> {
                 if(gotInstructions) {
                     recyclerView.setAdapter(adapter);
+                    pullToRefresh.setRefreshing(false);
+                    findViewById(R.id.loadingPanel).setVisibility(View.GONE);
                 }
                 else
                 {

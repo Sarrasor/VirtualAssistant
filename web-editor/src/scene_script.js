@@ -22,6 +22,7 @@ node: node that scene will be put on (example: div)
 assets: JSON object. example - assets.json
 files: JSON object. example - files.json
 
+if assets or/and files are empty, empty scene will appear
 files[j] is related to assets[i] iff assets[i].media.url === files[j].name
 */
 export function init(node, assets, files) {
@@ -31,14 +32,19 @@ export function init(node, assets, files) {
                 return files[i];
             }
         }
-        console.log("nothing");
-        // 		return -1;
+        return -1;
     }
     let slide = new Slide(node);
+
+    // if assets and/or files are empty, empty scene will appear
+    if (assets.length == 0 || files.length == 0) {
+        return slide;
+    }
+
     for (let ai = 0; ai < assets.length; ai++) {
         let asset = assets[ai];
-        let fileI = findFileByName(assets[ai].media.url, files);
-        let file = fileI >= 0 ? files[fileI] : null;
+        let temp_file = findFileByName(assets[ai].media.url, files);
+        let file = (temp_file == -1) ? null : temp_file;
         slide.createAsset(asset.name, file ? file.type : 0, {
             media_desc: asset.description,
             position: {
@@ -54,7 +60,7 @@ export function init(node, assets, files) {
             scale: asset.transform.scale,
             billboard: asset.billboard,
             hidden: asset.hidden,
-            url: file?.content
+            url: (file == null) ? "" : file.url
         });
     }
     return slide;
@@ -215,7 +221,7 @@ class Slide {
 
     createCamera() {
         this.camera = new THREE.PerspectiveCamera(60, 2, 0.1, 1000);
-        this.camera.position.set(10, 10, 10);
+        this.camera.position.set(40, 20, 50);
     }
 
     createSoftLight() {
@@ -292,7 +298,7 @@ class Asset {
                     z: options.rotation.z
                 }),
                 this.setTransparent(options.hidden)
-        }, 2000);
+        }, 200);
     }
 
     /*
@@ -308,11 +314,14 @@ class Asset {
 
     setScale(value) {
         if (this.media_type == 0)
-            this.model.scale(value, value / 2, 1);
+            this.model.scale.set(value, value / 2, 1);
         else if (this.media_type == 4)
             this.model.scale.set(value, value, value);
+        // 1, 2, 3 - pictures
+        else if (this.billboard)
+            this.model.scale.set(value*100, value*100, 1);
         else
-            this.model.scale.set(value, value, 1);
+            this.model.scale.set(value*0.2, value*0.2, 1);
     }
 
     /*
@@ -372,7 +381,6 @@ class Asset {
             this.loadPictureSprite(url);
         else
             this.loadPicture(url);
-
         scene.add(this.model);
     }
 
@@ -454,7 +462,6 @@ class Asset {
 
         let spriteMaterial = new THREE.SpriteMaterial({
             map: texture,
-            useScreenCoordinates: false
         });
         this.model = new THREE.Sprite(spriteMaterial);
         // sprite.scale.set(100, 50, 1.0);
@@ -464,8 +471,10 @@ class Asset {
         // create a canvas element
         let canvas = document.createElement('canvas');
         let context = canvas.getContext('2d');
-        canvas.width = 512; // Set canvas width
-        canvas.height = 512; // Set canvas height
+
+        canvas.width = 400; // Set canvas width
+        canvas.height = 400; // Set canvas height
+
         // canvas contents will be used for a texture
         let texture = new THREE.Texture(canvas);
 
@@ -474,7 +483,7 @@ class Asset {
         imageObj.src = url;
         // after the image is loaded, this function executes
         imageObj.onload = function () {
-            context.drawImage(imageObj, 0, 0, imageObj.width * 0.5, imageObj.height * 0.5);
+            context.drawImage(imageObj, 0, 0, canvas.width, canvas.height);
             texture.needsUpdate = true;
         };
 
@@ -491,35 +500,37 @@ class Asset {
     }
 
     loadPictureSprite(url) {
-        //         let spriteMap = new THREE.TextureLoader().load(url);
-        //         let spriteMaterial = new THREE.SpriteMaterial({
-        //             map: spriteMap
-        //         });
-        //         this.model = new THREE.Sprite(spriteMaterial);
-
-        // create a canvas element
-        let canvas = document.createElement('canvas');
-        let context = canvas.getContext('2d');
-        canvas.width = 512; // Set canvas width
-        canvas.height = 512; // Set canvas height
-        // canvas contents will be used for a texture
-        let texture = new THREE.Texture(canvas);
-        texture.needsUpdate = true;
-
-        // load an image
-        let imageObj = new Image();
-        imageObj.src = url;
-        // after the image is loaded, this function executes
-        imageObj.onload = function () {
-            context.drawImage(imageObj, 0, 0, imageObj.width, imageObj.height);
-            texture.needsUpdate = true;
-        };
-
+        let spriteMap = new THREE.TextureLoader().load(url);
         let spriteMaterial = new THREE.SpriteMaterial({
-            map: texture
+            map: spriteMap
         });
-
         this.model = new THREE.Sprite(spriteMaterial);
+
+        // // create a canvas element
+        // let canvas = document.createElement('canvas');
+        // let context = canvas.getContext('2d');
+
+        // canvas.width = 400; // Set canvas width
+        // canvas.height = 400; // Set canvas height
+
+        // // canvas contents will be used for a texture
+        // let texture = new THREE.Texture(canvas);
+        // texture.needsUpdate = true;
+
+        // // load an image
+        // let imageObj = new Image();
+        // imageObj.src = url;
+        // // after the image is loaded, this function executes
+        // imageObj.onload = function () {
+        //     context.drawImage(imageObj, 0, 0, canvas.width, canvas.height);
+        //     texture.needsUpdate = true;
+        // };
+
+        // let spriteMaterial = new THREE.SpriteMaterial({
+        //     map: texture
+        // });
+
+        // this.model = new THREE.Sprite(spriteMaterial);
     }
 
     setTransparent(hidden, alpha) {
