@@ -4,5 +4,7 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="textBackground">#FFFFFF</color>
-    <color name="textColor">#000000</color>
+    <color name="textColor">#FFFFFF</color>
+    <color name="transparent">#00000000</color>
+    <color name="border_color">#FFFFFF</color>
 </resources>

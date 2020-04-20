@@ -1,10 +1,14 @@
+#!/usr/bin/env python3
+
 """
 Python server for the Virtual Assistant app
 
 Attributes:
     CHUNK_SIZE (int): Size of byte chunk in bytes. Affects transfer speed
     DEFAULT_THUMB (str): Path to default thumbnail for an instruction
+    GRPC_PORT (int): port of gRPC server
     INSTRUCTIONS_FOLDER (str): Path to folder with instructions
+    POST_PORT (int): port of POST server
 """
 import grpc
 from concurrent import futures
@@ -21,13 +25,26 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 import server_pb2
 import server_pb2_grpc
 
+# Server ports
+GRPC_PORT = 50051
+POST_PORT = 50052
+
 INSTRUCTIONS_FOLDER = "./instructions"
 DEFAULT_THUMB = "./aux_data/default_thumb.jpg"
 
-CHUNK_SIZE = 1024 * 1024  # 1MB
+CHUNK_SIZE = 1024  # 1KB
 
 
 def get_size(start_path='.'):
+    """
+    Calculates size of a folder
+
+    Args:
+        start_path (str, optional): path to a folder
+
+    Returns:
+        int: Size of the folder in bytes
+    """
     total_size = 0
     for dirpath, dirnames, filenames in os.walk(start_path):
         for f in filenames:
@@ -287,12 +304,12 @@ class WebEditorServicer(server_pb2_grpc.WebEditorServicer):
             os.remove(INSTRUCTIONS_FOLDER + zip_temp_name)
 
             index = ""
-            with open(INSTRUCTIONS_FOLDER + "/{}index.json".format(folder_name), "r") as descr:
+            with open("{}/{}index.json".format(INSTRUCTIONS_FOLDER, folder_name), "r") as descr:
                 index = json.load(descr)
 
             index["size"] = get_size(INSTRUCTIONS_FOLDER + "/" + folder_name)
 
-            with open(INSTRUCTIONS_FOLDER + "/{}index.json".format(folder_name), "w") as descr:
+            with open("{}/{}index.json".format(INSTRUCTIONS_FOLDER, folder_name), "w") as descr:
                 json.dump(index, descr)
 
             print("Upload successful")
@@ -303,6 +320,10 @@ class WebEditorServicer(server_pb2_grpc.WebEditorServicer):
 
 
 class PostServer(BaseHTTPRequestHandler):
+    """
+    POST server class
+    """
+
     def _set_headers(self):
         self.send_response(200)
         self.send_header("Content-type", "text/html")
@@ -315,7 +336,7 @@ class PostServer(BaseHTTPRequestHandler):
     def do_GET(self):
         self._set_headers()
         self.wfile.write(self._html(
-            "Hi. I'm waiting for POSTs with instructions."))
+            "Hi. I'm waiting for POSTs with zipped instructions."))
 
     def do_HEAD(self):
         self._set_headers()
@@ -341,12 +362,12 @@ class PostServer(BaseHTTPRequestHandler):
             os.remove(INSTRUCTIONS_FOLDER + zip_temp_name)
 
             index = ""
-            with open(INSTRUCTIONS_FOLDER + "/{}index.json".format(folder_name), "r") as descr:
+            with open("{}/{}index.json".format(INSTRUCTIONS_FOLDER, folder_name), "r") as descr:
                 index = json.load(descr)
 
             index["size"] = get_size(INSTRUCTIONS_FOLDER + "/" + folder_name)
 
-            with open(INSTRUCTIONS_FOLDER + "/{}index.json".format(folder_name), "w") as descr:
+            with open("{}/{}index.json".format(INSTRUCTIONS_FOLDER, folder_name), "w") as descr:
                 json.dump(index, descr)
 
             print("Upload successful")
@@ -359,27 +380,27 @@ class PostServer(BaseHTTPRequestHandler):
 
 def main():
     """
-    Create gRPC server as a thread and wait for requests
+    Create gRPC and POST servers and wait for requests
     """
-    print("Creating gRPC Server")
+
+    # Create gRPC server
+    print("Creating gRPC Server on port {}".format(GRPC_PORT))
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+
     server_pb2_grpc.add_VirtualAssistantServicer_to_server(
         VirtualAssistantServicer(), server)
     server_pb2_grpc.add_WebEditorServicer_to_server(
         WebEditorServicer(), server)
 
-    print('Listening on port 50051')
-    server.add_insecure_port('[::]:50051')
+    server.add_insecure_port('[::]:{}'.format(GRPC_PORT))
     server.start()
 
-    print("Creating POST Server")
-    addr = "0.0.0.0"
-    port = 50052
-    server_address = (addr, port)
-    httpd = HTTPServer(server_address, PostServer)
+    # Create POST server
+    server_address = ("0.0.0.0", POST_PORT)
+    post_server = HTTPServer(server_address, PostServer)
 
-    print("Starting httpd server on {}:{}".format(addr, port))
-    httpd.serve_forever()
+    print("Creating POST server on port {}".format(POST_PORT))
+    post_server.serve_forever()
 
     # Wait, since threads are non-blocking
     try:
