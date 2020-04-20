@@ -45,13 +45,4 @@ export default {
 #root > * {
   width: 100%;
 }
-/* p {
-  font-size: 12px;
-  font-style: italic;
-  text-align: center;
-  width: 100%;
-}
-p:not(#empty) {
-  font-weight: bold;
-} */
 </style>
