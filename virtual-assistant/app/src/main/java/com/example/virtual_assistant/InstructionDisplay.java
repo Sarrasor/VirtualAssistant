@@ -94,6 +94,8 @@ public class InstructionDisplay extends AppCompatActivity {
     private ViewRenderable textRenderable;
     private ModelRenderable modelRenderable;
 
+    Activity displayActivity;
+
 
     /**
      * Function that checks if user's device supports ARCore and stuff.
@@ -126,6 +128,7 @@ public class InstructionDisplay extends AppCompatActivity {
             return;
         }
 
+
         Context context = getApplicationContext();
         setContentView(R.layout.activity_instruction_display);
 
@@ -133,6 +136,8 @@ public class InstructionDisplay extends AppCompatActivity {
         prevBtn = findViewById(R.id.prevButton);
         nextBtn.setEnabled(false);
         prevBtn.setEnabled(false);
+
+        displayActivity = this;
 
         // Get data from the previous view
         Bundle bundle = getIntent().getExtras();
@@ -603,8 +608,7 @@ public class InstructionDisplay extends AppCompatActivity {
                     Intent intent = new Intent(Intent.ACTION_VIEW, photoURI);
                     intent.setDataAndType(photoURI, "image/*");
                     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    startActivity(intent);
-
+                    displayActivity.startActivity(intent);
                 });
                 snackbar.show();
             }
