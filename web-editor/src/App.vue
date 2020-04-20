@@ -85,8 +85,11 @@ export default {
         })
         .then(zip => {
           let req = new XMLHttpRequest();
-          req.open("POST", "http://10.90.138.132:50052", true);
-          req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+          req.open("POST", window.INNO_ADDR || "https://49578e3c.ngrok.io", true);
+          req.setRequestHeader(
+            "Content-Type",
+            "application/x-www-form-urlencoded"
+          );
           req.send(zip);
         });
     }

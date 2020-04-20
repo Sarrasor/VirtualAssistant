@@ -3,7 +3,7 @@
 </template>
 
 <script>
-// import * as scene from "../render/scene_script";
+import * as scene from "../scene_script";
 
 export default {
   name: "Render",
@@ -18,9 +18,11 @@ export default {
   },
   methods: {
     render() {
-      // console.log("changed");
-      // this.$el.innerHTML = "";
-      // scene.init(this.$el, this.assets, this.files);
+      console.log("changed");
+      this.$el.innerHTML = "";
+      if (this.assets && this.files) {
+        scene.init(this.$el, this.assets, this.files);
+      }
     }
   }
 };
