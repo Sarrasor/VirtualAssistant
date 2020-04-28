@@ -244,7 +244,7 @@ class Asset {
     }
 
     setScale(value) {
-        if (this.media_type == 0)
+        if (this.media_type == TEXT)
             this.model.scale.set(value, value, value);
         else if (this.media_type == TDMODEL)
             this.model.scale.set(value, value, value);
@@ -267,15 +267,10 @@ class Asset {
     }
 
     setTransparent(alpha) {
-        if (this.hidden && this.media_type != TDMODEL)
+        if (this.hidden)
             this.modelMaterial.alpha = alpha;
     }
 
-    setBillboard() {
-        if (this.billboard){
-            this.model.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
-        }
-    }
     /*
     called from constructor. loads an object according to this.media_type
 
@@ -299,60 +294,36 @@ class Asset {
                 break;
             }
         }
-        this.setOrientation();
-        this.setPosition();
-        this.setBillboard();
-        this.setTransparent();
     }
 
     loadText(scene) {
-        var plane = BABYLON.Mesh.CreateGround("ground2", 26, 26, 2, scene);        
-        // plane.rotation = new BABYLON.Vector3(5, 0, 0);
-        // plane.position = new BABYLON.Vector3(0, -2, 0);
-        var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(plane, 1024, 1024);    
-
-        var text = new BABYLON.GUI.TextBlock("text");
-        text.textWrapping= true;
-        text.width = "450px";
-        text.height = "550px";    
-        text.text = this.media_desc;
-        text.color = "white";
-        text.fontSize = "14px";
-        advancedTexture.addControl(text);
-
-        // var m2 = BABYLON.MeshBuilder.CreatePlane(name1, {width:15, height:10, sideOrientation:BABYLON.Mesh.DOUBLESIDE}, scene);
-        // m2.position.x = 0.0;
-        // m2.position.y = 0.0;
-        // var texture2 = new BABYLON.DynamicTexture("dynamic texture", 256, scene, true);
-        // var material2 = new BABYLON.StandardMaterial("mat", scene); 
-        // material2.emissiveTexture = texture2;              
-        // material2.diffuseColor = new BABYLON.Color3("#B5FFFF");
-        // material2.specularColor = new BABYLON.Color3("#B5FFFF");
-        // m2.material = material2;
-        // textureContext = texture2.getContext();	
-        // textureContext.font = "36px Segoe UI";	
-        // textureContext.save();	
-        // textureContext.fillStyle = "white";		
-        // wrapText(textureContext,text,15,80,300,40);
-        // textureContext.restore();	
-        // texture2.update(); 
-
-
-
-        // var ground = BABYLON.Mesh.CreateGround("ground1", 6, 6, 2, scene);
-        // ground.position.x = 2;
-        // // GUI
-        // var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(ground, 1024, 1024, true);
+        var ground = BABYLON.Mesh.CreateGround("ground", 6, 6, 2, scene);
+        ground.position.x = 2;
+        // GUI
+        var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(ground, 1024, 1024, true);
     
-        // ground.emissiveTexture = advancedTexture;
-        // // var material = BABYLON.StandardMaterial("material", scene);
-        // // ground.material = material;
-        // // ground.material.alpha = true;
-        // var text1 = new BABYLON.GUI.TextBlock();
-        // text1.text = "Hello world";
-        // text1.color = "white";
-        // text1.fontSize = 40;
-        // advancedTexture.addControl(text1);    
+        ground.emissiveTexture = advancedTexture;
+        // var material = BABYLON.StandardMaterial("material", scene);
+        // ground.material = material;
+        // ground.material.alpha = true;
+        var text1 = new BABYLON.GUI.TextBlock();
+        text1.text = "Hello world";
+        text1.color = "white";
+        text1.fontSize = 40;
+        advancedTexture.addControl(text1); 
+
+        // var plane = BABYLON.Mesh.CreateGround("ground2", 26, 26, 2, scene);        
+        // plane.rotation = new BABYLON.Vector3(5, 0, 0);
+        // var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(plane, 1024, 1024);    
+
+        // var text = new BABYLON.GUI.TextBlock("text");
+        // text.textWrapping= true;
+        // text.width = "50px";
+        // text.height = "500px";    
+        // text.text = "HEY it s a very very long text over here please wrap me";
+        // text.color = "white";
+        // text.fontSize = "14px";
+        // advancedTexture.addControl(text);
     }
 
     loadImage(url, scene) {
@@ -365,8 +336,10 @@ class Asset {
         var plane = new BABYLON.MeshBuilder.CreatePlane(this.name, {size:1}, scene);
         plane.updatable = true;
         plane.material = mat;
-        if (this.billboard)
+        if (this.billboard){
             mat.backFaceCulling = true;
+            this.model.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
+        }
         this.model = plane;
     }
 
