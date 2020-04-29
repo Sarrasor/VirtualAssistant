@@ -5,6 +5,7 @@
 import * as BABYLON from 'babylonjs';
 import 'babylonjs-loaders';
 // import { AdvancedDynamicTexture, TextBlock } from '@babylonjs/gui/';
+// import grid material?
 
 
 
@@ -13,6 +14,7 @@ var IMAGE = 1;
 var AUDIO = 2;
 var VIDEO = 3;
 var TDMODEL = 4;
+
 
 export function init(node, assets, files) {
     function findFileByName(name, files) {
@@ -25,7 +27,13 @@ export function init(node, assets, files) {
         }
         return -1;
     }
+
+    function renderLoop() {
+        slide.scene.render();
+    }
     let slide = new Slide(node);
+
+    slide.engine.runRenderLoop(renderLoop);
 
     // if assets and/or files are empty, empty scene will appear
     if (!assets || assets.length == 0) {
@@ -64,6 +72,7 @@ class Slide {
     */
     constructor(node) {
         this.node = node;
+        this.createEngine();
         this.createScene();
         this.createGrid();
         this.createCamera();
@@ -160,29 +169,31 @@ class Slide {
         this.assets.splice(index);
     }
 
+    createEngine() {
+        this.engine = new BABYLON.Engine(this.node, false, {preserveDrawingBuffer: true, stencil: true}); 
+    }
+
     // from here, all the functions that belong to the class Slide play technical role only
     // and must not be called from outside of class Asset
     createScene() {
-        var engine = new BABYLON.Engine(this.node, false, {preserveDrawingBuffer: true, stencil: true});
-        this.scene = new BABYLON.Scene(engine);
-        this.scene.clearColor = BABYLON.Color3.Gray();
+        this.scene = new BABYLON.Scene(this.engine);
+        this.scene.clearColor = new BABYLON.Color3(1, 0.6, 0.6);
         console.log("created Scene");
     }
 
     createGrid() {
-//         this.ground = BABYLON.Mesh.CreateGround("ground1", 10, 10, 10, this.scene);
-//         this.grid = new BABYLON.GridMaterial("grid", this.scene);	
-//         this.grid.gridRatio = 0.1;
-//         this.grid.majorUnitFrequency = 2;
+        this.ground = BABYLON.Mesh.CreateGround("ground1", 10, 10, 10, this.scene);
+        this.grid = new BABYLON.GridMaterial("grid", this.scene);	
+        this.grid.gridRatio = 0.1;
+        this.grid.majorUnitFrequency = 2;
     }
 
     createCamera() {
-//         this.camera = new BABYLON.ArcRotateCamera("Camera", 0, 0.8, 100, new BABYLON.Vector3.Zero(), this.scene);
+        this.camera = new BABYLON.ArcRotateCamera("Camera", 0, 0.8, 100, new BABYLON.Vector3.Zero(), this.scene);
 //         // This targets the camera to scene origin
 //         this.camera.setTarget(BABYLON.Vector3.Zero());
-//         // This attaches the camera to the node
-//         this.camera.attachControl(this.node, true);
-        this.camera = new BABYLON.FreeCamera("camera", new BABYLON.Vector3(0,0,-10), this.scene);
+        // This attaches the camera to the node
+        this.camera.attachControl(this.node, true);
     }
 
     createLight() {
@@ -258,9 +269,9 @@ class Asset {
     args: { x:num, y:num, z:num } - not optional. to update, all must be passed
     */
     setOrientation(args) {
-        this.model.orientation.x = args.x;
-        this.model.orientation.y = args.y;
-        this.model.orientation.z = args.z;
+        this.model.rotation.x = args.x;
+        this.model.rotation.y = args.y;
+        this.model.rotation.z = args.z;
     }
 
     setTransparent(alpha) {
@@ -324,8 +335,8 @@ class Asset {
 
     loadImage(url, scene) {
         var mat = new BABYLON.StandardMaterial("material", scene);
-        mat.diffuseTexture = new BABYLON.Texture(url, scene);
-        mat.diffuseTexture.hasAlpha = true;
+//         mat.diffuseTexture = new BABYLON.Texture(url, scene);
+//         mat.diffuseTexture.hasAlpha = true;
         mat.backFaceCulling = false;
         this.modelMaterial = mat;
 
