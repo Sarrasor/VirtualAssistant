@@ -4,6 +4,7 @@
 
 import * as BABYLON from 'babylonjs';
 import 'babylonjs-loaders';
+import { AdvancedDynamicTexture, TextBlock } from '@babylonjs/gui/2D';
 
 
 
@@ -13,7 +14,7 @@ var AUDIO = 2;
 var VIDEO = 3;
 var TDMODEL = 4;
 
-export function init(node, assets, files) {
+function init(node, assets, files) {
     function findFileByName(name, files) {
         if (!files || files.length == 0)
             return -1;
@@ -59,7 +60,6 @@ export function init(node, assets, files) {
 class Slide {
     /*
     sets up everything that is needed to display the scene
-
     node: node that scene will be put on (example: div)
     */
     constructor(node) {
@@ -68,9 +68,7 @@ class Slide {
         this.createGrid();
         this.createCamera();
         this.createLight();
-
-        // loader for .glft and .glb
-        this.createLoader();
+        
         // array of assets for the slide. each new asset is pushed there
         this.assets = [];
     }
@@ -112,7 +110,6 @@ class Slide {
     options: { media_desc:string, billboard:boolean, hidden:boolean,
               position:{x:num, y:num, z:num}, rotation{x:num, y:num, z:num}, scale:num }
     if some of the options are not updated, they are left as they were
-
     you can't update media_type or url
     */
     updateAsset(name, options) {
@@ -143,7 +140,6 @@ class Slide {
 
     /*
     finds a needed asset by its name
-
     name: str - name of the object
     if found returns index of the asset from this.assets, otherwise returns (-1)
     */
@@ -174,18 +170,19 @@ class Slide {
     }
 
     createGrid() {
-        this.ground = BABYLON.Mesh.CreateGround("ground1", 10, 10, 10, this.scene);
-        this.grid = new BABYLON.GridMaterial("grid", this.scene);	
-        this.grid.gridRatio = 0.1;
-        this.grid.majorUnitFrequency = 2;
+//         this.ground = BABYLON.Mesh.CreateGround("ground1", 10, 10, 10, this.scene);
+//         this.grid = new BABYLON.GridMaterial("grid", this.scene);	
+//         this.grid.gridRatio = 0.1;
+//         this.grid.majorUnitFrequency = 2;
     }
 
     createCamera() {
-        this.camera = new BABYLON.ArcRotateCamera("Camera", 0, 0.8, 100, new BABYLON.Vector3.Zero(), this.scene);
-        // This targets the camera to scene origin
-        this.camera.setTarget(BABYLON.Vector3.Zero());
-        // This attaches the camera to the node
-        this.camera.attachControl(this.node, true);
+//         this.camera = new BABYLON.ArcRotateCamera("Camera", 0, 0.8, 100, new BABYLON.Vector3.Zero(), this.scene);
+//         // This targets the camera to scene origin
+//         this.camera.setTarget(BABYLON.Vector3.Zero());
+//         // This attaches the camera to the node
+//         this.camera.attachControl(this.node, true);
+        this.camera = new BABYLON.FreeCamera("camera", new BABYLON.Vector3(0,0,-10), this.scene);
     }
 
     createLight() {
@@ -273,7 +270,6 @@ class Asset {
 
     /*
     called from constructor. loads an object according to this.media_type
-
     scene - passed from constructor
     options: { url, loader }
     options.url - for images and 3d models
