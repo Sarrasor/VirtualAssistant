@@ -1,11 +1,12 @@
 // npm install babylonjs --save
 // npm install --save babylonjs babylonjs-loaders   
 // move gltf https://www.babylonjs-playground.com/#7DS5D4#1
+// npm install --save babylonjs babylonjs-materials
 
 import * as BABYLON from 'babylonjs';
 import 'babylonjs-loaders';
-// import { AdvancedDynamicTexture, TextBlock } from '@babylonjs/gui/';
-// import grid material?
+import '@babylonjs/gui/';
+import 'babylonjs-materials';
 
 
 var TEXT = 0;
@@ -15,7 +16,7 @@ var VIDEO = 3;
 var TDMODEL = 4;
 
 
-function init(node, assets, files) {
+export function init(node, assets, files) {
     function findFileByName(name, files) {
         if (!files || files.length == 0)
             return -1;
@@ -176,19 +177,20 @@ class Slide {
     // and must not be called from outside of class Asset
     createScene() {
         this.scene = new BABYLON.Scene(this.engine);
-        this.scene.clearColor = new BABYLON.Color3(1, 0.6, 0.6);
+        this.scene.clearColor = new BABYLON.Color3(0.5, 0.6, 0.6);
         console.log("created Scene");
     }
 
     createGrid() {
-        this.ground = BABYLON.Mesh.CreateGround("ground1", 10, 10, 10, this.scene);
-        this.grid = new BABYLON.GridMaterial("grid", this.scene);	
-        this.grid.gridRatio = 0.1;
-        this.grid.majorUnitFrequency = 2;
+        this.ground = BABYLON.Mesh.CreateGround("ground", 40, 40, 40, this.scene);
+        // var grid = new BABYLON.GridMaterial("grid", this.scene);
+        // grid.gridRatio = 0.1;
+        // grid.majorUnitFrequency = 2;
+        // this.plane.material = grid;
     }
 
     createCamera() {
-        this.camera = new BABYLON.ArcRotateCamera("Camera", 0, 0.8, 100, new BABYLON.Vector3.Zero(), this.scene);
+        this.camera = new BABYLON.ArcRotateCamera("Camera", 10, 10, 50, new BABYLON.Vector3.Zero(), this.scene);
 //         // This targets the camera to scene origin
 //         this.camera.setTarget(BABYLON.Vector3.Zero());
         // This attaches the camera to the node

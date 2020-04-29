@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import * as scene from "../scene_script";
+import * as scene from "../DobroyeBabylon";
 
 export default {
   name: "Render",
@@ -27,6 +27,7 @@ export default {
   methods: {
     render() {
       this.$refs.canvas.innerHTML = "";
+      this.$refs.canvas.height = "800px";
       scene.init(this.$refs.canvas, this.assets, this.files);
     }
   }
