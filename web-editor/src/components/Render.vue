@@ -1,5 +1,7 @@
 <template>
-  <div class="card"></div>
+  <div class="card">
+    <canvas ref="canvas"></canvas>
+  </div>
 </template>
 
 <script>
@@ -24,8 +26,8 @@ export default {
   },
   methods: {
     render() {
-      this.$el.innerHTML = "";
-      scene.init(this.$el, this.assets, this.files);
+      this.$refs.canvas.innerHTML = "";
+      scene.init(this.$refs.canvas, this.assets, this.files);
     }
   }
 };
@@ -34,5 +36,9 @@ export default {
 <style scoped>
 .card {
   padding: 0;
+}
+canvas {
+  width: 100%;
+  height: 100%;
 }
 </style>
