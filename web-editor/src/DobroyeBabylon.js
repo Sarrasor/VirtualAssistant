@@ -4,7 +4,7 @@
 
 import * as BABYLON from 'babylonjs';
 import 'babylonjs-loaders';
-import { AdvancedDynamicTexture, TextBlock } from '@babylonjs/gui/2D';
+// import { AdvancedDynamicTexture, TextBlock } from '@babylonjs/gui/';
 
 
 
@@ -14,7 +14,7 @@ var AUDIO = 2;
 var VIDEO = 3;
 var TDMODEL = 4;
 
-function init(node, assets, files) {
+export function init(node, assets, files) {
     function findFileByName(name, files) {
         if (!files || files.length == 0)
             return -1;
