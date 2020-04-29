@@ -8,7 +8,6 @@ import 'babylonjs-loaders';
 // import grid material?
 
 
-
 var TEXT = 0;
 var IMAGE = 1;
 var AUDIO = 2;
@@ -16,7 +15,7 @@ var VIDEO = 3;
 var TDMODEL = 4;
 
 
-export function init(node, assets, files) {
+function init(node, assets, files) {
     function findFileByName(name, files) {
         if (!files || files.length == 0)
             return -1;
