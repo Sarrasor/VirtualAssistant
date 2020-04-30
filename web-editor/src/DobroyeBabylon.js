@@ -1,5 +1,5 @@
 // npm install babylonjs --save
-// npm install --save babylonjs babylonjs-loaders   
+// npm install --save babylonjs babylonjs-loaders
 // move gltf https://www.babylonjs-playground.com/#7DS5D4#1
 // npm install --save babylonjs babylonjs-materials
 
@@ -352,14 +352,14 @@ class Asset {
         advancedTexture.addControl(text1); 
         this.model = ground;
 
-        // var plane = BABYLON.Mesh.CreateGround("ground2", 26, 26, 2, scene);        
+        // var plane = BABYLON.Mesh.CreateGround("ground2", 26, 26, 2, scene);
         // plane.rotation = new BABYLON.Vector3(5, 0, 0);
-        // var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(plane, 1024, 1024);    
+        // var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(plane, 1024, 1024);
 
         // var text = new BABYLON.GUI.TextBlock("text");
         // text.textWrapping= true;
         // text.width = "50px";
-        // text.height = "500px";    
+        // text.height = "500px";
         // text.text = "HEY it s a very very long text over here please wrap me";
         // text.color = "white";
         // text.fontSize = "14px";
