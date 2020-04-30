@@ -1,11 +1,11 @@
 // npm install babylonjs --save
-// npm install --save babylonjs babylonjs-loaders   
+// npm install --save babylonjs babylonjs-loaders
 // move gltf https://www.babylonjs-playground.com/#7DS5D4#1
 // npm install --save babylonjs babylonjs-materials
 
 import * as BABYLON from 'babylonjs';
 import 'babylonjs-loaders';
-import '@babylonjs/gui/';
+import 'babylonjs-gui';
 import 'babylonjs-materials';
 
 
@@ -77,7 +77,7 @@ class Slide {
         this.createGrid();
         this.createCamera();
         this.createLight();
-        
+
         // array of assets for the slide. each new asset is pushed there
         this.assets = [];
     }
@@ -170,7 +170,7 @@ class Slide {
     }
 
     createEngine() {
-        this.engine = new BABYLON.Engine(this.node, false, {preserveDrawingBuffer: true, stencil: true}); 
+        this.engine = new BABYLON.Engine(this.node, false, {preserveDrawingBuffer: true, stencil: true});
     }
 
     // from here, all the functions that belong to the class Slide play technical role only
@@ -309,7 +309,7 @@ class Asset {
         ground.position.x = 2;
         // GUI
         var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(ground, 1024, 1024, true);
-    
+
         ground.emissiveTexture = advancedTexture;
         // var material = BABYLON.StandardMaterial("material", scene);
         // ground.material = material;
@@ -318,16 +318,16 @@ class Asset {
         text1.text = "Hello world";
         text1.color = "white";
         text1.fontSize = 40;
-        advancedTexture.addControl(text1); 
+        advancedTexture.addControl(text1);
 
-        // var plane = BABYLON.Mesh.CreateGround("ground2", 26, 26, 2, scene);        
+        // var plane = BABYLON.Mesh.CreateGround("ground2", 26, 26, 2, scene);
         // plane.rotation = new BABYLON.Vector3(5, 0, 0);
-        // var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(plane, 1024, 1024);    
+        // var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(plane, 1024, 1024);
 
         // var text = new BABYLON.GUI.TextBlock("text");
         // text.textWrapping= true;
         // text.width = "50px";
-        // text.height = "500px";    
+        // text.height = "500px";
         // text.text = "HEY it s a very very long text over here please wrap me";
         // text.color = "white";
         // text.fontSize = "14px";
