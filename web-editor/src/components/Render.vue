@@ -27,7 +27,7 @@ export default {
   methods: {
     render() {
       this.$refs.canvas.innerHTML = "";
-      this.$refs.canvas.height = "800px";
+      this.$refs.canvas.height = "500px";
       scene.init(this.$refs.canvas, this.assets, this.files);
     }
   }
