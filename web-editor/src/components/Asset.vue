@@ -52,6 +52,8 @@
 </template>
 
 <script>
+import { v4 as uuidv4 } from "uuid";
+
 import FileDrop from "./FileDrop";
 import Vector from "./Vector";
 
@@ -82,6 +84,7 @@ export default {
     createAsset() {
       this.assets.push({
         name: "Asset " + (this.assets.length + 1),
+        id: uuidv4(),
         media: {
           type: 0,
           url: "",
