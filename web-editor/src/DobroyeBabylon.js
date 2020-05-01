@@ -5,7 +5,7 @@
 
 import * as BABYLON from 'babylonjs';
 import 'babylonjs-loaders';
-import * as GUI from '@babylonjs/gui/';
+import * as GUI from 'babylonjs-gui';
 import 'babylonjs-materials';
 
 
@@ -72,7 +72,7 @@ class Slide {
         // this.createGrid();
         // this.createCamera();
         // this.createLight();
-        
+
         // array of assets for the slide. each new asset is pushed there
         this.assets = [];
     }
@@ -171,7 +171,7 @@ class Slide {
         // this.scene.clearColor = new BABYLON.Color3(0.5, 0.6, 0.6);
         // console.log("created Scene");
 
-        var engine = new BABYLON.Engine(this.node, false, {preserveDrawingBuffer: true, stencil: true}); 
+        var engine = new BABYLON.Engine(this.node, false, {preserveDrawingBuffer: true, stencil: true});
         var scene = new BABYLON.Scene(engine);
 
         scene.createDefaultCameraOrLight(true, true, true);
@@ -185,7 +185,7 @@ class Slide {
         var light = new BABYLON.DirectionalLight("light1", new BABYLON.Vector3(-2, -3, 1), scene);
         light.position = new BABYLON.Vector3(6, 9, 3);
         light.intensity = 1
-        
+
         new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(0, 1, 0), scene);
 
         var generator = new BABYLON.ShadowGenerator(512, light);
@@ -196,16 +196,16 @@ class Slide {
         new BABYLON.Color3(10, .5, .5);
 
         for (var i = 0; i < scene.meshes.length; i++) {
-            generator.addShadowCaster(scene.meshes[i]);    
+            generator.addShadowCaster(scene.meshes[i]);
         }
 
         var helper = scene.createDefaultEnvironment({
             groundShadowLevel: -0.7,
-        });       
+        });
 
         helper.setMainColor(BABYLON.Color3.White());
 
-        engine.runRenderLoop(function () { 
+        engine.runRenderLoop(function () {
             scene.render();
         });
         this.scene = scene;
@@ -349,7 +349,7 @@ class Asset {
         text1.text = this.media_desc;
         text1.color = "black";
         text1.fontSize = 40;
-        advancedTexture.addControl(text1); 
+        advancedTexture.addControl(text1);
         this.model = ground;
 
         // var plane = BABYLON.Mesh.CreateGround("ground2", 26, 26, 2, scene);
