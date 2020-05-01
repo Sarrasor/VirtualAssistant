@@ -10,6 +10,11 @@ import * as scene from "../DobroyeBabylon";
 export default {
   name: "Render",
   props: ["assets", "files"],
+  data() {
+    return {
+      slide: null
+    };
+  },
   watch: {
     assets: {
       handler() {
@@ -24,11 +29,12 @@ export default {
       deep: true
     }
   },
+  mounted() {
+    this.slide = new scene.Slide(this.$refs.canvas);
+  },
   methods: {
     render() {
-      this.$refs.canvas.innerHTML = "";
-      this.$refs.canvas.height = "500px";
-      scene.init(this.$refs.canvas, this.assets, this.files);
+      scene.init(this.slide, this.assets, this.files);
     }
   }
 };
