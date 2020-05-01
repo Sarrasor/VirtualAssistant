@@ -66,7 +66,8 @@ export default {
           resolve({
             name: file.name,
             type: type(file.name),
-            content: reader.result
+            content: reader.result,
+            url: URL.createObjectURL(reader.result)
           });
         reader.onerror = reject;
         reader.readAsDataURL(file);
@@ -91,6 +92,7 @@ export default {
         );
       else {
         const file = JSON.parse(event.dataTransfer.getData("text"));
+        URL.revokeObjectURL(file.url);
         this.$emit(
           "upload",
           this.files.filter(f => f.name !== file.name)
