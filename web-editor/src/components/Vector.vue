@@ -5,8 +5,9 @@
       step="0.1"
       :style="{width: width}"
       :key="i"
-      :value="vector[k]"
-      @input="vector[k] = $toFloat($event.target.value)"
+      :ref="k"
+      @input="validate(k)"
+      @blur="blur(k)"
       v-for="(k, i) of keys"
     />
   </div>
@@ -15,13 +16,37 @@
 <script>
 export default {
   name: "Vector",
-  props: ["vector"],
+  props: ["vector", "min"],
   computed: {
     keys: function() {
       return Object.keys(this.vector);
     },
     width: function() {
       return 100 / this.keys.length + "%";
+    }
+  },
+  watch: {
+    vector: {
+      handler() {
+        this.blurAll();
+      },
+      deep: true
+    }
+  },
+  mounted() {
+    this.blurAll();
+  },
+  methods: {
+    blurAll() {
+      for (let k in this.vector) this.blur(k);
+    },
+    blur(k) {
+      this.$refs[k][0].value = this.vector[k];
+      console.log("blur", k);
+    },
+    validate(k) {
+      let value = this.$toFloat(this.$refs[k][0].value);
+      this.vector[k] = this.min ? Math.max(this.min, value) : value;
     }
   }
 };
