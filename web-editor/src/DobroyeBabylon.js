@@ -16,7 +16,7 @@ var VIDEO = 3;
 var TDMODEL = 4;
 
 /*
-init function that should be called to update/create/delete 
+init function that should be called to update/create/delete
 slide: object Slide
 assets: json object
 files: json object
@@ -124,10 +124,10 @@ export class Slide {
             this.assets.push(new_obj);
         }
         else{
-            asset = existing_asset;
+            let asset = existing_asset;
             asset.name = name;
             asset.media_desc = options.media_desc;
-            asset.hidden = hidden;
+            asset.hidden = options.hidden;
             asset.setScale(options.scale);
             if (asset.media_type != media_type || asset.url != options.url){
                 asset.media_type = media_type;
@@ -154,7 +154,7 @@ export class Slide {
     returns an index of asset with asset.id=id
     */
     findAssetById(id) {
-        for (i = 0; i < this.assets.length; i++)
+        for (let i = 0; i < this.assets.length; i++)
             if (this.assets[i].id.localeCompare(id))
                 return i
     }
