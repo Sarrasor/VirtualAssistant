@@ -111,8 +111,15 @@ class VirtualAssistantServicer(server_pb2_grpc.VirtualAssistantServicer):
         response = server_pb2.AllInstructioinsResponse()
         instructions = os.listdir(INSTRUCTIONS_FOLDER)
 
+        # Things to ignore inside the instructions folder
+        ignore = [".zip", ".txt", "hidden"]
+
         # Go through each instruction one-by-one and create a thumb out of it
         for instruction in instructions:
+            # Skip stuff to ignore
+            if any(x in instruction for x in ignore):
+                continue
+
             path = "{}/{}".format(INSTRUCTIONS_FOLDER, instruction)
             thumbnail = server_pb2.InstructionThumbnail()
 
@@ -220,9 +227,9 @@ class VirtualAssistantServicer(server_pb2_grpc.VirtualAssistantServicer):
         """
 
         # Define path to media folder
-        media_path = "{}/{}/media".format(INSTRUCTIONS_FOLDER, request.id)
+        media_path = "{}/{}".format(INSTRUCTIONS_FOLDER, request.id)
         # Define path to media.zip
-        zip_path = "{}/{}/media".format(INSTRUCTIONS_FOLDER, request.id)
+        zip_path = "{}/media".format(INSTRUCTIONS_FOLDER)
 
         # Create zip archive from media folder
         shutil.make_archive(zip_path, "zip", media_path)
@@ -334,9 +341,31 @@ class PostServer(BaseHTTPRequestHandler):
         return content.encode("utf8")
 
     def do_GET(self):
-        self._set_headers()
-        self.wfile.write(self._html(
-            "Hi. I'm waiting for POSTs with zipped instructions."))
+        request = str(self.path).split("/")[-1]
+
+        if(request == "instructions"):
+            print("Instructions request from the Web-editor")
+
+            # Define path to instructions.zip
+            zip_path = "./instructions"
+
+            # Create zip archive from media folder
+            shutil.make_archive(zip_path, "zip", INSTRUCTIONS_FOLDER)
+
+            # Write file to the response message
+            with open(zip_path + ".zip", 'rb') as file:
+                self.send_response(200)
+                self.send_header("Content-Type", 'application/zip')
+                self.send_header(
+                    "Content-Typet-Disposition", 'attachment; filename="instructions.zip"')
+                fs = os.fstat(file.fileno())
+                self.send_header("Content-Length", str(fs.st_size))
+                self.end_headers()
+                shutil.copyfileobj(file, self.wfile)
+        else:
+            self._set_headers()
+            self.wfile.write(self._html(
+                "Hi. I'm waiting for POSTs with zipped instructions."))
 
     def do_HEAD(self):
         self._set_headers()

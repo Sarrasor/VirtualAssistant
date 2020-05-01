@@ -1,6 +1,7 @@
 package com.example.virtual_assistant;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -37,6 +38,9 @@ public class MainActivity extends AppCompatActivity
     private SwipeRefreshLayout pullToRefresh;
 
     Activity mainActivity;
+    Context context;
+
+    ManagedChannel channel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -50,6 +54,7 @@ public class MainActivity extends AppCompatActivity
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         mainActivity = this;
+        context = getApplicationContext();
 
         // Create variables for the recyclerView
         listThumbs = new ArrayList<>();
@@ -74,14 +79,17 @@ public class MainActivity extends AppCompatActivity
         listThumbs = new ArrayList<>();
 
         // Get host and port of the server from user
-        String host = "0.tcp.ngrok.io";
-        int port = 18390;
+//        String host = "0.tcp.ngrok.io";
+//        int port = 16117;
+
+        String host = context.getString(R.string.host);
+        int port = context.getResources().getInteger(R.integer.port);
 
         new Thread(() -> {
             try
             {
                 // Create gRPC stub
-                ManagedChannel channel = ManagedChannelBuilder.forAddress(host, port).usePlaintext().build();
+                channel = ManagedChannelBuilder.forAddress(host, port).usePlaintext().build();
                 VirtualAssistantBlockingStub stub = VirtualAssistantGrpc.newBlockingStub(channel);
 
                 // Request all instructions
@@ -96,7 +104,8 @@ public class MainActivity extends AppCompatActivity
                 {
                     byte[] data = thumb.getImage().toByteArray();
                     Bitmap bMap = BitmapFactory.decodeByteArray(data, 0, data.length);
-                    InstructionThumbItem iti = new InstructionThumbItem(thumb.getId(), thumb.getName(), thumb.getDescription(), bMap, thumb.getStepCount(), thumb.getSize(), thumb.getLastModified().getTimestamp());
+                    String dir_name = context.getFilesDir().toString();
+                    InstructionThumbItem iti = new InstructionThumbItem(thumb.getId(), thumb.getName(), thumb.getDescription(), bMap, thumb.getStepCount(), thumb.getSize(), thumb.getLastModified().getTimestamp(), dir_name);
 
                     listThumbs.add(iti);
                 }
@@ -112,15 +121,18 @@ public class MainActivity extends AppCompatActivity
                 PrintWriter pw = new PrintWriter(sw);
                 e.printStackTrace(pw);
                 pw.flush();
+                System.out.println("Server error:");
                 System.out.println(String.format("%s", sw));
                 gotInstructions = false;
             }
 
             view.post(() -> {
-                if(gotInstructions) {
+                if(gotInstructions)
+                {
                     recyclerView.setAdapter(adapter);
                     pullToRefresh.setRefreshing(false);
-                    findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+                    findViewById(R.id.loadingPreviewsProgressBar).setVisibility(View.GONE);
+                    channel.shutdown();
                 }
                 else
                 {

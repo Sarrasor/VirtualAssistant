@@ -148,6 +148,12 @@
     <orderEntry type="library" name="Gradle: androidx.swiperefreshlayout:swiperefreshlayout:1.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.cursoradapter:cursoradapter:1.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.ar.sceneform.ux:sceneform-ux:1.15.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-auth:18.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-auth-api-phone:17.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-auth-base:17.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-base:17.1.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-tasks:17.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-basement:17.1.1@aar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.fragment:fragment:1.1.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.appcompat:appcompat-resources:1.1.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.drawerlayout:drawerlayout:1.0.0@aar" level="project" />
@@ -176,7 +182,7 @@
     <orderEntry type="library" name="Gradle: androidx.arch.core:core-runtime:2.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.ar.sceneform:core:1.15.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.ar.sceneform:rendering:1.15.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.ar:core:1.15.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.ar:core:1.16.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.ar.sceneform:assets:1.15.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.ar.sceneform:sceneform-base:1.15.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.ar.sceneform:filament-android:1.15.0@aar" level="project" />

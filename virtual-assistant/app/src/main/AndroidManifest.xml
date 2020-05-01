@@ -16,8 +16,8 @@
 
         <meta-data android:name="com.google.ar.core" android:value="required" />
 
-        <activity android:name=".InstructionDisplay"></activity>
-        <activity android:name=".MainActivity">
+        <activity android:name=".InstructionDisplay" android:screenOrientation="portrait"></activity>
+        <activity android:name=".MainActivity" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
