@@ -17,7 +17,7 @@ var TDMODEL = 4;
 
 /*
 init function that should be called to update/create/delete 
-slide: object of type Slide
+slide: object Slide
 assets: json object
 files: json object
 */
@@ -95,8 +95,10 @@ class Slide {
     }
 
     /*
+    existing_asset: Asset or null - if it contains an asset then it will be updated; if it contains null - create new asset
+    id: str - id of the asset
     name:str - name of the newly created asset
-    media_type:num -
+    media_type: int
     options: { media_desc:string, billboard:boolean, hidden:boolean, url:string,
               position:{x:num, y:num, z:num}, rotation{x:num, y:num, z:num}, scale:num }
     */
@@ -148,11 +150,12 @@ class Slide {
     }
 
     /*
+    id: string
     returns an index of asset with asset.id=id
     */
     findAssetById(id) {
         for (i = 0; i < this.assets.length; i++)
-            if (this.assets[i].id == id)
+            if (this.assets[i].id.localeCompare(id))
                 return i
     }
 
@@ -283,6 +286,7 @@ class that describes an asset
 */
 class Asset {
     /*
+    id: str - id of the asset
     name:str - name of the asset
     media_type:num (0-4) - media type according to official API
     scene, camera, renderer - passed from Slide
