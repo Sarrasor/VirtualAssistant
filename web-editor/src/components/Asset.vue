@@ -45,12 +45,7 @@
         <p class="label">orientation</p>
         <Vector :vector="asset.transform.orientation" />
         <p class="label">scale</p>
-        <input
-          type="number"
-          step="0.1"
-          :value="asset.transform.scale"
-          @input="asset.transform.scale=Math.max(0.1, $toFloat($event.target.value))"
-        />
+        <Vector :min="0.1" :vector="asset.transform" :keys="['scale']" />
       </template>
     </div>
   </div>
