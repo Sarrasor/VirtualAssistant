@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorPrimary">#FFFFFF</color>
+    <color name="colorPrimaryDark">#FFFFFF</color>
+    <color name="colorAccent">#D81B1B</color>
     <color name="textBackground">#FFFFFF</color>
     <color name="textColor">#FFFFFF</color>
+    <color name="ARtextColor">#F44336</color>
     <color name="transparent">#00000000</color>
     <color name="border_color">#FFFFFF</color>
+    <color name="border_color_black">#000000</color>
+    <color name="progressBarColor">#333</color>
 </resources>

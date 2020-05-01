@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="300dp"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/step_text"
+        android:textSize="30dp"
+        android:textStyle="bold"
+        android:textColor="@color/ARtextColor"
+        android:layout_centerInParent="true"
+        android:alpha="0.95"
+        android:text="This is sample text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="50dp"
+        />
+
+    <Button
+        android:id="@+id/nextButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentLeft="true"
+        android:scaleX="-1"
+        android:background="@drawable/arrow"
+        android:onClick="nextStep"/>
+
+    <Button
+        android:id="@+id/prevButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/arrow"
+        android:onClick="prevStep"/>
+
+
+</RelativeLayout>

@@ -32,6 +32,8 @@ nohup /path/to/python_server.py > output.log &
 ./ngrok start -config /path/to/ngrok_config.yml post-server grpc-server > /dev/null &
 ```
 
+You can also run `run_servers.sh`. It has all the commands above with correct paths.
+
 To stop background processes:
 ```
 ps ax | grep python_server.py

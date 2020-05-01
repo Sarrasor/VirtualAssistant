@@ -12,6 +12,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -66,12 +67,10 @@ dependencies {
     implementation 'com.google.ar.sceneform.ux:sceneform-ux:1.15.0'
     implementation 'com.google.ar.sceneform:assets:1.15.0'
 
+    implementation 'com.google.ar:core:1.16.0'
+
     implementation 'com.android.support:design:28.0.0'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
+
+    implementation 'com.google.android.gms:play-services-auth:18.0.0'
 }
-
-
-sceneform.asset('sampledata/Mesh_Cat.gltf',
-        'default',
-        'sampledata/Mesh_Cat.sfa',
-        'src/main/assets/Mesh_Cat')

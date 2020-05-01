@@ -10,9 +10,11 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         app:cardCornerRadius="20sp"
-        app:cardBackgroundColor="#F3F3F3">
+        app:cardBackgroundColor="#F2F2F2">
 
         <LinearLayout
+            android:clickable="true"
+            android:focusable="true"
             android:id="@+id/thumbItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -20,7 +22,7 @@
 
             <ImageView
                 android:id="@+id/cardImage"
-                android:src="@drawable/pony"
+                android:src="@drawable/default_thumb"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 android:scaleType="centerCrop"/>
@@ -48,9 +50,11 @@
                 android:fontFamily="@font/roboto_light"
                 android:layout_height="wrap_content"
                 android:textColor="#222"/>
-
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
                 <TextView
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="30dp"
                     android:id="@+id/stepCount"
                     android:text="Steps: 10"
                     android:layout_width="match_parent"
@@ -58,12 +62,33 @@
                     android:textColor="#111"/>
 
                 <TextView
-                    android:layout_marginTop="0dp"
+                    android:layout_marginTop="10dp"
                     android:id="@+id/cardSize"
                     android:text="Size: 123 bytes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="#111"/>
+
+
+                <Button
+                    android:id="@+id/downloadImageButton"
+                    android:background="@drawable/download_cloud"
+                    android:layout_alignEnd="@+id/stepCount"
+                    android:layout_marginTop="18dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:scaleType="fitXY" />
+
+                <ProgressBar
+                    android:id="@+id/loadingInBackgroundPanel"
+                    android:layout_alignEnd="@+id/stepCount"
+                    android:indeterminateTint="@color/border_color_black"
+                    android:layout_marginTop="18dp"
+                    android:visibility="gone"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:indeterminate="true" />
+                </RelativeLayout>
             </LinearLayout>
 
         </LinearLayout>
