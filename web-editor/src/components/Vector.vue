@@ -4,11 +4,11 @@
       type="number"
       step="0.1"
       :style="{width: width}"
-      :key="i"
+      :key="k"
       :ref="k"
       @input="validate(k)"
       @blur="blur(k)"
-      v-for="(k, i) of keys"
+      v-for="k in skeys"
     />
   </div>
 </template>
@@ -16,13 +16,13 @@
 <script>
 export default {
   name: "Vector",
-  props: ["vector", "min"],
+  props: ["vector", "min", "keys"],
   computed: {
-    keys: function() {
-      return Object.keys(this.vector);
+    skeys: function() {
+      return this.keys ?? Object.keys(this.vector);
     },
     width: function() {
-      return 100 / this.keys.length + "%";
+      return 100 / this.skeys.length + "%";
     }
   },
   watch: {
@@ -38,11 +38,10 @@ export default {
   },
   methods: {
     blurAll() {
-      for (let k in this.vector) this.blur(k);
+      for (let k of this.skeys) this.blur(k);
     },
     blur(k) {
       this.$refs[k][0].value = this.vector[k];
-      console.log("blur", k);
     },
     validate(k) {
       let value = this.$toFloat(this.$refs[k][0].value);
