@@ -36,8 +36,14 @@ export function init(slide, assets, files) {
         for (let i = 0; i < slide.assets.length; i++)
             if (slide.assets[i].id == id)
                 return slide.assets[i];
+        console.log("is not present");
         return null;
     }
+
+    // function checkDeleted(){
+
+    //     }
+    // }
 
 
     // if assets and/or files are empty, empty scene will appear
@@ -102,6 +108,7 @@ export class Slide {
     */
     manageAsset(existing_asset, id, name, media_type, options) {
         if (existing_asset == null) {
+            console.log("creating new asset");
             var new_obj = new Asset(id, name, media_type, this.scene, {
                 media_desc: options.media_desc,
                 url: options.url,
@@ -122,19 +129,19 @@ export class Slide {
             this.assets.push(new_obj);
         }
         else {
-            console.log("modifying");
             let asset = existing_asset;
             asset.name = name;
-            asset.media_desc = options.media_desc;
             asset.hidden = options.hidden;
-            asset.setScale(options.scale);
-            if (asset.media_type != media_type || asset.url != options.url || asset.billboard != options.billboard) {
+            if (asset.media_type != media_type || asset.url != options.url || asset.billboard != options.billboard || 
+                    (asset.media_type == TEXT && asset.media_desc != options.media_desc)) {
                 asset.media_type = media_type;
                 asset.url = options.url;
                 asset.billboard = options.billboard;
                 asset.model.dispose();
                 asset.loadObject(this.scene);
             }
+            asset.media_desc = options.media_desc;
+            asset.setScale(options.scale);
             asset.setPosition({
                 x: options.position.x,
                 y: options.position.y,
@@ -376,7 +383,8 @@ class Asset {
     }
 
     loadText(scene) {
-        var ground = BABYLON.Mesh.CreateGround("ground", 6, 6, 2, scene, true);
+        console.log("loading text");
+        var ground = BABYLON.Mesh.CreateGround("ground", 8, 6, 2, scene, true);
         // GUI
         var advancedTexture = GUI.AdvancedDynamicTexture.CreateForMesh(ground, 1024, 1024, true, true);
 
@@ -387,24 +395,11 @@ class Asset {
         var text1 = new GUI.TextBlock();
         text1.text = this.media_desc;
         text1.color = "black";
-        text1.fontSize = 40;
+        text1.fontSize = 18;
         advancedTexture.addControl(text1);
         if (this.billboard)
             ground.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
         this.model = ground;
-
-        // var plane = BABYLON.Mesh.CreateGround("ground2", 26, 26, 2, scene);
-        // plane.rotation = new BABYLON.Vector3(5, 0, 0);
-        // var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(plane, 1024, 1024);
-
-        // var text = new BABYLON.GUI.TextBlock("text");
-        // text.textWrapping= true;
-        // text.width = "50px";
-        // text.height = "500px";
-        // text.text = "HEY it s a very very long text over here please wrap me";
-        // text.color = "white";
-        // text.fontSize = "14px";
-        // advancedTexture.addControl(text);
     }
 
     loadImage(scene) {
@@ -425,8 +420,6 @@ class Asset {
     }
 
     load3DObject(scene) {
-        this.url = "https://rawcdn.githack.com/BabylonJS/Exporters/422493778d6ffbc2980e83e46eb94729bbeada0c/Maya/Samples/glTF%202.0/T-Rex/trex_running.gltf";
-
         BABYLON.SceneLoader.Append(this.name, this.url, scene, function (meshes) {
             this.model = meshes[0];
             // scene.beforeRender = () => {
