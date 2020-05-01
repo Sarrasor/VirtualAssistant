@@ -54,7 +54,7 @@ export function init(slide, assets, files) {
         if (asset.media.url != "")
             file = findFile(assets[ai].media.url, files);
 
-        existing_asset = isPresent(asset.id);
+        var existing_asset = isPresent(asset.id);
         slide.manageAsset(existing_asset, asset.id, asset.name, file ? file.type : 0, {
             media_desc: asset.media.description,
             position: {
@@ -77,7 +77,7 @@ export function init(slide, assets, files) {
 }
 
 
-class Slide {
+export class Slide {
     /*
     sets up everything that is needed to display the scene
     node: node that scene will be put on (example: div)
