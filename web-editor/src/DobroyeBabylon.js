@@ -5,7 +5,7 @@
 
 import * as BABYLON from 'babylonjs';
 import 'babylonjs-loaders';
-import 'babylonjs-gui';
+import * as GUI from '@babylonjs/gui/';
 import 'babylonjs-materials';
 
 
@@ -28,12 +28,7 @@ export function init(node, assets, files) {
         return -1;
     }
 
-    function renderLoop() {
-        slide.scene.render();
-    }
     let slide = new Slide(node);
-
-    slide.engine.runRenderLoop(renderLoop);
 
     // if assets and/or files are empty, empty scene will appear
     if (!assets || assets.length == 0) {
@@ -72,12 +67,12 @@ class Slide {
     */
     constructor(node) {
         this.node = node;
-        this.createEngine();
+        // this.createEngine();
         this.createScene();
-        this.createGrid();
-        this.createCamera();
-        this.createLight();
-
+        // this.createGrid();
+        // this.createCamera();
+        // this.createLight();
+        
         // array of assets for the slide. each new asset is pushed there
         this.assets = [];
     }
@@ -169,40 +164,75 @@ class Slide {
         this.assets.splice(index);
     }
 
-    createEngine() {
-        this.engine = new BABYLON.Engine(this.node, false, {preserveDrawingBuffer: true, stencil: true});
-    }
-
     // from here, all the functions that belong to the class Slide play technical role only
     // and must not be called from outside of class Asset
     createScene() {
-        this.scene = new BABYLON.Scene(this.engine);
-        this.scene.clearColor = new BABYLON.Color3(0.5, 0.6, 0.6);
-        console.log("created Scene");
+        // this.scene = new BABYLON.Scene(this.engine);
+        // this.scene.clearColor = new BABYLON.Color3(0.5, 0.6, 0.6);
+        // console.log("created Scene");
+
+        var engine = new BABYLON.Engine(this.node, false, {preserveDrawingBuffer: true, stencil: true}); 
+        var scene = new BABYLON.Scene(engine);
+
+        scene.createDefaultCameraOrLight(true, true, true);
+        // this.scene.activeCamera.useAutoRotationBehavior = true;
+        scene.activeCamera.beta -= 0.2;
+        scene.activeCamera.upperBetaLimit = Math.PI / 2.1;
+        scene.activeCamera.lowerRadiusLimit = 10;
+        scene.activeCamera.upperRadiusLimit = 30;
+
+        scene.lights[0].dispose();
+        var light = new BABYLON.DirectionalLight("light1", new BABYLON.Vector3(-2, -3, 1), scene);
+        light.position = new BABYLON.Vector3(6, 9, 3);
+        light.intensity = 1
+        
+        new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(0, 1, 0), scene);
+
+        var generator = new BABYLON.ShadowGenerator(512, light);
+        generator.useBlurExponentialShadowMap = true;
+        generator.useKernelBlur = true;
+        generator.blurKernel = 12;
+        generator.forceBackFacesOnly = true;
+        new BABYLON.Color3(10, .5, .5);
+
+        for (var i = 0; i < scene.meshes.length; i++) {
+            generator.addShadowCaster(scene.meshes[i]);    
+        }
+
+        var helper = scene.createDefaultEnvironment({
+            groundShadowLevel: -0.7,
+        });       
+
+        helper.setMainColor(BABYLON.Color3.White());
+
+        engine.runRenderLoop(function () { 
+            scene.render();
+        });
+        this.scene = scene;
     }
 
-    createGrid() {
-        this.ground = BABYLON.Mesh.CreateGround("ground", 40, 40, 40, this.scene);
-        // var grid = new BABYLON.GridMaterial("grid", this.scene);
-        // grid.gridRatio = 0.1;
-        // grid.majorUnitFrequency = 2;
-        // this.plane.material = grid;
-    }
+    // createGrid() {
+    //     this.ground = BABYLON.Mesh.CreateGround("ground", 40, 40, 40, this.scene);
+    //     // var grid = new BABYLON.GridMaterial("grid", this.scene);
+    //     // grid.gridRatio = 0.1;
+    //     // grid.majorUnitFrequency = 2;
+    //     // this.plane.material = grid;
+    // }
 
-    createCamera() {
-        this.camera = new BABYLON.ArcRotateCamera("Camera", 10, 10, 50, new BABYLON.Vector3.Zero(), this.scene);
-//         // This targets the camera to scene origin
-//         this.camera.setTarget(BABYLON.Vector3.Zero());
-        // This attaches the camera to the node
-        this.camera.attachControl(this.node, true);
-    }
+    // createCamera() {
+    //     this.camera = new BABYLON.ArcRotateCamera("Camera", 10, 10, 50, new BABYLON.Vector3.Zero(), this.scene);
+    //     // This targets the camera to scene origin
+    //     this.camera.setTarget(BABYLON.Vector3.Zero());
+    //     // This attaches the camera to the node
+    //     this.camera.attachControl(this.node, true);
+    // }
 
-    createLight() {
-        // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
-        this.light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), this.scene);
-        // Default intensity is 1. Let's dim the light a small amount
-        this.light.intensity = 0.7;
-    }
+    // createLight() {
+    //     // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
+    //     this.light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), this.scene);
+    //     // Default intensity is 1. Let's dim the light a small amount
+    //     this.light.intensity = 0.7;
+    // }
 }
 
 /*
@@ -253,6 +283,7 @@ class Asset {
     }
 
     setScale(value) {
+        console.log(this.media_type);
         if (this.media_type == TEXT)
             this.model.scale.set(value, value, value);
         else if (this.media_type == TDMODEL)
@@ -308,17 +339,18 @@ class Asset {
         var ground = BABYLON.Mesh.CreateGround("ground", 6, 6, 2, scene);
         ground.position.x = 2;
         // GUI
-        var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(ground, 1024, 1024, true);
+        var advancedTexture = GUI.AdvancedDynamicTexture.CreateForMesh(ground, 1024, 1024, true, true);
 
         ground.emissiveTexture = advancedTexture;
         // var material = BABYLON.StandardMaterial("material", scene);
         // ground.material = material;
         // ground.material.alpha = true;
-        var text1 = new BABYLON.GUI.TextBlock();
-        text1.text = "Hello world";
-        text1.color = "white";
+        var text1 = new GUI.TextBlock();
+        text1.text = this.media_desc;
+        text1.color = "black";
         text1.fontSize = 40;
-        advancedTexture.addControl(text1);
+        advancedTexture.addControl(text1); 
+        this.model = ground;
 
         // var plane = BABYLON.Mesh.CreateGround("ground2", 26, 26, 2, scene);
         // plane.rotation = new BABYLON.Vector3(5, 0, 0);
