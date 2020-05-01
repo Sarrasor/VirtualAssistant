@@ -97,8 +97,8 @@ export default {
       this.instructions.push({
         index: {
           id: uuidv4(),
-          size: 0,
           name: "Instruction " + (this.instructions.length + 1),
+          size: 0,
           description: "",
           preview_url: "",
           step_count: 0,
@@ -111,7 +111,8 @@ export default {
     },
     duplicateInstruction() {
       let duplicate = JSON.parse(JSON.stringify(this.instruction));
-      duplicate.name += " (copy)";
+      duplicate.index.id = uuidv4();
+      duplicate.index.name += " (copy)";
       this.instructions.push(duplicate);
       this.selectLast();
     },

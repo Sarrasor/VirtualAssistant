@@ -83,8 +83,8 @@ export default {
   methods: {
     createAsset() {
       this.assets.push({
-        name: "Asset " + (this.assets.length + 1),
         id: uuidv4(),
+        name: "Asset " + (this.assets.length + 1),
         media: {
           type: 0,
           url: "",
@@ -102,6 +102,7 @@ export default {
     },
     duplicateAsset() {
       let duplicate = JSON.parse(JSON.stringify(this.asset));
+      duplicate.id = uuidv4();
       duplicate.name += " (copy)";
       this.assets.push(duplicate);
       this.selectLast();
