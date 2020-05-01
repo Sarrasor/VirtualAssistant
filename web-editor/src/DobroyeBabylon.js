@@ -26,15 +26,15 @@ export function init(slide, assets, files) {
         // if (!files || files.length == 0)
         //     return -1;
         for (let i = 0; i < files.length; i++) {
-            if (files[i].name.localeCompare(name) == 0) {
+            if (files[i].name == name) {
                 return files[i];
             }
         }
     }
 
-    function isPresent(id){
+    function isPresent(id) {
         for (let i = 0; i < slide.assets.length; i++)
-            if (slide.assets[i].id.localeCompare(id))
+            if (slide.assets[i].id == id)
                 return slide.assets[i];
         return null;
     }
@@ -101,7 +101,7 @@ export class Slide {
               position:{x:num, y:num, z:num}, rotation{x:num, y:num, z:num}, scale:num }
     */
     manageAsset(existing_asset, id, name, media_type, options) {
-        if (existing_asset == null){
+        if (existing_asset == null) {
             var new_obj = new Asset(id, name, media_type, this.scene, {
                 media_desc: options.media_desc,
                 url: options.url,
@@ -121,18 +121,19 @@ export class Slide {
             });
             this.assets.push(new_obj);
         }
-        else{
+        else {
+            console.log("modifying");
             let asset = existing_asset;
             asset.name = name;
             asset.media_desc = options.media_desc;
             asset.hidden = options.hidden;
             asset.setScale(options.scale);
-            if (asset.media_type != media_type || asset.url != options.url){
+            if (asset.media_type != media_type || asset.url != options.url || asset.billboard != options.billboard) {
                 asset.media_type = media_type;
                 asset.url = options.url;
                 asset.billboard = options.billboard;
                 asset.model.dispose();
-                asset.loadObject(this);
+                asset.loadObject(this.scene);
             }
             asset.setPosition({
                 x: options.position.x,
@@ -140,7 +141,7 @@ export class Slide {
                 z: options.position.z
             });
             asset.setOrientation({
-                x:options.rotation.x,
+                x: options.rotation.x,
                 y: options.rotation.y,
                 z: options.rotation.z
             });
@@ -153,7 +154,7 @@ export class Slide {
     */
     findAssetById(id) {
         for (let i = 0; i < this.assets.length; i++)
-            if (this.assets[i].id.localeCompare(id))
+            if (this.assets[i].id == id)
                 return i
     }
 
@@ -198,7 +199,7 @@ export class Slide {
     findAssetByName(name) {
         let i;
         for (i = 0; i < this.assets.length; i++) {
-            if (this.assets[i].name.localeCompare(name) == 0)
+            if (this.assets[i].name == name)
                 return i;
         }
         return -1;
@@ -219,7 +220,7 @@ export class Slide {
         // this.scene.clearColor = new BABYLON.Color3(0.5, 0.6, 0.6);
         // console.log("created Scene");
 
-        var engine = new BABYLON.Engine(this.node, false, {preserveDrawingBuffer: true, stencil: true});
+        var engine = new BABYLON.Engine(this.node, false, { preserveDrawingBuffer: true, stencil: true });
         var scene = new BABYLON.Scene(engine);
 
         scene.createDefaultCameraOrLight(true, true, true);
@@ -306,17 +307,17 @@ class Asset {
         this.loadObject(scene, options);
 
         this.setScale(options.scale),
-        this.setPosition({
-            x: options.position.x,
-            y: options.position.y,
-            z: options.position.z
-        }),
-        this.setOrientation({
-            x: options.rotation.x,
-            y: options.rotation.y,
-            z: options.rotation.z
-        }),
-        this.setTransparent()
+            this.setPosition({
+                x: options.position.x,
+                y: options.position.y,
+                z: options.position.z
+            }),
+            this.setOrientation({
+                x: options.rotation.x,
+                y: options.rotation.y,
+                z: options.rotation.z
+            }),
+            this.setTransparent()
     }
 
     /*
@@ -416,7 +417,7 @@ class Asset {
         var plane = new BABYLON.MeshBuilder.CreatePlane(this.name, {size:1}, scene);
         plane.updatable = true;
         plane.material = mat;
-        if (this.billboard){
+        if (this.billboard) {
             mat.backFaceCulling = true;
             plane.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
         }
@@ -425,7 +426,7 @@ class Asset {
 
     load3DObject(scene) {
         this.url = "https://rawcdn.githack.com/BabylonJS/Exporters/422493778d6ffbc2980e83e46eb94729bbeada0c/Maya/Samples/glTF%202.0/T-Rex/trex_running.gltf";
-            
+
         BABYLON.SceneLoader.Append(this.name, this.url, scene, function (meshes) {
             this.model = meshes[0];
             // scene.beforeRender = () => {
