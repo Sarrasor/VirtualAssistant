@@ -5,7 +5,7 @@
 </template>
 
 <script>
-// import * as scene from "../DobroyeBabylon";
+import * as scene from "../DobroyeBabylon";
 
 export default {
   name: "Render",
@@ -26,9 +26,9 @@ export default {
   },
   methods: {
     render() {
-      // this.$refs.canvas.innerHTML = "";
-      // this.$refs.canvas.height = "500px";
-      // scene.init(this.$refs.canvas, this.assets, this.files);
+      this.$refs.canvas.innerHTML = "";
+      this.$refs.canvas.height = "500px";
+      scene.init(this.$refs.canvas, this.assets, this.files);
     }
   }
 };

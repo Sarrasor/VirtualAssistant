@@ -42,6 +42,9 @@ export default {
       assets: []
     };
   },
+  mounted() {
+    this.downloadInstructions();
+  },
   methods: {
     selectInstruction(index) {
       this.currentInstruction = index;
@@ -52,6 +55,15 @@ export default {
     },
     selectStep(index) {
       this.assets = this.steps?.length > 0 ? this.steps[index].assets : null;
+    },
+    downloadInstructions() {
+      // let req = new XMLHttpRequest();
+      // req.open("GET", "https://ad0d9c3e.ngrok.io/instructions");
+      // req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+      // req.onload = function() {
+      //   console.log(req.response);
+      // };
+      // req.send();
     },
     uploadInstruction() {
       let instruction = this.instructions[this.currentInstruction];
