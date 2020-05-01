@@ -15,31 +15,47 @@ var AUDIO = 2;
 var VIDEO = 3;
 var TDMODEL = 4;
 
-
-export function init(node, assets, files) {
-    function findFileByName(name, files) {
-        if (!files || files.length == 0)
-            return -1;
+/*
+init function that should be called to update/create/delete 
+slide: object of type Slide
+assets: json object
+files: json object
+*/
+export function init(slide, assets, files) {
+    function findFile(name, files) {
+        // if (!files || files.length == 0)
+        //     return -1;
         for (let i = 0; i < files.length; i++) {
             if (files[i].name.localeCompare(name) == 0) {
                 return files[i];
             }
         }
-        return -1;
     }
 
-    let slide = new Slide(node);
+    function isPresent(id){
+        for (let i = 0; i < slide.assets.length; i++)
+            if (slide.assets[i].id.localeCompare(id))
+                return slide.assets[i];
+        return null;
+    }
+
 
     // if assets and/or files are empty, empty scene will appear
-    if (!assets || assets.length == 0) {
+    if (!assets || assets.length == 0 || (assets.length == 1 && assets[0].media.url == "" && assets[0].media_desc == "")) {
+        console.log("assets empty");
         return slide;
     }
 
     for (let ai = 0; ai < assets.length; ai++) {
         let asset = assets[ai];
-        let temp_file = findFileByName(assets[ai].media.url, files);
-        let file = (temp_file == -1) ? null : temp_file;
-        slide.createAsset(asset.name, file ? file.type : 0, {
+
+        console.log(asset.name);
+        var file = null;
+        if (asset.media.url != "")
+            file = findFile(assets[ai].media.url, files);
+
+        existing_asset = isPresent(asset.id);
+        slide.manageAsset(existing_asset, asset.id, asset.name, file ? file.type : 0, {
             media_desc: asset.media.description,
             position: {
                 x: asset.transform.position.x,
@@ -54,11 +70,12 @@ export function init(node, assets, files) {
             scale: asset.transform.scale,
             billboard: asset.billboard,
             hidden: asset.hidden,
-            url: file ? file.content : ""
+            url: file?.content
         });
     }
     return slide;
 }
+
 
 class Slide {
     /*
@@ -83,30 +100,60 @@ class Slide {
     options: { media_desc:string, billboard:boolean, hidden:boolean, url:string,
               position:{x:num, y:num, z:num}, rotation{x:num, y:num, z:num}, scale:num }
     */
-    createAsset(name, media_type, options) {
-        if (options === undefined) options = {};
-        console.log("creating new object");
-        var new_obj = new Asset(name, media_type, this.scene, {
-            media_desc: options.media_desc,
-            url: options.url,
-            position: {
+    manageAsset(existing_asset, id, name, media_type, options) {
+        if (existing_asset != null){
+            var new_obj = new Asset(id, name, media_type, this.scene, {
+                media_desc: options.media_desc,
+                url: options.url,
+                position: {
+                    x: options.position.x,
+                    y: options.position.y,
+                    z: options.position.z
+                },
+                rotation: {
+                    x: options.rotation.x,
+                    y: options.rotation.y,
+                    z: options.rotation.z
+                },
+                scale: options.scale,
+                hidden: options.hidden,
+                billboard: options.billboard
+            });
+            this.assets.push(new_obj);
+        }
+        else{
+            asset = existing_asset;
+            asset.name = name;
+            asset.media_desc = options.media_desc;
+            asset.hidden = hidden;
+            asset.setScale(options.scale);
+            if (asset.media_type != media_type || asset.url != options.url){
+                asset.media_type = media_type;
+                asset.url = options.url;
+                asset.billboard = options.billboard;
+                asset.model.dispose();
+                asset.loadObject(this);
+            }
+            asset.setPosition({
                 x: options.position.x,
                 y: options.position.y,
                 z: options.position.z
-            },
-            rotation: {
-                x: options.rotation.x,
+            });
+            asset.setOrientation({
+                x:options.rotation.x,
                 y: options.rotation.y,
                 z: options.rotation.z
-            },
-            scale: options.scale,
-            hidden: options.hidden,
-            billboard: options.billboard,
-            loader: this.loader,
-        });
-        this.assets.push(new_obj);
-        console.log("pushed an object. length: " + this.assets.length);
-        return this.assets.length - 1;
+            });
+        }
+    }
+
+    /*
+    returns an index of asset with asset.id=id
+    */
+    findAssetById(id) {
+        for (i = 0; i < this.assets.length; i++)
+            if (this.assets[i].id == id)
+                return i
     }
 
     /*
@@ -116,31 +163,31 @@ class Slide {
     if some of the options are not updated, they are left as they were
     you can't update media_type or url
     */
-    updateAsset(name, options) {
-        let index = this.findAssetByName(name);
+    // updateAsset(name, options) {
+    //     let index = this.findAssetByName(name);
 
-        if (options === undefined) options = {};
+    //     if (options === undefined) options = {};
 
-        let asset = this.assets[index];
-        asset.name = options.name || asset.name;
-        asset.media_desc = options.media_desc || asset.media_desc;
+    //     let asset = this.assets[index];
+    //     asset.name = options.name || asset.name;
+    //     asset.media_desc = options.media_desc || asset.media_desc;
 
-        // undefined || false returns false and undefined || true returns true so it's valid
-        asset.hidden = options.hidden || asset.hidden;
-        asset.billboard = options.billboard || asset.billboard;
+    //     // undefined || false returns false and undefined || true returns true so it's valid
+    //     asset.hidden = options.hidden || asset.hidden;
+    //     asset.billboard = options.billboard || asset.billboard;
 
-        asset.setPosition({
-            x: options.position.x || asset.model.position.x,
-            y: options.position.y || asset.model.position.y,
-            z: options.position.z || asset.model.position.z
-        });
-        asset.setOrientation({
-            x: options.rotation.x || asset.model.rotation.x,
-            y: options.rotation.y || asset.model.rotation.y,
-            z: options.rotation.z || asset.model.rotation.z
-        });
-        asset.setScale(options.scale || asset.model.scale.x);
-    }
+    //     asset.setPosition({
+    //         x: options.position.x || asset.model.position.x,
+    //         y: options.position.y || asset.model.position.y,
+    //         z: options.position.z || asset.model.position.z
+    //     });
+    //     asset.setOrientation({
+    //         x: options.rotation.x || asset.model.rotation.x,
+    //         y: options.rotation.y || asset.model.rotation.y,
+    //         z: options.rotation.z || asset.model.rotation.z
+    //     });
+    //     asset.setScale(options.scale || asset.model.scale.x);
+    // }
 
     /*
     finds a needed asset by its name
@@ -159,10 +206,10 @@ class Slide {
     /*
     name:str - name of the asset to be deleted
     */
-    deleteAsset(name) {
-        let index = this.findAssetByName(name);
-        this.assets.splice(index);
-    }
+    // deleteAsset(id) {
+    //     let asset = this.findAssetById(id);
+    //     this.assets.splice(index);
+    // }
 
     // from here, all the functions that belong to the class Slide play technical role only
     // and must not be called from outside of class Asset
@@ -184,9 +231,9 @@ class Slide {
         scene.lights[0].dispose();
         var light = new BABYLON.DirectionalLight("light1", new BABYLON.Vector3(-2, -3, 1), scene);
         light.position = new BABYLON.Vector3(6, 9, 3);
-        light.intensity = 1
+        light.intensity = 0.5
 
-        new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(0, 1, 0), scene);
+        // new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(0, 1, 0), scene);
 
         var generator = new BABYLON.ShadowGenerator(512, light);
         generator.useBlurExponentialShadowMap = true;
@@ -194,10 +241,6 @@ class Slide {
         generator.blurKernel = 12;
         generator.forceBackFacesOnly = true;
         new BABYLON.Color3(10, .5, .5);
-
-        for (var i = 0; i < scene.meshes.length; i++) {
-            generator.addShadowCaster(scene.meshes[i]);
-        }
 
         var helper = scene.createDefaultEnvironment({
             groundShadowLevel: -0.7,
@@ -247,11 +290,13 @@ class Asset {
               position:{x:num, y:num, z:num}, rotation{x:num, y:num, z:num}, scale:num }
     options.loader - passed from Slide
     */
-    constructor(name, media_type, scene, options) {
-        if (options === undefined) options = {};
+    constructor(id, name, media_type, scene, options) {
+        // if (options === undefined) options = {};
+        this.id = id;
         this.name = name;
         this.media_type = media_type;
         this.media_desc = options.media_desc;
+        this.url = options.url;
 
         this.hidden = options.hidden;
         this.billboard = options.billboard;
@@ -283,7 +328,6 @@ class Asset {
     }
 
     setScale(value) {
-        console.log(this.media_type);
         if (this.media_type == TEXT)
             this.model.scale.set(value, value, value);
         else if (this.media_type == TDMODEL)
@@ -318,7 +362,7 @@ class Asset {
     options.url - for images and 3d models
     options.loader - for 3d models
     */
-    loadObject(scene, options) {
+    loadObject(scene) {
         switch (this.media_type) {
             case TEXT:
                 this.loadText(scene);
@@ -326,18 +370,17 @@ class Asset {
             case IMAGE:
             case AUDIO:
             case VIDEO:
-                this.loadImage(options.url, scene);
+                this.loadImage(this.url, scene);
                 break;
             case TDMODEL: {
-                this.load3DObject(options.url, scene);
+                this.load3DObject(this.url, scene);
                 break;
             }
         }
     }
 
     loadText(scene) {
-        var ground = BABYLON.Mesh.CreateGround("ground", 6, 6, 2, scene);
-        ground.position.x = 2;
+        var ground = BABYLON.Mesh.CreateGround("ground", 6, 6, 2, scene, true);
         // GUI
         var advancedTexture = GUI.AdvancedDynamicTexture.CreateForMesh(ground, 1024, 1024, true, true);
 
