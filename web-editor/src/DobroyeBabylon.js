@@ -420,7 +420,7 @@ class Asset {
     }
 
     load3DObject(scene) {
-        BABYLON.SceneLoader.Append(this.name, this.url, scene, function (meshes) {
+        BABYLON.SceneLoader.Append(this.name, "blob:http://localhost:8080/", this.url, scene, function (meshes, particleSystems, skeletons) {
             this.model = meshes[0];
             // scene.beforeRender = () => {
             //     this.model.rotation.y += 0.01;
