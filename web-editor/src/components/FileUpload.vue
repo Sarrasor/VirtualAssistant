@@ -59,7 +59,8 @@ export default {
       );
     },
     readFile(file) {
-      const type = this.getType;
+      let url = window.URL.createObjectURL(file);
+      let type = this.getType;
       return new Promise(function(resolve, reject) {
         const reader = new FileReader();
         reader.onload = () =>
@@ -67,7 +68,7 @@ export default {
             name: file.name,
             type: type(file.name),
             content: reader.result,
-            url: URL.createObjectURL(reader.result)
+            url: url
           });
         reader.onerror = reject;
         reader.readAsDataURL(file);
@@ -92,7 +93,7 @@ export default {
         );
       else {
         const file = JSON.parse(event.dataTransfer.getData("text"));
-        URL.revokeObjectURL(file.url);
+        window.URL.revokeObjectURL(file.url);
         this.$emit(
           "upload",
           this.files.filter(f => f.name !== file.name)
