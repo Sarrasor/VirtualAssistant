@@ -33,7 +33,7 @@ export default {
       images: [".bmp", ".jpeg", ".jpg", ".png"],
       audios: [".mp3"],
       videos: [".mp4"],
-      models: [".glb", ".gltf"]
+      models: [".glb", ".gltf", ".bin"]
     };
   },
   computed: {
