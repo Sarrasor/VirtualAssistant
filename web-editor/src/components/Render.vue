@@ -36,7 +36,9 @@ export default {
   methods: {
     render() {
       let ids = (this.assets ?? []).map(a => a.id);
-      this.ids.filter(i => !ids.includes(i)).forEach(i => scene.deleteAsset(i));
+      this.ids
+        .filter(i => !ids.includes(i))
+        .forEach(i => this.slide.deleteAsset(i));
       this.ids = ids;
 
       scene.init(this.slide, this.assets, this.files);
