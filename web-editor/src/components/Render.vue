@@ -12,7 +12,8 @@ export default {
   props: ["assets", "files"],
   data() {
     return {
-      slide: null
+      slide: null,
+      ids: null
     };
   },
   watch: {
@@ -34,6 +35,14 @@ export default {
   },
   methods: {
     render() {
+      if (this.assets) {
+        let ids = this.assets.map(a => a.id);
+        this.ids
+          .filter(i => !ids.includes(i))
+          .forEach(i => scene.deleteAsset(i));
+        this.ids = ids;
+      }
+
       scene.init(this.slide, this.assets, this.files);
     }
   }
