@@ -13,7 +13,7 @@ export default {
   data() {
     return {
       slide: null,
-      ids: null
+      ids: []
     };
   },
   watch: {
