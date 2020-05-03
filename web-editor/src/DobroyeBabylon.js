@@ -22,11 +22,6 @@ assets: json object
 files: json object
 */
 export function init(slide, assets, files) {
-    console.log(">>>>> INIT <<<<<");
-    for (let i = 0; i < assets.length; i++){
-        console.log("Asset", i+1);
-    }
-    console.log("slide.assets.length = ", slide.assets.length);
 
     function findFile(name, files) {
         // if (!files || files.length == 0)
@@ -38,7 +33,7 @@ export function init(slide, assets, files) {
         }
     }
 
-    function isPresent(id) {
+    function findAssetIfPresent(id) {
         for (let i = 0; i < slide.assets.length; i++)
             if (slide.assets[i].id == id)
                 return slide.assets[i];
@@ -48,7 +43,9 @@ export function init(slide, assets, files) {
 
     // if assets and/or files are empty, empty scene will appear
     if (!assets || assets.length == 0 || (assets.length == 1 && assets[0].media.url == "" && assets[0].media_desc == "")) {
-        console.log("assets empty");
+        // for (let i =0; i < slide.assets.length; i++){
+        //     slide.deleteAsset(slide.assets[i].id);
+        // }
         return slide;
     }
 
@@ -58,7 +55,7 @@ export function init(slide, assets, files) {
         if (asset.media.url != "")
             file = findFile(assets[ai].media.url, files);
 
-        var existing_asset = isPresent(asset.id);
+        var existing_asset = findAssetIfPresent(asset.id);
         slide.manageAsset(existing_asset, asset.id, asset.name, file ? file.type : 0, {
             media_desc: asset.media.description,
             position: {
@@ -152,7 +149,7 @@ export class Slide {
     id: string
     returns an index of asset with asset.id=id
     */
-    findAssetById(id) {
+    findAssetIndexById(id) {
         for (let i = 0; i < this.assets.length; i++)
             if (this.assets[i].id == id)
                 return i
@@ -162,8 +159,7 @@ export class Slide {
     name:str - name of the asset to be deleted
     */
     deleteAsset(id) {
-        let index = this.findAssetById(id);
-        console.log("deleteAsset: ", index);
+        let index = this.findAssetIndexById(id);
         this.assets[index].model.dispose();
         this.assets.splice(index);
     }
@@ -175,35 +171,83 @@ export class Slide {
         var scene = new BABYLON.Scene(engine);
 
         scene.createDefaultCameraOrLight(true, true, true);
-        // this.scene.activeCamera.useAutoRotationBehavior = true;
+
         scene.activeCamera.beta -= 0.2;
         scene.activeCamera.upperBetaLimit = Math.PI / 2.1;
-        scene.activeCamera.lowerRadiusLimit = 10;
-        scene.activeCamera.upperRadiusLimit = 100;
+        scene.activeCamera.lowerRadiusLimit = 3;
+        scene.activeCamera.upperRadiusLimit = 20;
+
+        scene.activeCamera.setTarget(new BABYLON.Vector3(0, 0, 0));
+        scene.activeCamera.setPosition(new BABYLON.Vector3(9, 4, 5));
+
+
+        // scene.clearColor = new BABYLON.Color3(0.5, 0.8, 0.5);
 
         scene.lights[0].dispose();
         var light = new BABYLON.DirectionalLight("light1", new BABYLON.Vector3(-2, -3, 1), scene);
-        light.position = new BABYLON.Vector3(6, 9, 3);
+        light.position = new BABYLON.Vector3(0, 0, 10);
         light.intensity = 1;
 
-        new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(0, 1, 0), scene);
+        // new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(0, 1, 0), scene);
 
         var generator = new BABYLON.ShadowGenerator(512, light);
         generator.useBlurExponentialShadowMap = true;
         generator.useKernelBlur = true;
         generator.blurKernel = 12;
         generator.forceBackFacesOnly = true;
-        new BABYLON.Color3(10, .5, .5);
 
         var helper = scene.createDefaultEnvironment({
-            groundShadowLevel: -1,
+            groundShadowLevel: -5,
         });
 
-        helper.setMainColor(BABYLON.Color3.White());
+        helper.setMainColor(new BABYLON.Color3(0.698, 0.502, 0.69));
 
         engine.runRenderLoop(function () {
             scene.render();
         });
+
+        var showAxis = function(size) {
+            var makeTextPlane = function(text, color, size) {
+            var dynamicTexture = new BABYLON.DynamicTexture("DynamicTexture", 50, scene, true);
+            dynamicTexture.hasAlpha = true;
+            dynamicTexture.drawText(text, 5, 40, "bold 20px Arial", color , "transparent", true);
+            var plane = new BABYLON.Mesh.CreatePlane("TextPlane", size, scene, true);
+            plane.material = new BABYLON.StandardMaterial("TextPlaneMaterial", scene);
+            plane.material.backFaceCulling = false;
+            plane.material.specularColor = new BABYLON.Color3(0, 0, 0);
+            plane.material.diffuseTexture = dynamicTexture;
+            return plane;
+             };
+          
+            var axisX = BABYLON.Mesh.CreateLines("axisX", [ 
+                new BABYLON.Vector3(-size, 0, 0), new BABYLON.Vector3(size, 0, 0), new BABYLON.Vector3(size * 0.96, 0.05 * size, 0), 
+                new BABYLON.Vector3(size, 0, 0), new BABYLON.Vector3(size * 0.96, -0.05 * size, 0)
+                ], scene);
+            axisX.color = new BABYLON.Color3(0.4, 0, 0);
+            var xChar = makeTextPlane("X", "red", size / 10);
+            xChar.position = new BABYLON.Vector3(0.95 * size, 0.05 * size, 0);
+
+            var axisY = BABYLON.Mesh.CreateLines("axisY", [
+                new BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, size*2/3, 0), new BABYLON.Vector3( 0.05 * size, size*2/3 * 0.96, 0), 
+                new BABYLON.Vector3(0, size*2/3, 0), new BABYLON.Vector3( 0, size*2/3 * 0.96, 0.05 * size)
+                ], scene);
+            axisY.color = new BABYLON.Color3(0, 0.4, 0);
+            var yChar = makeTextPlane("Y", "green", size / 10);
+            yChar.position = new BABYLON.Vector3(0.04*size, 0.95 * size*2/3, 0);
+            yChar.rotation = new BABYLON.Vector3(0, 0.785, 0)
+
+            var axisZ = BABYLON.Mesh.CreateLines("axisZ", [
+                new BABYLON.Vector3(0, 0, -size), new BABYLON.Vector3(0, 0, size), new BABYLON.Vector3( 0 , -0.05 * size, size * 0.96),
+                new BABYLON.Vector3(0, 0, size), new BABYLON.Vector3( 0, 0.05 * size, size * 0.96)
+                ], scene);
+            axisZ.color = new BABYLON.Color3(0, 0, 0.4);
+            var zChar = makeTextPlane("Z", "blue", size / 10);
+            zChar.position = new BABYLON.Vector3(0, 0.05 * size, 0.95 * size);
+            zChar.rotation = new BABYLON.Vector3(0, 1.57, 0);
+        };
+    
+        showAxis(5);
+
         this.scene = scene;
     }
 }
@@ -304,7 +348,6 @@ class Asset {
     }
 
     loadText(scene) {
-        console.log("loading text");
         var ground = BABYLON.Mesh.CreateGround("ground", 8, 6, 2, scene, true);
         // GUI
         var advancedTexture = GUI.AdvancedDynamicTexture.CreateForMesh(ground, 1024, 1024, true, true);
