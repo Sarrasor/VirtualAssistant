@@ -211,51 +211,41 @@ export class Slide {
         });
 
         var showAxis = function(size) {
-            var makeTextPlane = function(text, color, size) {
-            var dynamicTexture = new BABYLON.DynamicTexture("DynamicTexture", 50, scene, true);
-            dynamicTexture.hasAlpha = true;
-            dynamicTexture.drawText(text, 5, 40, "bold 20px Arial", color , "transparent", true);
-            var plane = new BABYLON.Mesh.CreatePlane("TextPlane", size, scene, true);
-            plane.material = new BABYLON.StandardMaterial("TextPlaneMaterial", scene);
-            plane.material.backFaceCulling = false;
-            plane.material.specularColor = new BABYLON.Color3(0, 0, 0);
-            plane.material.diffuseTexture = dynamicTexture;
-            return plane;
-             };
-          
             var axisX = BABYLON.Mesh.CreateLines("axisX", [ 
-                new BABYLON.Vector3(-size, 0, 0), new BABYLON.Vector3(size, 0, 0), new BABYLON.Vector3(size * 0.96, 0.05 * size, 0), 
-                new BABYLON.Vector3(size, 0, 0), new BABYLON.Vector3(size * 0.96, -0.05 * size, 0)
+                new BABYLON.Vector3(-size, 0, 0), new BABYLON.Vector3(size, 0, 0),
+                new BABYLON.Vector3(size, 0, 0)
                 ], scene);
-            axisX.color = new BABYLON.Color3(0.4, 0, 0);
-            var xChar = makeTextPlane("X", "red", size / 10);
+            axisX.color = new BABYLON.Color3(1.0, 0, 0);
 
-            /* var xCone = BABYLON.MeshBuilder.CreateCylinder("cone", {diameterBottom:0.2, diameterTop: 0.03, tessellation: 100, height:0.2}, scene);
-            xCone.position = new BABYLON.Vector3(size, 0, 0);
-            xCone.rotation = new BABYLON.Vector3(Math.PI/2, Math.PI/2, 0);
-            var redMat = new BABYLON.StandardMaterial("redMat", scene);
-            redMat.emissiveColor = new BABYLON.Color3(0.4, 0, 0);
-            xCone.diffuseTexture = redMat; */
-
-            xChar.position = new BABYLON.Vector3(0.95 * size, 0.05 * size, 0);
+            var xCone = BABYLON.MeshBuilder.CreateCylinder("cone", {diameterBottom:0.2, diameterTop: 0.03, tessellation: 100, height:0.2}, scene);
+            xCone.position = new BABYLON.Vector3(-size, 0, 0);
+            xCone.rotation = new BABYLON.Vector3(Math.PI/2, -Math.PI/2, 0);
+            xCone.material = new BABYLON.StandardMaterial("matX", scene);
+            xCone.material.emissiveColor = new BABYLON.Color3(1.0, 0, 0);
 
             var axisY = BABYLON.Mesh.CreateLines("axisY", [
-                new BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, size*2/3, 0), new BABYLON.Vector3( 0.05 * size, size*2/3 * 0.96, 0), 
-                new BABYLON.Vector3(0, size*2/3, 0), new BABYLON.Vector3( 0, size*2/3 * 0.96, 0.05 * size)
+                new BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, size*2/3, 0),
+                new BABYLON.Vector3(0, size*2/3, 0)
                 ], scene);
-            axisY.color = new BABYLON.Color3(0, 0.3, 0);
-            var yChar = makeTextPlane("Y", "green", size / 10);
-            yChar.position = new BABYLON.Vector3(0.04*size, 0.95 * size*2/3, 0);
-            yChar.rotation = new BABYLON.Vector3(0, 0.785, 0)
+            axisY.color = new BABYLON.Color3(0, 1.0, 0);
+
+            var yCone = BABYLON.MeshBuilder.CreateCylinder("cone", {diameterBottom:0.2, diameterTop: 0.03, tessellation: 100, height:0.2}, scene);
+            yCone.position = new BABYLON.Vector3(0, 2/3*size, 0);
+            yCone.rotation = new BABYLON.Vector3(0, 0, 0);
+            yCone.material = new BABYLON.StandardMaterial("matY", scene);
+            yCone.material.emissiveColor = new BABYLON.Color3(0, 1.0, 0);
 
             var axisZ = BABYLON.Mesh.CreateLines("axisZ", [
-                new BABYLON.Vector3(0, 0, -size), new BABYLON.Vector3(0, 0, size), new BABYLON.Vector3( 0 , -0.05 * size, size * 0.96),
-                new BABYLON.Vector3(0, 0, size), new BABYLON.Vector3( 0, 0.05 * size, size * 0.96)
+                new BABYLON.Vector3(0, 0, -size), new BABYLON.Vector3(0, 0, size),
+                new BABYLON.Vector3(0, 0, size)
                 ], scene);
-            axisZ.color = new BABYLON.Color3(0, 0, 0.4);
-            var zChar = makeTextPlane("Z", "blue", size / 10);
-            zChar.position = new BABYLON.Vector3(0, 0.05 * size, 0.95 * size);
-            zChar.rotation = new BABYLON.Vector3(0, -1.57, 0);
+            axisZ.color = new BABYLON.Color3(0, 0, 1.0);
+
+            var zCone = BABYLON.MeshBuilder.CreateCylinder("cone", {diameterBottom:0.2, diameterTop: 0.03, tessellation: 100, height:0.2}, scene);
+            zCone.position = new BABYLON.Vector3(0, 0, size);
+            zCone.rotation = new BABYLON.Vector3(Math.PI/2, 0, 0);
+            zCone.material = new BABYLON.StandardMaterial("matZ", scene);
+            zCone.material.emissiveColor = new BABYLON.Color3(0, 0, 1.0);
         };
     
         showAxis(5);
@@ -308,8 +298,8 @@ class Asset {
     args: { x:num, y:num, z:num } - not optional. to update, all must be passed
     */
     setPosition(args) {
-        this.model.position.x = args.x;
-        this.model.position.y = args.y;
+        this.model.position.x = -args.x;
+        this.model.position.y = args.y + 0.1;
         this.model.position.z = args.z;
     }
 
