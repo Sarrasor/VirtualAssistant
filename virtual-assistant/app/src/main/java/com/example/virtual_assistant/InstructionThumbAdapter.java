@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,7 +80,7 @@ public class InstructionThumbAdapter extends RecyclerView.Adapter<InstructionThu
         holder.linearLayout.setOnLongClickListener(v -> {
             if (thumbItem.getLocalStorageStatus() == 0)
             {
-                Toast.makeText(context, "This in instruction is not stored locally", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "This instruction is not stored locally", Toast.LENGTH_SHORT).show();
                 return true;
             }
 

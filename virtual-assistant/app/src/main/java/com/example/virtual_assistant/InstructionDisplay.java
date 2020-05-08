@@ -1,6 +1,5 @@
 package com.example.virtual_assistant;
 
-import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -9,7 +8,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.ConditionVariable;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -17,13 +15,9 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.PixelCopy;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +33,7 @@ import com.google.ar.core.Frame;
 import com.google.ar.core.HitResult;
 import com.google.ar.core.Plane;
 import com.google.ar.core.Session;
+import com.google.ar.core.Trackable;
 import com.google.ar.core.TrackingState;
 import com.google.ar.core.exceptions.UnavailableApkTooOldException;
 import com.google.ar.core.exceptions.UnavailableArcoreNotInstalledException;
@@ -89,6 +84,8 @@ public class InstructionDisplay extends AppCompatActivity {
     private static final String TAG = InstructionDisplay.class.getSimpleName();
     private static final double MIN_OPENGL_VERSION = 3.0;
     Session mSession;
+    private AugmentedImageDatabase imageDatabase;
+    private ArSceneView arSceneView;
     File instructionDir;
     Anchor anchor;
     List<AnchorNode> assetNodesList;
@@ -148,7 +145,6 @@ public class InstructionDisplay extends AppCompatActivity {
         prevBtn.setEnabled(false);
 
         displayActivity = this;
-
         gotInstruction = false;
 
         // Get data from the previous view
@@ -331,7 +327,6 @@ public class InstructionDisplay extends AppCompatActivity {
                 // Close the connection
                 channel.shutdown();
 
-
             } catch (Exception e) {
                 gotInstruction = false;
                 StringWriter sw = new StringWriter();
@@ -344,6 +339,7 @@ public class InstructionDisplay extends AppCompatActivity {
             view.post(() ->
             {
                 if (gotInstruction) {
+                    Toast.makeText(this, "Steps size: " + steps.size(), Toast.LENGTH_LONG).show();
                     findViewById(R.id.loadingInstructionProgressBar).setVisibility(View.GONE);
                     loadingModelsScreen(view);
                 } else {
@@ -360,7 +356,7 @@ public class InstructionDisplay extends AppCompatActivity {
         ProgressBar pgsBar = findViewById(R.id.loadingModelsProgressBar);
         pgsBar.setVisibility(View.VISIBLE);
         TextView text = findViewById(R.id.loadingText);
-        text.setText("Loading models");
+        text.setText("Loading steps");
         preloadModels();
 
         new Thread(() ->
@@ -489,7 +485,7 @@ public class InstructionDisplay extends AppCompatActivity {
         List<Asset> assets = step.getAssetsList();
 
         for (Asset a : assets) {
-            if (a.getName().equals("anchor")) {
+            if (a.getName().toLowerCase().equals("anchor")) {
                 anchorInstruction = true;
             }
         }
@@ -630,34 +626,36 @@ public class InstructionDisplay extends AppCompatActivity {
         arFragment = (WritingArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
         arFragment.getPlaneDiscoveryController().hide();
         arFragment.getPlaneDiscoveryController().setInstructionView(null);
+        arFragment.getArSceneView().getPlaneRenderer().setEnabled(false);
         arFragment.getArSceneView().getScene().addOnUpdateListener(this::onUpdateFrame);
 
-        ArSceneView arSceneView = arFragment.getArSceneView();
+        arSceneView = arFragment.getArSceneView();
 
-        // Prepare image steps display
-        ViewRenderable.builder().setView(arFragment.getContext(), R.layout.step_image)
-                .build()
-                .thenAccept(renderrable ->
-                {
-                    renderrable.setShadowReceiver(false);
-                    renderrable.setShadowCaster(false);
-                    stepImgView = renderrable.getView().findViewById(R.id.step_img);
-                    imgRenderable = renderrable;
-                });
 
-        // Prepare text steps display
-        ViewRenderable.builder().setView(arFragment.getContext(), R.layout.step_text)
-                .build()
-                .thenAccept(renderrable ->
-                {
-                    renderrable.setShadowReceiver(false);
-                    renderrable.setShadowCaster(false);
-                    stepTxtView = renderrable.getView().findViewById(R.id.step_text);
-                    textRenderable = renderrable;
-                });
+//        // Prepare image steps display
+//        ViewRenderable.builder().setView(arFragment.getContext(), R.layout.step_image)
+//                .build()
+//                .thenAccept(renderrable ->
+//                {
+//                    renderrable.setShadowReceiver(false);
+//                    renderrable.setShadowCaster(false);
+//                    stepImgView = renderrable.getView().findViewById(R.id.step_img);
+//                    imgRenderable = renderrable;
+//                });
+//
+//        // Prepare text steps display
+//        ViewRenderable.builder().setView(arFragment.getContext(), R.layout.step_text)
+//                .build()
+//                .thenAccept(renderrable ->
+//                {
+//                    renderrable.setShadowReceiver(false);
+//                    renderrable.setShadowCaster(false);
+//                    stepTxtView = renderrable.getView().findViewById(R.id.step_text);
+//                    textRenderable = renderrable;
+//                });
 
         try {
-            mSession = new Session(this);
+            mSession = new Session(context);
         } catch (UnavailableArcoreNotInstalledException | UnavailableApkTooOldException | UnavailableSdkTooOldException | UnavailableDeviceNotCompatibleException e) {
             e.printStackTrace();
             return;
@@ -669,24 +667,28 @@ public class InstructionDisplay extends AppCompatActivity {
         Step step = steps.get(stepNumber);
         List<Asset> assets = step.getAssetsList();
 
-        Asset anchor = null;
+        Asset anchor_asset = null;
         for (Asset a : assets) {
-            if (a.getName().equals("anchor")) {
-                anchor = a;
+            if (a.getName().toLowerCase().equals("anchor")) {
+                anchor_asset = a;
             }
         }
 
-        if (anchor != null) {
-            Bitmap anchorBitmap = BitmapFactory.decodeFile(instructionDir.getPath() + media_folder + anchor.getMedia().getUrl());
-//            Toast.makeText(this, "Found anchor asset", Toast.LENGTH_LONG).show();
+        if (anchor_asset != null)
+        {
+            Bitmap anchorBitmap = BitmapFactory.decodeFile(instructionDir.getPath() + media_folder + anchor_asset.getMedia().getUrl());
 
-            AugmentedImageDatabase imageDatabase = new AugmentedImageDatabase(mSession);
+            imageDatabase = new AugmentedImageDatabase(mSession);
             imageDatabase.addImage("anchor", anchorBitmap);
             config.setAugmentedImageDatabase(imageDatabase);
-        } else {
-            Toast.makeText(this, "No anchor asset", Toast.LENGTH_LONG).show();
 
+            Toast.makeText(this, "Found anchor asset: " + imageDatabase.getNumImages(), Toast.LENGTH_LONG).show();
         }
+        else
+        {
+            Toast.makeText(this, "No anchor asset", Toast.LENGTH_LONG).show();
+        }
+
         config.setUpdateMode(Config.UpdateMode.LATEST_CAMERA_IMAGE);
         config.setLightEstimationMode(Config.LightEstimationMode.DISABLED);
         mSession.configure(config);
@@ -694,15 +696,19 @@ public class InstructionDisplay extends AppCompatActivity {
     }
 
     private void onUpdateFrame(FrameTime frameTime) {
-        if (!foundAnchor) {
+        if (!foundAnchor)
+        {
             Frame frame = arFragment.getArSceneView().getArFrame();
 
             Collection<AugmentedImage> augmentedImages = frame.getUpdatedTrackables(AugmentedImage.class);
 
             for (AugmentedImage augmentedImage : augmentedImages) {
-                if (augmentedImage.getTrackingState() == TrackingState.TRACKING) {
-                    if (augmentedImage.getName().contains("anchor")) {
-//                        Toast.makeText(this, "Detected anchor", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Detected anchor", Toast.LENGTH_SHORT).show();
+                if (augmentedImage.getTrackingState() == TrackingState.TRACKING)
+                {
+                    if (augmentedImage.getName().contains("anchor"))
+                    {
+
                         anchor = augmentedImage.createAnchor(augmentedImage.getCenterPose());
 
                         setStep(stepNumber);
@@ -749,6 +755,12 @@ public class InstructionDisplay extends AppCompatActivity {
         // Listen for a tap on a plane
         arFragment.setOnTapArPlaneListener(
                 (HitResult hitResult, Plane plane, MotionEvent motionEvent) -> {
+                    if (anchor != null)
+                    {
+                        anchor.detach();
+                        anchor = null;
+                    }
+
                     // Create the Anchor
                     anchor = hitResult.createAnchor();
 
