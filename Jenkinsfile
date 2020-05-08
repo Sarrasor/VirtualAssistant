@@ -3,7 +3,15 @@ pipeline {
     stages {
         stage('build') {
             steps {
-                sh 'python python-server/python_server.py'
+                retry(3) {
+                    sh 'echo "Hello, Jenkins"'
+                    sh 'ls'
+                }
+            }
+            
+        stage('test') {
+            steps {
+                sh 'echo "Testing"'
             }
         }
     }
