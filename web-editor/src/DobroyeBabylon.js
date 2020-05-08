@@ -188,13 +188,17 @@ export class Slide {
         light.position = new BABYLON.Vector3(0, 0, 10);
         light.intensity = 1;
 
-        // new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(0, 1, 0), scene);
-
-        var generator = new BABYLON.ShadowGenerator(512, light);
-        generator.useBlurExponentialShadowMap = true;
-        generator.useKernelBlur = true;
-        generator.blurKernel = 12;
-        generator.forceBackFacesOnly = true;
+        let additional_lights = [];
+        for (let i = 0; i < 6; i++){
+            additional_lights.push(new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(0, -0.001, 0), scene));
+            additional_lights[i].intensity = 0.8;
+        }
+        additional_lights[0].position = new BABYLON.Vector3(0, 2, 5);
+        additional_lights[1].position = new BABYLON.Vector3(5, 2, 0);
+        additional_lights[2].position = new BABYLON.Vector3(-5, 2, 0);
+        additional_lights[3].position = new BABYLON.Vector3(0, 2, -5);
+        additional_lights[4].position = new BABYLON.Vector3(0, -5, 0);
+        additional_lights[5].position = new BABYLON.Vector3(0, 8, 0);
 
         var helper = scene.createDefaultEnvironment({
             groundShadowLevel: -5,
@@ -225,13 +229,21 @@ export class Slide {
                 ], scene);
             axisX.color = new BABYLON.Color3(0.4, 0, 0);
             var xChar = makeTextPlane("X", "red", size / 10);
+
+            /* var xCone = BABYLON.MeshBuilder.CreateCylinder("cone", {diameterBottom:0.2, diameterTop: 0.03, tessellation: 100, height:0.2}, scene);
+            xCone.position = new BABYLON.Vector3(size, 0, 0);
+            xCone.rotation = new BABYLON.Vector3(Math.PI/2, Math.PI/2, 0);
+            var redMat = new BABYLON.StandardMaterial("redMat", scene);
+            redMat.emissiveColor = new BABYLON.Color3(0.4, 0, 0);
+            xCone.diffuseTexture = redMat; */
+
             xChar.position = new BABYLON.Vector3(0.95 * size, 0.05 * size, 0);
 
             var axisY = BABYLON.Mesh.CreateLines("axisY", [
                 new BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, size*2/3, 0), new BABYLON.Vector3( 0.05 * size, size*2/3 * 0.96, 0), 
                 new BABYLON.Vector3(0, size*2/3, 0), new BABYLON.Vector3( 0, size*2/3 * 0.96, 0.05 * size)
                 ], scene);
-            axisY.color = new BABYLON.Color3(0, 0.4, 0);
+            axisY.color = new BABYLON.Color3(0, 0.3, 0);
             var yChar = makeTextPlane("Y", "green", size / 10);
             yChar.position = new BABYLON.Vector3(0.04*size, 0.95 * size*2/3, 0);
             yChar.rotation = new BABYLON.Vector3(0, 0.785, 0)
@@ -243,7 +255,7 @@ export class Slide {
             axisZ.color = new BABYLON.Color3(0, 0, 0.4);
             var zChar = makeTextPlane("Z", "blue", size / 10);
             zChar.position = new BABYLON.Vector3(0, 0.05 * size, 0.95 * size);
-            zChar.rotation = new BABYLON.Vector3(0, 1.57, 0);
+            zChar.rotation = new BABYLON.Vector3(0, -1.57, 0);
         };
     
         showAxis(5);
@@ -266,7 +278,6 @@ class Asset {
     options.loader - passed from Slide
     */
     constructor(id, name, media_type, scene, options) {
-        // if (options === undefined) options = {};
         this.id = id;
         this.name = name;
         this.media_type = media_type;
@@ -289,7 +300,7 @@ class Asset {
                 y: options.rotation.y,
                 z: options.rotation.z
             }),
-            this.setTransparent()
+            this.setTransparent(0.5)
     }
 
     /*
@@ -313,9 +324,27 @@ class Asset {
     args: { x:num, y:num, z:num } - not optional. to update, all must be passed
     */
     setOrientation(args) {
-        this.model.rotation.x = args.x * Math.PI / 180;
-        this.model.rotation.y = args.y * Math.PI / 180;
-        this.model.rotation.z = args.z * Math.PI / 180;
+        if (this.billboard) {
+            if (this.media_type == IMAGE) {       
+                return;
+            }
+            else if(this.media_type == TEXT) {
+                this.model.rotation.x = args.x * Math.PI/180 - Math.PI/2;
+                this.model.rotation.y = args.y * Math.PI/180;
+                this.model.rotation.z = args.z * Math.PI/180;
+                return;
+            }
+        }
+        this.model.rotation.x = args.x * Math.PI/180;
+        this.model.rotation.y = args.y * Math.PI/180;
+        this.model.rotation.z = args.z * Math.PI/180;
+        if (this.media_type == TEXT) {
+            this.model.rotation.x -= Math.PI/2;
+            this.model.rotation.z += Math.PI;
+        }
+        else if (this.media_type == IMAGE) {
+            this.model.rotation.y += Math.PI;
+        }
     }
 
     setTransparent(alpha) {
