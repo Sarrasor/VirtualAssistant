@@ -36,14 +36,24 @@ export default {
   data() {
     return {
       currentInstruction: 0,
+      loaded: false,
       instructions: [],
       files: [],
       steps: [],
       assets: []
     };
   },
-  mounted() {
-    this.downloadInstructions();
+  async mounted() {
+    let ids = null;
+    await fetch("https://ad0d9c3e.ngrok.io/instructions_list")
+      .then(r => r.json())
+      .then(j => (ids = j));
+
+    await ids.forEach(id =>
+      fetch("https://ad0d9c3e.ngrok.io//instruction?id=" + id)
+        .then(r => r.blob())
+        .then(b => this.downloadInstructions(b))
+    );
   },
   methods: {
     selectInstruction(index) {
@@ -56,28 +66,53 @@ export default {
     selectStep(index) {
       this.assets = this.steps?.length > 0 ? this.steps[index].assets : null;
     },
-    downloadInstructions() {
-      // var req = new XMLHttpRequest();
-      // req.open("GET", "https://ad0d9c3e.ngrok.io/instructions", true);
-      // req.responseType = "blob";
-      // req.onload = function() {
-      //   var blob = req.response;
-      //   console.log(blob);
-      // };
-      // req.send();
+    downloadInstructions(blob) {
+      console.log(blob);
+      // let zip = new JSZip();
+      // zip.loadAsync(blob);
 
-      // fetch("https://ad0d9c3e.ngrok.io/instructions", {
-      //   mode: "no-cors"
-      // }).then(r => console.log(r));
-      // .then(b => console.log(b));
+      // // const regex = /.+?\//g;
+      // console.log("blob", blob);
+      // console.log("folders", zip.folder(/.+?\//g));
+      // console.log("blob", blob);
+      // zip.loadAsync(blob);
+      // console.log("folders", zip);
+      // 1.
+      // // this is like Object.values(zip.files) which is not yet implemented everywhere
+      // var entries = Object.keys(zip.files).map(function(name) {
+      //   return zip.files[name];
+      // });
 
-      // let req = new XMLHttpRequest();
-      // req.open("GET", "https://ad0d9c3e.ngrok.io/instructions");
-      // req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-      // req.onload = function() {
-      //   console.log(req.response);
-      // };
-      // req.send();
+      // // 2.
+      // var listOfPromises = entries.map(function(entry) {
+      //   return entry.async("uint8array").then(function(u8) {
+      //     // we bind the two together to be able to match the name and the content in the last step
+      //     return [entry.name, u8];
+      //   });
+      // });
+
+      // // 3.
+      // var promiseOfList = Promise.all(listOfPromises);
+
+      // // 4.
+      // promiseOfList.then(function(list) {
+      //   // here, list is a list of [name, content]
+      //   // let's transform it into an object for easy access
+      //   var result = list.reduce(
+      //     function(accumulator, current) {
+      //       var currentName = current[0];
+      //       var currentValue = current[1];
+      //       accumulator[currentName] = currentValue;
+      //       return accumulator;
+      //     },
+      //     {} /* initial value */
+      //   );
+
+      //   console.log(result);
+      // });
+
+      // this.$forceUpdate();
+      // this.loaded = true;
     },
     uploadInstruction() {
       let instruction = this.instructions[this.currentInstruction];
