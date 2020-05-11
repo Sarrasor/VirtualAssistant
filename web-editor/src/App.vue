@@ -36,7 +36,6 @@ export default {
   data() {
     return {
       currentInstruction: 0,
-      loaded: false,
       instructions: [],
       files: [],
       steps: [],
@@ -44,16 +43,16 @@ export default {
     };
   },
   async mounted() {
-    let ids = null;
-    await fetch("https://ad0d9c3e.ngrok.io/instructions_list")
-      .then(r => r.json())
-      .then(j => (ids = j));
+    let ids = await fetch(
+      "https://ad0d9c3e.ngrok.io/instructions_list"
+    ).then(r => r.json());
 
-    await ids.forEach(id =>
-      fetch("https://ad0d9c3e.ngrok.io//instruction?id=" + id)
-        .then(r => r.blob())
-        .then(b => this.downloadInstructions(b))
-    );
+    for (let id of ids) {
+      let blob = await fetch(
+        "https://ad0d9c3e.ngrok.io//instruction?id=" + id
+      ).then(r => r.blob());
+      await this.downloadInstruction(blob);
+    }
   },
   methods: {
     selectInstruction(index) {
@@ -66,17 +65,20 @@ export default {
     selectStep(index) {
       this.assets = this.steps?.length > 0 ? this.steps[index].assets : null;
     },
-    downloadInstructions(blob) {
-      console.log(blob);
-      // let zip = new JSZip();
-      // zip.loadAsync(blob);
+    async downloadInstruction(blob) {
+      let zip = new JSZip();
+      await zip.loadAsync(blob);
 
-      // // const regex = /.+?\//g;
-      // console.log("blob", blob);
-      // console.log("folders", zip.folder(/.+?\//g));
-      // console.log("blob", blob);
-      // zip.loadAsync(blob);
-      // console.log("folders", zip);
+      let instruction = {
+        index: JSON.parse(await zip.file("index.json").async("string")),
+        steps: JSON.parse(await zip.file("steps.json").async("string")),
+        files: []
+      };
+      this.instructions.push(instruction);
+
+      console.log(this.instructions);
+
+
       // 1.
       // // this is like Object.values(zip.files) which is not yet implemented everywhere
       // var entries = Object.keys(zip.files).map(function(name) {
