@@ -98,7 +98,7 @@ export default {
     selectLast() {
       this.selected = Math.min(
         Math.max(this.selected, 0),
-        this.instructions.length
+        this.instructions.length - 1
       );
     }
   }
