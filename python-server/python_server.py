@@ -349,6 +349,11 @@ class PostServer(BaseHTTPRequestHandler):
             # Define path to instructions.zip
             zip_path = "./instructions"
 
+            try:
+                os.remove(zip_path + "/media.zip")
+            except OSError:
+                pass
+
             # Create zip archive from media folder
             shutil.make_archive(zip_path, "zip", INSTRUCTIONS_FOLDER)
 
@@ -356,6 +361,7 @@ class PostServer(BaseHTTPRequestHandler):
             with open(zip_path + ".zip", 'rb') as file:
                 self.send_response(200)
                 self.send_header("Content-Type", 'application/zip')
+                self.send_header("Access-Control-Allow-Origin", '*')
                 self.send_header(
                     "Content-Typet-Disposition", 'attachment; filename="instructions.zip"')
                 fs = os.fstat(file.fileno())

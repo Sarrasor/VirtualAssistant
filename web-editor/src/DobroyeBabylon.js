@@ -22,7 +22,6 @@ assets: json object
 files: json object
 */
 export function init(slide, assets, files) {
-
     function findFile(name, files) {
         // if (!files || files.length == 0)
         //     return -1;
@@ -49,7 +48,8 @@ export function init(slide, assets, files) {
         return slide;
     }
 
-    for (let ai = 0; ai < assets.length; ai++) {
+    for (let ai = 0; ai < assets.length; ai++)
+    {
         let asset = assets[ai];
         var file = null;
         if (asset.media.url != "")
@@ -97,7 +97,8 @@ export class Slide {
     options: { media_desc:string, billboard:boolean, hidden:boolean, url:string,
               position:{x:num, y:num, z:num}, rotation{x:num, y:num, z:num}, scale:num }
     */
-        manageAsset(existing_asset, id, name, media_type, options) {
+    manageAsset(existing_asset, id, name, media_type, options)
+    {
         if (existing_asset == null)
         {
             var new_obj = new Asset(id, name, media_type, this.scene,
@@ -125,28 +126,51 @@ export class Slide {
             let asset = existing_asset;
             asset.name = name;
             asset.hidden = options.hidden;
+
             if (asset.media_type != media_type || asset.url != options.url || asset.billboard != options.billboard || 
-                    (asset.media_type == TEXT && asset.media_desc != options.media_desc)) {
+                    (asset.media_type == TEXT && asset.media_desc != options.media_desc)) 
+            {
                 asset.media_type = media_type;
                 asset.url = options.url;
                 asset.billboard = options.billboard;
                 asset.model.dispose();
-                asset.loadObject(this.scene);
+
+                asset.media_desc = options.media_desc;
+
+                asset.loadObject(this.scene, function()
+                {
+                    asset.setScale(options.scale);
+                    asset.setPosition({
+                        x: options.position.x,
+                        y: options.position.y,
+                        z: options.position.z
+                    });
+                    asset.setOrientation({
+                        x: options.rotation.x,
+                        y: options.rotation.y,
+                        z: options.rotation.z
+                    });
+                    
+                    asset.setTransparent(asset.hidden);
+                });
             }
-            asset.media_desc = options.media_desc;
-            asset.setScale(options.scale);
-            asset.setPosition({
-                x: options.position.x,
-                y: options.position.y,
-                z: options.position.z
-            });
-            asset.setOrientation({
-                x: options.rotation.x,
-                y: options.rotation.y,
-                z: options.rotation.z
-            });
-            
-            asset.setTransparent(asset.hidden);
+            else
+            {
+                asset.media_desc = options.media_desc;
+                asset.setScale(options.scale);
+                asset.setPosition({
+                    x: options.position.x,
+                    y: options.position.y,
+                    z: options.position.z
+                });
+                asset.setOrientation({
+                    x: options.rotation.x,
+                    y: options.rotation.y,
+                    z: options.rotation.z
+                });
+                
+                asset.setTransparent(asset.hidden);
+            }
         }
     }
 
@@ -293,21 +317,20 @@ class Asset
         this.hidden = options.hidden;
         this.billboard = options.billboard;
 
-        this.loadObject(scene, options);
+        this.loadObject(scene, function(){});
 
-        this.setScale(options.scale),
-        
+        this.setScale(options.scale);
         this.setPosition({
             x: options.position.x,
             y: options.position.y,
             z: options.position.z
-        }),
+        });
         this.setOrientation({
             x: options.rotation.x,
             y: options.rotation.y,
             z: options.rotation.z
-        }),
-        this.setTransparent(options.hidden)
+        });
+        this.setTransparent(options.hidden);        
     }
 
     /*
@@ -323,7 +346,7 @@ class Asset
 
         if (this.media_type == TEXT)
         {
-            this.model.position.y += 0.1;
+            this.model.position.y += 0.1 * this.scale;
         }
         else if (this.media_type == IMAGE)
         {
@@ -426,25 +449,25 @@ class Asset
     options.url - for images and 3d models
     options.loader - for 3d models
     */
-    loadObject(scene) 
+    loadObject(scene, _callback) 
     {
         switch (this.media_type)
         {
             case TEXT:
-                this.loadText(scene);
+                this.loadText(scene, _callback);
                 break;
             case IMAGE:
             case AUDIO:
             case VIDEO:
-                this.loadImage(scene);
+                this.loadImage(scene, _callback);
                 break;
             case TDMODEL: 
-                this.load3DObject(scene);
+                this.load3DObject(scene, _callback);
                 break;
         }
     }
 
-    loadText(scene) 
+    loadText(scene, _callback) 
     {
         var ground = BABYLON.Mesh.CreateGround("ground", 8, 6, 2, scene, true);
         // GUI
@@ -453,7 +476,7 @@ class Asset
         ground.emissiveTexture = advancedTexture;
         var text1 = new GUI.TextBlock();
         text1.text = this.media_desc;
-        text1.color = "black";
+        text1.color = "red";
         text1.fontSize = 40;
         advancedTexture.addControl(text1);
 
@@ -463,20 +486,21 @@ class Asset
         }
 
         this.model = ground;
+        _callback();
     }
 
-    loadImage(scene) 
+    loadImage(scene, _callback) 
     {
         var asset = this; 
 
         var img = new Image();
         img.onload = function()
         {
-            loadImgPlane(this.height, this.width, asset);
+            loadImgPlane(this.height, this.width, asset, _callback);
         }
         img.src = asset.url;
 
-        function loadImgPlane(h, w, asset)
+        function loadImgPlane(h, w, asset, _callback)
         {
             var mat = new BABYLON.StandardMaterial("material", scene);
             mat.diffuseTexture = new BABYLON.Texture(asset.url, scene);
@@ -496,10 +520,12 @@ class Asset
                 plane.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
             }
             asset.model = plane;
+
+            _callback();
         }
     }
 
-    load3DObject(scene) 
+    load3DObject(scene, _callback) 
     {
         var asset = this;
 
@@ -515,6 +541,8 @@ class Asset
 
             container.addAllToScene();
         }, undefined, undefined, ".glb");
+
+        _callback();
     }
 }
 
