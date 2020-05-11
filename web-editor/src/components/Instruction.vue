@@ -82,7 +82,7 @@ export default {
         steps: [],
         files: []
       });
-      this.selectLast();
+      this.selected = this.instructions.length - 1;
     },
     duplicateInstruction() {
       let duplicate = JSON.parse(JSON.stringify(this.instruction));
