@@ -350,7 +350,7 @@ class Asset
         }
         else if (this.media_type == IMAGE)
         {
-            this.model.position.y += 0.5 * this.scale;
+            this.model.position.y += 1.0 * this.scale;
         }
     }
 
@@ -364,7 +364,7 @@ class Asset
         {
             if (this.media_type == IMAGE) 
             {  
-                this.model.rotation.x = - Math.PI/2;
+                this.model.rotation.x = 0;
                 this.model.rotation.y = 0;
                 this.model.rotation.z = 0;
                 return;
@@ -478,6 +478,7 @@ class Asset
         text1.text = this.media_desc;
         text1.color = "red";
         text1.fontSize = 40;
+        text1.fontFamily = 'sans serif';
         advancedTexture.addControl(text1);
 
         if (this.billboard)
@@ -503,14 +504,19 @@ class Asset
         function loadImgPlane(h, w, asset, _callback)
         {
             var mat = new BABYLON.StandardMaterial("material", scene);
-            mat.diffuseTexture = new BABYLON.Texture(asset.url, scene);
-            mat.diffuseTexture.hasAlpha = true;
+            mat.emissiveTexture = new BABYLON.Texture(asset.url, scene);
+            mat.emissiveTexture.hasAlpha = true;
             mat.backFaceCulling = false;
+            mat.disableLighting = true;
             asset.modelMaterial = mat;
-            asset.img_width = w;
-            asset.img_height = h;
 
-            var plane = new BABYLON.MeshBuilder.CreatePlane(asset.name, {height: 1.0, width: w / h}, scene);
+            var height = 2.0;
+            var width = height * w / h;
+            
+            asset.img_width = width;
+            asset.img_height = height;
+
+            var plane = new BABYLON.MeshBuilder.CreatePlane(asset.name, {height: height, width: width}, scene);
             plane.updatable = true;
             plane.material = mat;
 
