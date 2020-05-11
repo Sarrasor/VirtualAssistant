@@ -97,9 +97,11 @@ export class Slide {
     options: { media_desc:string, billboard:boolean, hidden:boolean, url:string,
               position:{x:num, y:num, z:num}, rotation{x:num, y:num, z:num}, scale:num }
     */
-    manageAsset(existing_asset, id, name, media_type, options) {
-        if (existing_asset == null) {
-            var new_obj = new Asset(id, name, media_type, this.scene, {
+        manageAsset(existing_asset, id, name, media_type, options) {
+        if (existing_asset == null)
+        {
+            var new_obj = new Asset(id, name, media_type, this.scene,
+            {
                 media_desc: options.media_desc,
                 url: options.url,
                 position: {
@@ -118,7 +120,8 @@ export class Slide {
             });
             this.assets.push(new_obj);
         }
-        else {
+        else 
+        {
             let asset = existing_asset;
             asset.name = name;
             asset.hidden = options.hidden;
@@ -142,6 +145,8 @@ export class Slide {
                 y: options.rotation.y,
                 z: options.rotation.z
             });
+            
+            asset.setTransparent(asset.hidden);
         }
     }
 
@@ -178,10 +183,10 @@ export class Slide {
         scene.activeCamera.upperRadiusLimit = 20;
 
         scene.activeCamera.setTarget(new BABYLON.Vector3(0, 0, 0));
-        scene.activeCamera.setPosition(new BABYLON.Vector3(9, 4, 5));
+        scene.activeCamera.setPosition(new BABYLON.Vector3(0, 3, 10));
 
 
-        // scene.clearColor = new BABYLON.Color3(0.5, 0.8, 0.5);
+        scene.clearColor = new BABYLON.Color3(0.5, 0.8, 0.5);
 
         scene.lights[0].dispose();
         var light = new BABYLON.DirectionalLight("light1", new BABYLON.Vector3(-2, -3, 1), scene);
@@ -210,52 +215,47 @@ export class Slide {
             scene.render();
         });
 
-        var showAxis = function(size) {
-            var makeTextPlane = function(text, color, size) {
-            var dynamicTexture = new BABYLON.DynamicTexture("DynamicTexture", 50, scene, true);
-            dynamicTexture.hasAlpha = true;
-            dynamicTexture.drawText(text, 5, 40, "bold 20px Arial", color , "transparent", true);
-            var plane = new BABYLON.Mesh.CreatePlane("TextPlane", size, scene, true);
-            plane.material = new BABYLON.StandardMaterial("TextPlaneMaterial", scene);
-            plane.material.backFaceCulling = false;
-            plane.material.specularColor = new BABYLON.Color3(0, 0, 0);
-            plane.material.diffuseTexture = dynamicTexture;
-            return plane;
-             };
-          
+        var showAxis = function(size)
+        {
             var axisX = BABYLON.Mesh.CreateLines("axisX", [ 
-                new BABYLON.Vector3(-size, 0, 0), new BABYLON.Vector3(size, 0, 0), new BABYLON.Vector3(size * 0.96, 0.05 * size, 0), 
-                new BABYLON.Vector3(size, 0, 0), new BABYLON.Vector3(size * 0.96, -0.05 * size, 0)
+                new BABYLON.Vector3(-size, 0, 0), new BABYLON.Vector3(size, 0, 0),
+                new BABYLON.Vector3(size, 0, 0)
                 ], scene);
-            axisX.color = new BABYLON.Color3(0.4, 0, 0);
-            var xChar = makeTextPlane("X", "red", size / 10);
+            axisX.color = new BABYLON.Color3(1.0, 0, 0);
 
-            /* var xCone = BABYLON.MeshBuilder.CreateCylinder("cone", {diameterBottom:0.2, diameterTop: 0.03, tessellation: 100, height:0.2}, scene);
-            xCone.position = new BABYLON.Vector3(size, 0, 0);
-            xCone.rotation = new BABYLON.Vector3(Math.PI/2, Math.PI/2, 0);
-            var redMat = new BABYLON.StandardMaterial("redMat", scene);
-            redMat.emissiveColor = new BABYLON.Color3(0.4, 0, 0);
-            xCone.diffuseTexture = redMat; */
-
-            xChar.position = new BABYLON.Vector3(0.95 * size, 0.05 * size, 0);
+            var xCone = BABYLON.MeshBuilder.CreateCylinder("cone", {diameterBottom:0.2, diameterTop: 0.03, tessellation: 100, height:0.2}, scene);
+            xCone.position = new BABYLON.Vector3(-size, 0, 0);
+            xCone.rotation = new BABYLON.Vector3(Math.PI/2, -Math.PI/2, 0);
+            xCone.material = new BABYLON.StandardMaterial("matX", scene);
+            xCone.material.emissiveColor = new BABYLON.Color3(1.0, 0, 0);
+            xCone.material.diffuseColor = new BABYLON.Color3(1.0, 0, 0);
 
             var axisY = BABYLON.Mesh.CreateLines("axisY", [
-                new BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, size*2/3, 0), new BABYLON.Vector3( 0.05 * size, size*2/3 * 0.96, 0), 
-                new BABYLON.Vector3(0, size*2/3, 0), new BABYLON.Vector3( 0, size*2/3 * 0.96, 0.05 * size)
+                new BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, size*2/3, 0),
+                new BABYLON.Vector3(0, size*2/3, 0)
                 ], scene);
-            axisY.color = new BABYLON.Color3(0, 0.3, 0);
-            var yChar = makeTextPlane("Y", "green", size / 10);
-            yChar.position = new BABYLON.Vector3(0.04*size, 0.95 * size*2/3, 0);
-            yChar.rotation = new BABYLON.Vector3(0, 0.785, 0)
+            axisY.color = new BABYLON.Color3(0, 1.0, 0);
+
+            var yCone = BABYLON.MeshBuilder.CreateCylinder("cone", {diameterBottom:0.2, diameterTop: 0.03, tessellation: 100, height:0.2}, scene);
+            yCone.position = new BABYLON.Vector3(0, 2/3*size, 0);
+            yCone.rotation = new BABYLON.Vector3(0, 0, 0);
+            yCone.material = new BABYLON.StandardMaterial("matY", scene);
+            yCone.material.emissiveColor = new BABYLON.Color3(0, 1.0, 0);
+            yCone.material.diffuseColor = new BABYLON.Color3(0, 1.0, 0);
+
 
             var axisZ = BABYLON.Mesh.CreateLines("axisZ", [
-                new BABYLON.Vector3(0, 0, -size), new BABYLON.Vector3(0, 0, size), new BABYLON.Vector3( 0 , -0.05 * size, size * 0.96),
-                new BABYLON.Vector3(0, 0, size), new BABYLON.Vector3( 0, 0.05 * size, size * 0.96)
+                new BABYLON.Vector3(0, 0, -size), new BABYLON.Vector3(0, 0, size),
+                new BABYLON.Vector3(0, 0, size)
                 ], scene);
-            axisZ.color = new BABYLON.Color3(0, 0, 0.4);
-            var zChar = makeTextPlane("Z", "blue", size / 10);
-            zChar.position = new BABYLON.Vector3(0, 0.05 * size, 0.95 * size);
-            zChar.rotation = new BABYLON.Vector3(0, -1.57, 0);
+            axisZ.color = new BABYLON.Color3(0, 0, 1.0);
+
+            var zCone = BABYLON.MeshBuilder.CreateCylinder("cone", {diameterBottom:0.2, diameterTop: 0.03, tessellation: 100, height:0.2}, scene);
+            zCone.position = new BABYLON.Vector3(0, 0, size);
+            zCone.rotation = new BABYLON.Vector3(Math.PI/2, 0, 0);
+            zCone.material = new BABYLON.StandardMaterial("matZ", scene);
+            zCone.material.emissiveColor = new BABYLON.Color3(0, 0, 1.0);
+            zCone.material.diffuseColor = new BABYLON.Color3(0, 0, 1.0);
         };
     
         showAxis(5);
@@ -267,7 +267,8 @@ export class Slide {
 /*
 class that describes an asset
 */
-class Asset {
+class Asset 
+{
     /*
     id: str - id of the asset
     name:str - name of the asset
@@ -277,7 +278,8 @@ class Asset {
               position:{x:num, y:num, z:num}, rotation{x:num, y:num, z:num}, scale:num }
     options.loader - passed from Slide
     */
-    constructor(id, name, media_type, scene, options) {
+    constructor(id, name, media_type, scene, options) 
+    {
         this.id = id;
         this.name = name;
         this.media_type = media_type;
@@ -290,66 +292,125 @@ class Asset {
         this.loadObject(scene, options);
 
         this.setScale(options.scale),
-            this.setPosition({
-                x: options.position.x,
-                y: options.position.y,
-                z: options.position.z
-            }),
-            this.setOrientation({
-                x: options.rotation.x,
-                y: options.rotation.y,
-                z: options.rotation.z
-            }),
-            this.setTransparent(0.5)
+        
+        this.setPosition({
+            x: options.position.x,
+            y: options.position.y,
+            z: options.position.z
+        }),
+        this.setOrientation({
+            x: options.rotation.x,
+            y: options.rotation.y,
+            z: options.rotation.z
+        }),
+        this.setTransparent(options.hidden)
     }
 
     /*
     sets position for this.model. this.model must be loaded beforehand. called from constructor
     args: { x:num, y:num, z:num } - not optional. to update, all must be passed
     */
-    setPosition(args) {
-        this.model.position.x = args.x;
+    setPosition(args) 
+    {
+        this.model.position.x = -args.x;
         this.model.position.y = args.y;
         this.model.position.z = args.z;
-    }
 
-    setScale(value) {
-        this.model.scaling.x = value;
-        this.model.scaling.y = value;
-        this.model.scaling.z = value;
+        if (this.media_type == TEXT)
+        {
+            this.model.position.y += 0.1;
+        }
+        else if (this.media_type == IMAGE)
+        {
+            this.model.position.y += 0.5;
+        }
     }
 
     /*
     sets orientation for this.model; this.model must be loaded beforehand. called form constructor
     args: { x:num, y:num, z:num } - not optional. to update, all must be passed
     */
-    setOrientation(args) {
-        if (this.billboard) {
-            if (this.media_type == IMAGE) {       
+    setOrientation(args) 
+    {
+        if (this.billboard) 
+        {
+            if (this.media_type == IMAGE) 
+            {  
+                this.model.rotation.x = - Math.PI/2;
+                this.model.rotation.y = 0;
+                this.model.rotation.z = 0;
                 return;
             }
-            else if(this.media_type == TEXT) {
+            else if(this.media_type == TEXT)
+            {
                 this.model.rotation.x = args.x * Math.PI/180 - Math.PI/2;
                 this.model.rotation.y = args.y * Math.PI/180;
                 this.model.rotation.z = args.z * Math.PI/180;
                 return;
             }
         }
+
+        var old_x = this.model.rotation.x;
+        var old_y = this.model.rotation.y;
+        var old_z = this.model.rotation.z;
+
         this.model.rotation.x = args.x * Math.PI/180;
         this.model.rotation.y = args.y * Math.PI/180;
         this.model.rotation.z = args.z * Math.PI/180;
-        if (this.media_type == TEXT) {
+        
+        if (this.media_type == TEXT)
+        {
             this.model.rotation.x -= Math.PI/2;
             this.model.rotation.z += Math.PI;
         }
-        else if (this.media_type == IMAGE) {
+        else if (this.media_type == IMAGE) 
+        {
             this.model.rotation.y += Math.PI;
+        }   
+        else if (this.media_type == TDMODEL)
+        {
+            this.model.rotate(BABYLON.Axis.X, this.model.rotation.x-old_x, BABYLON.Space.LOCAL);
+            this.model.rotate(BABYLON.Axis.Y, this.model.rotation.y-old_y, BABYLON.Space.LOCAL);
+            this.model.rotate(BABYLON.Axis.Z, this.model.rotation.z-old_z, BABYLON.Space.LOCAL);
         }
     }
 
-    setTransparent(alpha) {
-        if (this.hidden)
-            this.modelMaterial.alpha = alpha;
+    setScale(value) 
+    {
+        this.model.scaling.x = value;
+        this.model.scaling.y = value;
+        this.model.scaling.z = value;
+    }
+
+    setTransparent(hidden)
+    {
+        if (hidden)
+        {
+            if (this.media_type == IMAGE || this.media_type == TEXT)
+            {
+                this.modelMaterial.alpha = 0.5;
+            }
+
+            if(this.media_type == TDMODEL)
+            {
+                this.model.visibility = 0.5;
+                this.modelMaterial.alpha = 0.5;
+            }
+        }
+        else
+        {
+            if (this.media_type == IMAGE)
+            {
+                this.modelMaterial.alpha = 1.0;
+            }
+
+            if(this.media_type == TDMODEL)
+            {
+                this.model.visibility = 1.0;
+                this.modelMaterial.alpha = 1.0;
+            }
+
+        }
     }
 
     /*
@@ -359,8 +420,10 @@ class Asset {
     options.url - for images and 3d models
     options.loader - for 3d models
     */
-    loadObject(scene) {
-        switch (this.media_type) {
+    loadObject(scene) 
+    {
+        switch (this.media_type)
+        {
             case TEXT:
                 this.loadText(scene);
                 break;
@@ -369,56 +432,82 @@ class Asset {
             case VIDEO:
                 this.loadImage(scene);
                 break;
-            case TDMODEL: {
+            case TDMODEL: 
                 this.load3DObject(scene);
                 break;
-            }
         }
     }
 
-    loadText(scene) {
+    loadText(scene) 
+    {
         var ground = BABYLON.Mesh.CreateGround("ground", 8, 6, 2, scene, true);
         // GUI
         var advancedTexture = GUI.AdvancedDynamicTexture.CreateForMesh(ground, 1024, 1024, true, true);
 
         ground.emissiveTexture = advancedTexture;
-        // var material = BABYLON.StandardMaterial("material", scene);
-        // ground.material = material;
-        // ground.material.alpha = true;
         var text1 = new GUI.TextBlock();
         text1.text = this.media_desc;
         text1.color = "black";
         text1.fontSize = 40;
         advancedTexture.addControl(text1);
+
         if (this.billboard)
+        {
             ground.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
+        }
+
         this.model = ground;
     }
 
-    loadImage(scene) {
-        var mat = new BABYLON.StandardMaterial("material", scene);
-        mat.diffuseTexture = new BABYLON.Texture(this.url, scene);
-        mat.diffuseTexture.hasAlpha = true;
-        mat.backFaceCulling = false;
-        this.modelMaterial = mat;
+    loadImage(scene) 
+    {
+        var asset = this; 
 
-        var plane = new BABYLON.MeshBuilder.CreatePlane(this.name, {size:1}, scene);
-        plane.updatable = true;
-        plane.material = mat;
-        if (this.billboard) {
-            mat.backFaceCulling = true;
-            plane.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
+        var img = new Image();
+        img.onload = function()
+        {
+            loadImgPlane(this.height, this.width, asset);
         }
-        this.model = plane;
+        img.src = asset.url;
+
+        function loadImgPlane(h, w, asset)
+        {
+            var mat = new BABYLON.StandardMaterial("material", scene);
+            mat.diffuseTexture = new BABYLON.Texture(asset.url, scene);
+            mat.diffuseTexture.hasAlpha = true;
+            mat.backFaceCulling = false;
+            asset.modelMaterial = mat;
+            asset.img_width = w;
+            asset.img_height = h;
+
+            var plane = new BABYLON.MeshBuilder.CreatePlane(asset.name, {height: 1.0, width: w / h}, scene);
+            plane.updatable = true;
+            plane.material = mat;
+
+            if (asset.billboard)
+            {
+                mat.backFaceCulling = true;
+                plane.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
+            }
+            asset.model = plane;
+        }
     }
 
-    load3DObject(scene) {
-        BABYLON.SceneLoader.ImportMesh(this.name, "blob:http://localhost:8080/", this.url, scene, function (meshes) {
-            this.model = meshes[0];
-            // scene.beforeRender = () => {
-            //     this.model.rotation.y += 0.01;
-            // };
-        });
+    load3DObject(scene) 
+    {
+        var asset = this;
 
+        var base64_model_content = asset.url;
+        var raw_content = BABYLON.Tools.DecodeBase64(base64_model_content);
+        var blob = new Blob([raw_content]);
+        var url = URL.createObjectURL(blob);
+
+        BABYLON.SceneLoader.LoadAssetContainer("", url, scene, function (container) 
+        {
+            asset.model = container.meshes[0];
+            asset.modelMaterial = container.materials[0];
+
+            container.addAllToScene();
+        }, undefined, undefined, ".glb");
     }
 }
