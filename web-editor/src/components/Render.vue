@@ -36,6 +36,7 @@ export default {
   methods: {
     render() {
       scene.init(this.slide, this.assets, this.files);
+
       let ids = (this.assets ?? []).map(a => a.id);
       this.ids
         .filter(i => !ids.includes(i))
