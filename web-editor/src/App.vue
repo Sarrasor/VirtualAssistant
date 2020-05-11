@@ -57,6 +57,20 @@ export default {
       this.assets = this.steps?.length > 0 ? this.steps[index].assets : null;
     },
     downloadInstructions() {
+      // var req = new XMLHttpRequest();
+      // req.open("GET", "https://ad0d9c3e.ngrok.io/instructions", true);
+      // req.responseType = "blob";
+      // req.onload = function() {
+      //   var blob = req.response;
+      //   console.log(blob);
+      // };
+      // req.send();
+
+      // fetch("https://ad0d9c3e.ngrok.io/instructions", {
+      //   mode: "no-cors"
+      // }).then(r => console.log(r));
+      // .then(b => console.log(b));
+
       // let req = new XMLHttpRequest();
       // req.open("GET", "https://ad0d9c3e.ngrok.io/instructions");
       // req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
