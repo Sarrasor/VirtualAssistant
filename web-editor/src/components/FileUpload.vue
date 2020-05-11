@@ -1,5 +1,5 @@
 <template>
-  <div id="root">
+  <div id="root" v-if="files">
     <div class="list" style="height: 125px">
       <button
         draggable
@@ -59,7 +59,9 @@ export default {
       );
     },
     readFile(file) {
+      let url = window.URL.createObjectURL(file);
       let type = this.getType;
+
       return new Promise(function(resolve, reject) {
         const reader = new FileReader();
         reader.onload = () =>
@@ -67,18 +69,22 @@ export default {
             name: file.name,
             type: type(file.name),
             content: reader.result,
-            url: window.URL.createObjectURL(file)
+            url: url
           });
         reader.onerror = reject;
         reader.readAsDataURL(file);
       });
     },
-    deserealizeFile(name, base64) {
+    async deserealizeFile(file) {
+      let base64 = await file.async("base64");
+      let blob = await file.async("blob");
+      let name = file.name.replace("media/", "");
+
       return {
         name: name,
         type: this.getType(name),
         content: base64,
-        url: window.URL.createObjectURL(window.atob(base64))
+        url: window.URL.createObjectURL(blob)
       };
     },
     getExt(name) {

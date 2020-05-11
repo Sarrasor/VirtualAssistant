@@ -8,12 +8,7 @@
       />
       <div class="card" style="margin-top: 20px; width: 430px">
         <p class="label bold">files</p>
-        <FileUpload
-          ref="fileUpload"
-          v-if="instruction"
-          v-model="instruction.files"
-          @upload="validateMediaLinks"
-        />
+        <FileUpload ref="fileUpload" v-model="files" @upload="validateMediaLinks" />
       </div>
     </div>
     <Step :steps="steps" @select="selectStep" />
@@ -55,18 +50,18 @@ export default {
       assets: []
     };
   },
-  // async mounted() {
-  //   let ids = await fetch(
-  //     "https://ad0d9c3e.ngrok.io/instructions_list"
-  //   ).then(r => r.json());
+  async mounted() {
+    let ids = await fetch(
+      "https://ad0d9c3e.ngrok.io/instructions_list"
+    ).then(r => r.json());
 
-  //   for (let id of ids) {
-  //     let blob = await fetch(
-  //       "https://ad0d9c3e.ngrok.io//instruction?id=" + id
-  //     ).then(r => r.blob());
-  //     await this.downloadInstruction(blob);
-  //   }
-  // },
+    for (let id of ids) {
+      let blob = await fetch(
+        "https://ad0d9c3e.ngrok.io//instruction?id=" + id
+      ).then(r => r.blob());
+      await this.downloadInstruction(blob);
+    }
+  },
   methods: {
     validateMediaLinks() {
       const missing = file =>
@@ -101,46 +96,20 @@ export default {
       let instruction = {
         index: JSON.parse(await zip.file("index.json").async("string")),
         steps: JSON.parse(await zip.file("steps.json").async("string")),
-        files: {}
+        files: []
       };
+
+      var files = await Object.keys(zip.folder().files)
+        .filter(n => n.startsWith("media/"))
+        .map(n => zip.files[n])
+        .filter(f => !f.dir);
+
+      for (let file of files) {
+        let obj = await this.$refs.fileUpload.deserealizeFile(file);
+        instruction.files.push(obj);
+      }
+
       this.instructions.push(instruction);
-
-      // 1.
-      // // this is like Object.values(zip.files) which is not yet implemented everywhere
-      // var entries = Object.keys(zip.files).map(function(name) {
-      //   return zip.files[name];
-      // });
-
-      // // 2.
-      // var listOfPromises = entries.map(function(entry) {
-      //   return entry.async("uint8array").then(function(u8) {
-      //     // we bind the two together to be able to match the name and the content in the last step
-      //     return [entry.name, u8];
-      //   });
-      // });
-
-      // // 3.
-      // var promiseOfList = Promise.all(listOfPromises);
-
-      // // 4.
-      // promiseOfList.then(function(list) {
-      //   // here, list is a list of [name, content]
-      //   // let's transform it into an object for easy access
-      //   var result = list.reduce(
-      //     function(accumulator, current) {
-      //       var currentName = current[0];
-      //       var currentValue = current[1];
-      //       accumulator[currentName] = currentValue;
-      //       return accumulator;
-      //     },
-      //     {} /* initial value */
-      //   );
-
-      //   console.log(result);
-      // });
-
-      // this.$forceUpdate();
-      // this.loaded = true;
     },
     uploadInstruction() {
       let { steps, files, index } = this.instruction;

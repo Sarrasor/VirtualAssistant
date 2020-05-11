@@ -96,7 +96,10 @@ export default {
       if (this.selected >= this.instructions.length) this.selectLast();
     },
     selectLast() {
-      this.selected = this.instructions.length - 1;
+      this.selected = Math.min(
+        Math.max(this.selected, 0),
+        this.instructions.length
+      );
     }
   }
 };
