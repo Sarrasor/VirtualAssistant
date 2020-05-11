@@ -497,7 +497,6 @@ class Asset
         }
     }
 
-<<<<<<< HEAD
     load3DObject(scene) 
     {
         var asset = this;
