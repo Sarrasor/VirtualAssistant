@@ -339,7 +339,7 @@ public class InstructionDisplay extends AppCompatActivity {
             view.post(() ->
             {
                 if (gotInstruction) {
-                    Toast.makeText(this, "Steps size: " + steps.size(), Toast.LENGTH_LONG).show();
+//                    Toast.makeText(this, "Steps size: " + steps.size(), Toast.LENGTH_LONG).show();
                     findViewById(R.id.loadingInstructionProgressBar).setVisibility(View.GONE);
                     loadingModelsScreen(view);
                 } else {
@@ -614,7 +614,7 @@ public class InstructionDisplay extends AppCompatActivity {
             }
 
             stepNode.setLocalPosition(new Vector3(pos.getX(), pos.getY(), pos.getZ()));
-            stepNode.setLocalRotation(new Quaternion(new Vector3(orient.getX(), orient.getY(), orient.getZ())));
+            stepNode.setLocalRotation(new Quaternion(new Vector3(orient.getX(), -orient.getY(), orient.getZ())));
         }
     }
 

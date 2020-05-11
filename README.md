@@ -23,7 +23,7 @@ are provided in the form of text, images, and animated holograms.
 - GLTF
 - gRPC
 - Vue.JS
-- Three.JS
+- Babylon.JS
 
 ## Hardware
 
@@ -34,13 +34,13 @@ If you don't have it, you can setup the Android Virtual Device. To do that, plea
 
 ## Software
 
-Here is the Virtual Assistant app and Python Server for it.
+Here is the Virtual Assistant app, Web Editor page, and Python Server to serve them.
 
 ### How to run
 
-- Run python-server somewhere. Instructions are in python-server
-- Compile apk from virtual-assistant in Android Studio
-- Connect to your server via the app. Use IP of your host and port 50051
+- [Download](https://github.com/Sarrasor/INNO-S20-SP/releases) Virtual Assistant app apk 
+- Go to the [Web Editor](https://sarrasor.github.io/INNO-S20-SP/)
+- Enjoy
 
 ### Contents
 
@@ -55,9 +55,19 @@ There is README.md inside with more detailed explanation.
 
 ### virtual-assistant
 
-Contains Virtual Assistant app
+![virtual-assistant](images/docs/virtual_assistant.png)
+
+Contains Virtual Assistant app. You can download the latest version [here](https://github.com/Sarrasor/INNO-S20-SP/releases).
 
 [Video](https://drive.google.com/file/d/1HnKh15GNuCh4DoWQbFhH2sP1luFxgRzL/view?usp=sharing)
+
+### web-editor
+
+![web-editor](images/docs/web_editor.png)
+
+Contains Web Editor code. Instructions are included in the folder
+
+[Link to Web Editor](https://sarrasor.github.io/INNO-S20-SP/)
 
 ### images
 
