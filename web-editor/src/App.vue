@@ -1,10 +1,16 @@
 <template>
   <div id="app">
-    <Instruction
-      :instructions="instructions"
-      @select="selectInstruction"
-      @upload="uploadInstruction"
-    />
+    <div>
+      <Instruction
+        :instructions="instructions"
+        @select="selectInstruction"
+        @upload="uploadInstruction"
+      />
+      <div class="card" style="margin-top: 20px; width: 430px">
+        <p class="label bold">files</p>
+        <FileUpload v-if="instruction" v-model="instruction.files" @upload="validateMediaLinks" />
+      </div>
+    </div>
     <Step :steps="steps" @select="selectStep" />
     <Asset :assets="assets" />
     <Render :assets="assets" :files="files" />
@@ -16,6 +22,7 @@ import Instruction from "./components/Instruction";
 import Step from "./components/Step";
 import Asset from "./components/Asset";
 import Render from "./components/Render";
+import FileUpload from "./components/FileUpload";
 
 var JSZip = require("jszip");
 
@@ -31,36 +38,53 @@ export default {
     Instruction,
     Step,
     Asset,
-    Render
+    Render,
+    FileUpload
   },
   data() {
     return {
-      currentInstruction: 0,
+      instruction: null,
       instructions: [],
       files: [],
       steps: [],
       assets: []
     };
   },
-  async mounted() {
-    let ids = await fetch(
-      "https://ad0d9c3e.ngrok.io/instructions_list"
-    ).then(r => r.json());
+  // async mounted() {
+  //   let ids = await fetch(
+  //     "https://ad0d9c3e.ngrok.io/instructions_list"
+  //   ).then(r => r.json());
 
-    for (let id of ids) {
-      let blob = await fetch(
-        "https://ad0d9c3e.ngrok.io//instruction?id=" + id
-      ).then(r => r.blob());
-      await this.downloadInstruction(blob);
-    }
-  },
+  //   for (let id of ids) {
+  //     let blob = await fetch(
+  //       "https://ad0d9c3e.ngrok.io//instruction?id=" + id
+  //     ).then(r => r.blob());
+  //     await this.downloadInstruction(blob);
+  //   }
+  // },
   methods: {
+    validateMediaLinks() {
+      const missing = file =>
+        !this.instruction.files.find(f => f.name === file);
+
+      if (missing(this.instruction.preview_url))
+        this.instruction.preview_url = "";
+
+      for (const step of this.instruction.steps) {
+        if (missing(step.preview_url)) step.preview_url = "";
+        for (const asset of step.assets) {
+          if (missing(asset.media.url)) {
+            asset.media.url = "";
+            asset.media.type = 0;
+          }
+        }
+      }
+    },
     selectInstruction(index) {
-      this.currentInstruction = index;
-      const instruction =
+      this.instruction =
         this.instructions?.length > 0 ? this.instructions[index] : null;
-      this.steps = instruction?.steps;
-      this.files = instruction?.files;
+      this.steps = this.instruction?.steps;
+      this.files = this.instruction?.files;
     },
     selectStep(index) {
       this.assets = this.steps?.length > 0 ? this.steps[index].assets : null;
@@ -72,12 +96,11 @@ export default {
       let instruction = {
         index: JSON.parse(await zip.file("index.json").async("string")),
         steps: JSON.parse(await zip.file("steps.json").async("string")),
-        files: []
+        files: {}
       };
       this.instructions.push(instruction);
 
       console.log(this.instructions);
-
 
       // 1.
       // // this is like Object.values(zip.files) which is not yet implemented everywhere
@@ -117,8 +140,7 @@ export default {
       // this.loaded = true;
     },
     uploadInstruction() {
-      let instruction = this.instructions[this.currentInstruction];
-      let { steps, files, index } = instruction;
+      let { steps, files, index } = this.instruction;
 
       index.step_count = steps.length;
       index.last_modified = Date.now();
