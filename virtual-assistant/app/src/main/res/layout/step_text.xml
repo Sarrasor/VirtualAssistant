@@ -8,5 +8,5 @@
     android:alpha="0.95"
     android:text="This is sample text"
     android:textColor="@color/ARtextColor"
-    android:textSize="30dp"
+    android:textSize="40dp"
     android:textStyle="bold" />

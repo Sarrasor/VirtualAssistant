@@ -138,6 +138,14 @@ public class MainActivity extends AppCompatActivity
                 {
                     Toast.makeText(mainActivity, "Server is down", Toast.LENGTH_SHORT).show();
                 }
+                if(listThumbs.isEmpty())
+                {
+                   findViewById(R.id.emptyMessage).setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    findViewById(R.id.emptyMessage).setVisibility(View.GONE);
+                }
             });
         }).start();
     }
