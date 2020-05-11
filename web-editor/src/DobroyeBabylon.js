@@ -178,7 +178,7 @@ export class Slide {
         scene.activeCamera.upperRadiusLimit = 20;
 
         scene.activeCamera.setTarget(new BABYLON.Vector3(0, 0, 0));
-        scene.activeCamera.setPosition(new BABYLON.Vector3(9, 4, 5));
+        scene.activeCamera.setPosition(new BABYLON.Vector3(0, 3, 10));
 
 
         // scene.clearColor = new BABYLON.Color3(0.5, 0.8, 0.5);
@@ -210,7 +210,8 @@ export class Slide {
             scene.render();
         });
 
-        var showAxis = function(size) {
+        var showAxis = function(size)
+        {
             var axisX = BABYLON.Mesh.CreateLines("axisX", [ 
                 new BABYLON.Vector3(-size, 0, 0), new BABYLON.Vector3(size, 0, 0),
                 new BABYLON.Vector3(size, 0, 0)
@@ -221,7 +222,7 @@ export class Slide {
             xCone.position = new BABYLON.Vector3(-size, 0, 0);
             xCone.rotation = new BABYLON.Vector3(Math.PI/2, -Math.PI/2, 0);
             xCone.material = new BABYLON.StandardMaterial("matX", scene);
-            xCone.material.emissiveColor = new BABYLON.Color3(1.0, 0, 0);
+            xCone.material.diffuseColor = new BABYLON.Color3(1.0, 0, 0);
 
             var axisY = BABYLON.Mesh.CreateLines("axisY", [
                 new BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, size*2/3, 0),
@@ -233,7 +234,8 @@ export class Slide {
             yCone.position = new BABYLON.Vector3(0, 2/3*size, 0);
             yCone.rotation = new BABYLON.Vector3(0, 0, 0);
             yCone.material = new BABYLON.StandardMaterial("matY", scene);
-            yCone.material.emissiveColor = new BABYLON.Color3(0, 1.0, 0);
+            yCone.material.diffuseColor = new BABYLON.Color3(0, 1.0, 0);
+
 
             var axisZ = BABYLON.Mesh.CreateLines("axisZ", [
                 new BABYLON.Vector3(0, 0, -size), new BABYLON.Vector3(0, 0, size),
@@ -245,9 +247,9 @@ export class Slide {
             zCone.position = new BABYLON.Vector3(0, 0, size);
             zCone.rotation = new BABYLON.Vector3(Math.PI/2, 0, 0);
             zCone.material = new BABYLON.StandardMaterial("matZ", scene);
-            zCone.material.emissiveColor = new BABYLON.Color3(0, 0, 1.0);
+            zCone.material.diffuseColor = new BABYLON.Color3(0, 0, 1.0);
         };
-    
+
         showAxis(5);
 
         this.scene = scene;
@@ -279,7 +281,8 @@ class Asset {
 
         this.loadObject(scene, options);
 
-        this.setScale(options.scale),
+        setTimeout(() => 
+            this.setScale(options.scale),
             this.setPosition({
                 x: options.position.x,
                 y: options.position.y,
@@ -290,7 +293,7 @@ class Asset {
                 y: options.rotation.y,
                 z: options.rotation.z
             }),
-            this.setTransparent(0.5)
+            this.setTransparent(0.5), 500);
     }
 
     /*
@@ -403,12 +406,51 @@ class Asset {
     }
 
     load3DObject(scene) {
-        BABYLON.SceneLoader.ImportMesh(this.name, "blob:http://localhost:8080/", this.url, scene, function (meshes) {
-            this.model = meshes[0];
-            // scene.beforeRender = () => {
-            //     this.model.rotation.y += 0.01;
-            // };
-        });
+        var base64_model_content = this.url;
+        var raw_content = BABYLON.Tools.DecodeBase64(base64_model_content);
+        var blob = new Blob([raw_content]);
+        var url = URL.createObjectURL(blob);
 
+        BABYLON.SceneLoader.Append("", url, scene, function (meshes) {
+            this.model = meshes[0];
+        }, undefined, undefined, '.glb');
     }
 }
+
+
+
+
+
+
+
+
+// var cup;
+
+//     var createScene = function(){
+
+//     var scene   = new BABYLON.Scene(engine);
+//     var camera = new BABYLON.ArcRotateCamera("Camera", 0, 0, 0, new BABYLON.Vector3(0, 
+//     0, 0), scene);
+
+//     BABYLON.SceneLoader.ImportMesh("", "model/", "108.glb", scene, function (meshes) {
+//         scene.createDefaultCameraOrLight(true, true, true);
+//         cup = meshes[0];
+//     });
+
+//     scene.createDefaultLight();
+//     console.log(cup);
+//     scene.clearColor    = new BABYLON.Color4(0,0,0,0.0000000000000001);
+//     scene.ambientColor  = new BABYLON.Color3(1, 1, 1);
+
+//     return scene;
+
+// };
+// //even fom here I don't have access
+// console.log(scene.meshes[0].position);
+// var engine = new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true });
+// var scene = createScene();
+
+
+// engine.runRenderLoop(function () {
+//     scene.render();
+// });
