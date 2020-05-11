@@ -343,6 +343,8 @@ class PostServer(BaseHTTPRequestHandler):
     def do_GET(self):
         request = str(self.path).split("/")[-1]
 
+        print("Request:", request)
+
         if(request == "instructions"):
             print("Instructions request from the Web-editor")
 
@@ -368,6 +370,59 @@ class PostServer(BaseHTTPRequestHandler):
                 self.send_header("Content-Length", str(fs.st_size))
                 self.end_headers()
                 shutil.copyfileobj(file, self.wfile)
+        elif(request == "instructions_list"):
+            instructions = os.listdir(INSTRUCTIONS_FOLDER)
+
+            # Things to ignore inside the instructions folder
+            ignore = [".zip", ".txt", "hidden"]
+
+            # List of instruction ids
+            iids = []
+
+            for instruction in instructions:
+                # Skip stuff to ignore
+
+                if any(x in instruction for x in ignore):
+                    continue
+
+                iids.append(instruction)
+
+            self.send_response(200)
+            self.send_header('Content-type', 'application/json')
+            self.send_header("Access-Control-Allow-Origin", '*')
+            self.end_headers()
+            self.wfile.write(json.dumps(iids).encode('ascii'))
+
+        elif('instruction?id=' in request):
+            req_id = request.split('?id=')[-1]
+            try:
+                # Define path to media folder
+                media_path = "{}/{}".format(INSTRUCTIONS_FOLDER, req_id)
+                # Define path to instruction_id.zip
+                zip_path = "{}/{}".format(INSTRUCTIONS_FOLDER, req_id)
+
+                # Create zip archive from media folder
+                shutil.make_archive(zip_path, "zip", media_path)
+
+                # Write file to the response message
+                with open(zip_path + ".zip", 'rb') as file:
+                    self.send_response(200)
+                    self.send_header("Content-Type", 'application/zip')
+                    self.send_header("Access-Control-Allow-Origin", '*')
+                    self.send_header(
+                        "Content-Typet-Disposition", 'attachment; filename="{}.zip"'.format(req_id))
+                    fs = os.fstat(file.fileno())
+                    self.send_header("Content-Length", str(fs.st_size))
+                    self.end_headers()
+                    shutil.copyfileobj(file, self.wfile)
+
+                os.remove(zip_path + ".zip")
+
+            except Exception as e:
+                print("Download failed:\n", e)
+                self.send_response(404)
+                self.end_headers()
+
         else:
             self._set_headers()
             self.wfile.write(self._html(

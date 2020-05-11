@@ -136,8 +136,10 @@ public class MainActivity extends AppCompatActivity
                 }
                 else
                 {
+                    findViewById(R.id.loadingPreviewsProgressBar).setVisibility(View.GONE);
                     Toast.makeText(mainActivity, "Server is down", Toast.LENGTH_SHORT).show();
                 }
+
                 if(listThumbs.isEmpty())
                 {
                    findViewById(R.id.emptyMessage).setVisibility(View.VISIBLE);
