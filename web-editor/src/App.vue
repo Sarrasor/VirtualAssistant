@@ -8,7 +8,12 @@
       />
       <div class="card" style="margin-top: 20px; width: 430px">
         <p class="label bold">files</p>
-        <FileUpload v-if="instruction" v-model="instruction.files" @upload="validateMediaLinks" />
+        <FileUpload
+          ref="fileUpload"
+          v-if="instruction"
+          v-model="instruction.files"
+          @upload="validateMediaLinks"
+        />
       </div>
     </div>
     <Step :steps="steps" @select="selectStep" />
@@ -99,8 +104,6 @@ export default {
         files: {}
       };
       this.instructions.push(instruction);
-
-      console.log(this.instructions);
 
       // 1.
       // // this is like Object.values(zip.files) which is not yet implemented everywhere

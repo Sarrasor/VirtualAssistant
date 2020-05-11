@@ -59,7 +59,6 @@ export default {
       );
     },
     readFile(file) {
-      let url = window.URL.createObjectURL(file);
       let type = this.getType;
       return new Promise(function(resolve, reject) {
         const reader = new FileReader();
@@ -68,11 +67,19 @@ export default {
             name: file.name,
             type: type(file.name),
             content: reader.result,
-            url: url
+            url: window.URL.createObjectURL(file)
           });
         reader.onerror = reject;
         reader.readAsDataURL(file);
       });
+    },
+    deserealizeFile(name, base64) {
+      return {
+        name: name,
+        type: this.getType(name),
+        content: base64,
+        url: window.URL.createObjectURL(window.atob(base64))
+      };
     },
     getExt(name) {
       return "." + name.split(".").pop();

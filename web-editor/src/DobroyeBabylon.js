@@ -48,8 +48,7 @@ export function init(slide, assets, files) {
         return slide;
     }
 
-    for (let ai = 0; ai < assets.length; ai++)
-    {
+    for (let ai = 0; ai < assets.length; ai++) {
         let asset = assets[ai];
         var file = null;
         if (asset.media.url != "")
@@ -71,7 +70,8 @@ export function init(slide, assets, files) {
             scale: asset.transform.scale,
             billboard: asset.billboard,
             hidden: asset.hidden,
-            url: file?.content
+            url: file?.content,
+            uurl: file?.url
         });
     }
     return slide;
@@ -97,48 +97,45 @@ export class Slide {
     options: { media_desc:string, billboard:boolean, hidden:boolean, url:string,
               position:{x:num, y:num, z:num}, rotation{x:num, y:num, z:num}, scale:num }
     */
-    manageAsset(existing_asset, id, name, media_type, options)
-    {
-        if (existing_asset == null)
-        {
+    manageAsset(existing_asset, id, name, media_type, options) {
+        if (existing_asset == null) {
             var new_obj = new Asset(id, name, media_type, this.scene,
-            {
-                media_desc: options.media_desc,
-                url: options.url,
-                position: {
-                    x: options.position.x,
-                    y: options.position.y,
-                    z: options.position.z
-                },
-                rotation: {
-                    x: options.rotation.x,
-                    y: options.rotation.y,
-                    z: options.rotation.z
-                },
-                scale: options.scale,
-                hidden: options.hidden,
-                billboard: options.billboard
-            });
+                {
+                    media_desc: options.media_desc,
+                    url: options.url,
+                    uurl: options.uurl,
+                    position: {
+                        x: options.position.x,
+                        y: options.position.y,
+                        z: options.position.z
+                    },
+                    rotation: {
+                        x: options.rotation.x,
+                        y: options.rotation.y,
+                        z: options.rotation.z
+                    },
+                    scale: options.scale,
+                    hidden: options.hidden,
+                    billboard: options.billboard
+                });
             this.assets.push(new_obj);
         }
-        else 
-        {
+        else {
             let asset = existing_asset;
             asset.name = name;
             asset.hidden = options.hidden;
 
-            if (asset.media_type != media_type || asset.url != options.url || asset.billboard != options.billboard || 
-                    (asset.media_type == TEXT && asset.media_desc != options.media_desc)) 
-            {
+            if (asset.media_type != media_type || asset.url != options.url || asset.billboard != options.billboard ||
+                (asset.media_type == TEXT && asset.media_desc != options.media_desc)) {
                 asset.media_type = media_type;
                 asset.url = options.url;
+                asset.uurl = options.uurl;
                 asset.billboard = options.billboard;
                 asset.model.dispose();
 
                 asset.media_desc = options.media_desc;
 
-                asset.loadObject(this.scene, function()
-                {
+                asset.loadObject(this.scene, function () {
                     asset.setScale(options.scale);
                     asset.setPosition({
                         x: options.position.x,
@@ -150,12 +147,11 @@ export class Slide {
                         y: options.rotation.y,
                         z: options.rotation.z
                     });
-                    
+
                     asset.setTransparent(asset.hidden);
                 });
             }
-            else
-            {
+            else {
                 asset.media_desc = options.media_desc;
                 asset.setScale(options.scale);
                 asset.setPosition({
@@ -168,7 +164,7 @@ export class Slide {
                     y: options.rotation.y,
                     z: options.rotation.z
                 });
-                
+
                 asset.setTransparent(asset.hidden);
             }
         }
@@ -218,7 +214,7 @@ export class Slide {
         light.intensity = 1;
 
         let additional_lights = [];
-        for (let i = 0; i < 6; i++){
+        for (let i = 0; i < 6; i++) {
             additional_lights.push(new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(0, -0.001, 0), scene));
             additional_lights[i].intensity = 0.8;
         }
@@ -239,33 +235,32 @@ export class Slide {
             scene.render();
         });
 
-        var showAxis = function(size)
-        {
-            var axisX = BABYLON.Mesh.CreateLines("axisX", [ 
+        var showAxis = function (size) {
+            var axisX = BABYLON.Mesh.CreateLines("axisX", [
                 new BABYLON.Vector3(-size, 0, 0), new BABYLON.Vector3(size, 0, 0),
                 new BABYLON.Vector3(size, 0, 0)
-                ], scene);
+            ], scene);
             axisX.color = new BABYLON.Color3(1.0, 0, 0);
 
-            var xCone = BABYLON.MeshBuilder.CreateCylinder("cone", {diameterBottom:0.2, diameterTop: 0.03, tessellation: 100, height:0.2}, scene);
+            var xCone = BABYLON.MeshBuilder.CreateCylinder("cone", { diameterBottom: 0.2, diameterTop: 0.03, tessellation: 100, height: 0.2 }, scene);
             xCone.position = new BABYLON.Vector3(-size, 0, 0);
-            xCone.rotation = new BABYLON.Vector3(Math.PI/2, -Math.PI/2, 0);
+            xCone.rotation = new BABYLON.Vector3(Math.PI / 2, -Math.PI / 2, 0);
             xCone.material = new BABYLON.StandardMaterial("matX", scene);
-           
+
             xCone.material.emissiveColor = new BABYLON.Color3(1.0, 0, 0);
             xCone.material.diffuseColor = new BABYLON.Color3(1.0, 0, 0);
 
             var axisY = BABYLON.Mesh.CreateLines("axisY", [
-                new BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, size*2/3, 0),
-                new BABYLON.Vector3(0, size*2/3, 0)
-                ], scene);
+                new BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, size * 2 / 3, 0),
+                new BABYLON.Vector3(0, size * 2 / 3, 0)
+            ], scene);
             axisY.color = new BABYLON.Color3(0, 1.0, 0);
 
-            var yCone = BABYLON.MeshBuilder.CreateCylinder("cone", {diameterBottom:0.2, diameterTop: 0.03, tessellation: 100, height:0.2}, scene);
-            yCone.position = new BABYLON.Vector3(0, 2/3*size, 0);
+            var yCone = BABYLON.MeshBuilder.CreateCylinder("cone", { diameterBottom: 0.2, diameterTop: 0.03, tessellation: 100, height: 0.2 }, scene);
+            yCone.position = new BABYLON.Vector3(0, 2 / 3 * size, 0);
             yCone.rotation = new BABYLON.Vector3(0, 0, 0);
             yCone.material = new BABYLON.StandardMaterial("matY", scene);
-            
+
             yCone.material.emissiveColor = new BABYLON.Color3(0, 1.0, 0);
             yCone.material.diffuseColor = new BABYLON.Color3(0, 1.0, 0);
 
@@ -273,14 +268,14 @@ export class Slide {
             var axisZ = BABYLON.Mesh.CreateLines("axisZ", [
                 new BABYLON.Vector3(0, 0, -size), new BABYLON.Vector3(0, 0, size),
                 new BABYLON.Vector3(0, 0, size)
-                ], scene);
+            ], scene);
             axisZ.color = new BABYLON.Color3(0, 0, 1.0);
 
-            var zCone = BABYLON.MeshBuilder.CreateCylinder("cone", {diameterBottom:0.2, diameterTop: 0.03, tessellation: 100, height:0.2}, scene);
+            var zCone = BABYLON.MeshBuilder.CreateCylinder("cone", { diameterBottom: 0.2, diameterTop: 0.03, tessellation: 100, height: 0.2 }, scene);
             zCone.position = new BABYLON.Vector3(0, 0, size);
-            zCone.rotation = new BABYLON.Vector3(Math.PI/2, 0, 0);
+            zCone.rotation = new BABYLON.Vector3(Math.PI / 2, 0, 0);
             zCone.material = new BABYLON.StandardMaterial("matZ", scene);
-            
+
             zCone.material.emissiveColor = new BABYLON.Color3(0, 0, 1.0);
             zCone.material.diffuseColor = new BABYLON.Color3(0, 0, 1.0);
         };
@@ -294,8 +289,7 @@ export class Slide {
 /*
 class that describes an asset
 */
-class Asset 
-{
+class Asset {
     /*
     id: str - id of the asset
     name:str - name of the asset
@@ -305,19 +299,19 @@ class Asset
               position:{x:num, y:num, z:num}, rotation{x:num, y:num, z:num}, scale:num }
     options.loader - passed from Slide
     */
-    constructor(id, name, media_type, scene, options) 
-    {
+    constructor(id, name, media_type, scene, options) {
         this.id = id;
         this.name = name;
         this.media_type = media_type;
         this.media_desc = options.media_desc;
         this.url = options.url;
+        this.uurl = options.uurl;
         this.scale = options.scale;
 
         this.hidden = options.hidden;
         this.billboard = options.billboard;
 
-        this.loadObject(scene, function(){});
+        this.loadObject(scene, function () { });
 
         this.setScale(options.scale);
         this.setPosition({
@@ -330,26 +324,23 @@ class Asset
             y: options.rotation.y,
             z: options.rotation.z
         });
-        this.setTransparent(options.hidden);        
+        this.setTransparent(options.hidden);
     }
 
     /*
     sets position for this.model. this.model must be loaded beforehand. called from constructor
     args: { x:num, y:num, z:num } - not optional. to update, all must be passed
     */
-    setPosition(args) 
-    {
+    setPosition(args) {
         this.model.position.x = -args.x;
         this.model.position.y = args.y;
 
         this.model.position.z = args.z;
 
-        if (this.media_type == TEXT)
-        {
+        if (this.media_type == TEXT) {
             this.model.position.y += 0.1 * this.scale;
         }
-        else if (this.media_type == IMAGE)
-        {
+        else if (this.media_type == IMAGE) {
             this.model.position.y += 1.0 * this.scale;
         }
     }
@@ -358,22 +349,18 @@ class Asset
     sets orientation for this.model; this.model must be loaded beforehand. called form constructor
     args: { x:num, y:num, z:num } - not optional. to update, all must be passed
     */
-    setOrientation(args) 
-    {
-        if (this.billboard) 
-        {
-            if (this.media_type == IMAGE) 
-            {  
+    setOrientation(args) {
+        if (this.billboard) {
+            if (this.media_type == IMAGE) {
                 this.model.rotation.x = 0;
                 this.model.rotation.y = 0;
                 this.model.rotation.z = 0;
                 return;
             }
-            else if(this.media_type == TEXT)
-            {
-                this.model.rotation.x = args.x * Math.PI/180 - Math.PI/2;
-                this.model.rotation.y = args.y * Math.PI/180;
-                this.model.rotation.z = args.z * Math.PI/180;
+            else if (this.media_type == TEXT) {
+                this.model.rotation.x = args.x * Math.PI / 180 - Math.PI / 2;
+                this.model.rotation.y = args.y * Math.PI / 180;
+                this.model.rotation.z = args.z * Math.PI / 180;
                 return;
             }
         }
@@ -382,59 +369,48 @@ class Asset
         var old_y = this.model.rotation.y;
         var old_z = this.model.rotation.z;
 
-        this.model.rotation.x = args.x * Math.PI/180;
-        this.model.rotation.y = args.y * Math.PI/180;
-        this.model.rotation.z = args.z * Math.PI/180;
-        
-        if (this.media_type == TEXT)
-        {
-            this.model.rotation.x -= Math.PI/2;
+        this.model.rotation.x = args.x * Math.PI / 180;
+        this.model.rotation.y = args.y * Math.PI / 180;
+        this.model.rotation.z = args.z * Math.PI / 180;
+
+        if (this.media_type == TEXT) {
+            this.model.rotation.x -= Math.PI / 2;
             this.model.rotation.z += Math.PI;
         }
-        else if (this.media_type == IMAGE) 
-        {
+        else if (this.media_type == IMAGE) {
             this.model.rotation.y += Math.PI;
-        }   
-        else if (this.media_type == TDMODEL)
-        {
-            this.model.rotate(BABYLON.Axis.X, this.model.rotation.x-old_x, BABYLON.Space.LOCAL);
-            this.model.rotate(BABYLON.Axis.Y, this.model.rotation.y-old_y, BABYLON.Space.LOCAL);
-            this.model.rotate(BABYLON.Axis.Z, this.model.rotation.z-old_z, BABYLON.Space.LOCAL);
+        }
+        else if (this.media_type == TDMODEL) {
+            this.model.rotate(BABYLON.Axis.X, this.model.rotation.x - old_x, BABYLON.Space.LOCAL);
+            this.model.rotate(BABYLON.Axis.Y, this.model.rotation.y - old_y, BABYLON.Space.LOCAL);
+            this.model.rotate(BABYLON.Axis.Z, this.model.rotation.z - old_z, BABYLON.Space.LOCAL);
         }
     }
 
-    setScale(value) 
-    {
+    setScale(value) {
         this.model.scaling.x = value;
         this.model.scaling.y = value;
         this.model.scaling.z = value;
         this.scale = value;
     }
 
-    setTransparent(hidden)
-    {
-        if (hidden)
-        {
-            if (this.media_type == IMAGE || this.media_type == TEXT)
-            {
+    setTransparent(hidden) {
+        if (hidden) {
+            if (this.media_type == IMAGE || this.media_type == TEXT) {
                 this.modelMaterial.alpha = 0.5;
             }
 
-            if(this.media_type == TDMODEL)
-            {
+            if (this.media_type == TDMODEL) {
                 this.model.visibility = 0.5;
                 this.modelMaterial.alpha = 0.5;
             }
         }
-        else
-        {
-            if (this.media_type == IMAGE)
-            {
+        else {
+            if (this.media_type == IMAGE) {
                 this.modelMaterial.alpha = 1.0;
             }
 
-            if(this.media_type == TDMODEL)
-            {
+            if (this.media_type == TDMODEL) {
                 this.model.visibility = 1.0;
                 this.modelMaterial.alpha = 1.0;
             }
@@ -449,10 +425,8 @@ class Asset
     options.url - for images and 3d models
     options.loader - for 3d models
     */
-    loadObject(scene, _callback) 
-    {
-        switch (this.media_type)
-        {
+    loadObject(scene, _callback) {
+        switch (this.media_type) {
             case TEXT:
                 this.loadText(scene, _callback);
                 break;
@@ -461,14 +435,13 @@ class Asset
             case VIDEO:
                 this.loadImage(scene, _callback);
                 break;
-            case TDMODEL: 
+            case TDMODEL:
                 this.load3DObject(scene, _callback);
                 break;
         }
     }
 
-    loadText(scene, _callback) 
-    {
+    loadText(scene, _callback) {
         var ground = BABYLON.Mesh.CreateGround("ground", 8, 6, 2, scene, true);
         // GUI
         var advancedTexture = GUI.AdvancedDynamicTexture.CreateForMesh(ground, 1024, 1024, true, true);
@@ -481,8 +454,7 @@ class Asset
         text1.fontFamily = 'sans serif';
         advancedTexture.addControl(text1);
 
-        if (this.billboard)
-        {
+        if (this.billboard) {
             ground.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
         }
 
@@ -490,19 +462,16 @@ class Asset
         _callback();
     }
 
-    loadImage(scene, _callback) 
-    {
-        var asset = this; 
+    loadImage(scene, _callback) {
+        var asset = this;
 
         var img = new Image();
-        img.onload = function()
-        {
+        img.onload = function () {
             loadImgPlane(this.height, this.width, asset, _callback);
         }
         img.src = asset.url;
 
-        function loadImgPlane(h, w, asset, _callback)
-        {
+        function loadImgPlane(h, w, asset, _callback) {
             var mat = new BABYLON.StandardMaterial("material", scene);
             mat.emissiveTexture = new BABYLON.Texture(asset.url, scene);
             mat.emissiveTexture.hasAlpha = true;
@@ -512,16 +481,15 @@ class Asset
 
             var height = 2.0;
             var width = height * w / h;
-            
+
             asset.img_width = width;
             asset.img_height = height;
 
-            var plane = new BABYLON.MeshBuilder.CreatePlane(asset.name, {height: height, width: width}, scene);
+            var plane = new BABYLON.MeshBuilder.CreatePlane(asset.name, { height: height, width: width }, scene);
             plane.updatable = true;
             plane.material = mat;
 
-            if (asset.billboard)
-            {
+            if (asset.billboard) {
                 mat.backFaceCulling = true;
                 plane.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
             }
@@ -531,17 +499,15 @@ class Asset
         }
     }
 
-    load3DObject(scene, _callback) 
-    {
+    load3DObject(scene, _callback) {
         var asset = this;
 
-        var base64_model_content = asset.url;
-        var raw_content = BABYLON.Tools.DecodeBase64(base64_model_content);
-        var blob = new Blob([raw_content]);
-        var url = URL.createObjectURL(blob);
+        // var base64_model_content = asset.url;
+        // var raw_content = BABYLON.Tools.DecodeBase64(base64_model_content);
+        // var blob = new Blob([raw_content]);
+        // var url = URL.createObjectURL(blob);
 
-        BABYLON.SceneLoader.LoadAssetContainer("", url, scene, function (container) 
-        {
+        BABYLON.SceneLoader.LoadAssetContainer("", asset.uurl, scene, function (container) {
             asset.model = container.meshes[0];
             asset.modelMaterial = container.materials[0];
 
@@ -564,7 +530,7 @@ class Asset
 //     var createScene = function(){
 
 //     var scene   = new BABYLON.Scene(engine);
-//     var camera = new BABYLON.ArcRotateCamera("Camera", 0, 0, 0, new BABYLON.Vector3(0, 
+//     var camera = new BABYLON.ArcRotateCamera("Camera", 0, 0, 0, new BABYLON.Vector3(0,
 //     0, 0), scene);
 
 //     BABYLON.SceneLoader.ImportMesh("", "model/", "108.glb", scene, function (meshes) {
