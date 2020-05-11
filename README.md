@@ -55,6 +55,8 @@ There is README.md inside with more detailed explanation.
 
 ### virtual-assistant
 
+![virtual-assistant](virtual_assistant.png)
+
 Contains Virtual Assistant app. You can download the latest version [here](https://github.com/Sarrasor/INNO-S20-SP/releases).
 
 [Video](https://drive.google.com/file/d/1HnKh15GNuCh4DoWQbFhH2sP1luFxgRzL/view?usp=sharing)
