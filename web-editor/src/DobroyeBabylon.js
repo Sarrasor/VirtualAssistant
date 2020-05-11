@@ -288,6 +288,7 @@ class Asset
         this.media_type = media_type;
         this.media_desc = options.media_desc;
         this.url = options.url;
+        this.scale = options.scale;
 
         this.hidden = options.hidden;
         this.billboard = options.billboard;
@@ -326,7 +327,7 @@ class Asset
         }
         else if (this.media_type == IMAGE)
         {
-            this.model.position.y += 0.5;
+            this.model.position.y += 0.5 * this.scale;
         }
     }
 
@@ -384,6 +385,7 @@ class Asset
         this.model.scaling.x = value;
         this.model.scaling.y = value;
         this.model.scaling.z = value;
+        this.scale = value;
     }
 
     setTransparent(hidden)
