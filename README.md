@@ -59,7 +59,7 @@ There is README.md inside with more detailed explanation.
 
 Contains Virtual Assistant app. You can download the latest version [here](https://github.com/Sarrasor/INNO-S20-SP/releases).
 
-[Video](https://drive.google.com/file/d/1HnKh15GNuCh4DoWQbFhH2sP1luFxgRzL/view?usp=sharing)
+[Video](https://drive.google.com/file/d/1CL9LkvtQERKDECgmdhwFlaOlP5pUo9sP/view)
 
 ### web-editor
 
