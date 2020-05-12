@@ -6,9 +6,9 @@
         @select="selectInstruction"
         @upload="uploadInstruction"
       />
-      <div class="card" style="margin-top: 20px; width: 430px">
+      <div v-if="instruction" class="card" style="margin-top: 20px; width: 430px">
         <p class="label bold">files</p>
-        <FileUpload ref="fileUpload" v-model="files" @upload="validateMediaLinks" />
+        <FileUpload ref="fileUpload" v-model="instruction.files" @upload="validateMediaLinks" />
       </div>
     </div>
     <Step :steps="steps" @select="selectStep" />
@@ -54,7 +54,6 @@ export default {
     // let ids = await fetch(
     //   "https://ad0d9c3e.ngrok.io/instructions_list"
     // ).then(r => r.json());
-
     // for (let id of ids) {
     //   let blob = await fetch(
     //     "https://ad0d9c3e.ngrok.io//instruction?id=" + id
