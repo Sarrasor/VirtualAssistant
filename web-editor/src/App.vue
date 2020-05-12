@@ -51,16 +51,16 @@ export default {
     };
   },
   async mounted() {
-    let ids = await fetch(
-      "https://ad0d9c3e.ngrok.io/instructions_list"
-    ).then(r => r.json());
+    // let ids = await fetch(
+    //   "https://ad0d9c3e.ngrok.io/instructions_list"
+    // ).then(r => r.json());
 
-    for (let id of ids) {
-      let blob = await fetch(
-        "https://ad0d9c3e.ngrok.io//instruction?id=" + id
-      ).then(r => r.blob());
-      await this.downloadInstruction(blob);
-    }
+    // for (let id of ids) {
+    //   let blob = await fetch(
+    //     "https://ad0d9c3e.ngrok.io//instruction?id=" + id
+    //   ).then(r => r.blob());
+    //   await this.downloadInstruction(blob);
+    // }
   },
   methods: {
     validateMediaLinks() {
